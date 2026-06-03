@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Refinezy</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <div class="card">
+        <div class="header">
+          <div class="app">Refinezy</div>
+          <div class="divider"></div>
+        </div>
+
+        <div class="stats">
+          <div class="row">
+            <div class="k">Refinements Made</div>
+            <div class="v" id="refinementsMade">0</div>
+          </div>
+          <div class="row">
+            <div class="k">Time Saved</div>
+            <div class="v" id="timeSaved">0m</div>
+          </div>
+          <div class="row">
+            <div class="k">Retries Avoided</div>
+            <div class="v" id="retriesAvoided">0</div>
+          </div>
+          <div class="row">
+            <div class="k">Current Streak</div>
+            <div class="v" id="streak">0</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="shortcut">
+          <div class="k">Current Shortcut</div>
+          <div class="badge" id="hotkey">Ctrl + Alt + Space</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="running">
+          <span class="dot"></span>
+          <span>Running</span>
+        </div>
+      </div>
+    </div>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>
+

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Refinezy Settings</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="title">Refinezy</div>
+        <div class="subtitle">Settings</div>
+      </header>
+
+      <section class="card">
+        <label class="label" for="apiKey">Gemini API Key</label>
+        <input id="apiKey" class="input" type="password" placeholder="Paste your API key" />
+        <div class="hint">Stored locally using electron-store.</div>
+      </section>
+
+      <section class="card">
+        <div class="row">
+          <div>
+            <div class="label">Launch on Startup</div>
+            <div class="hint">Start Refinezy in the tray when Windows boots.</div>
+          </div>
+          <label class="switch">
+            <input id="launchToggle" type="checkbox" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <label class="label" for="hotkey">Shortcut</label>
+        <input id="hotkey" class="input" type="text" placeholder="Ctrl+Alt+Space" />
+        <div class="hint">Use Electron accelerator format, e.g. <span class="mono">Ctrl+Alt+Space</span>.</div>
+      </section>
+
+      <footer>
+        <button id="save" class="btn primary">Save</button>
+        <div id="status" class="status" aria-live="polite"></div>
+      </footer>
+    </div>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>
+

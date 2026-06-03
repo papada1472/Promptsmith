@@ -1,0 +1,56 @@
+{
+  "name": "refinezy",
+  "productName": "Refinezy",
+  "version": "1.0.0",
+  "description": "Lightweight Windows tray utility to refine selected text into expert AI instructions.",
+  "main": "src/main/main.js",
+  "type": "module",
+  "author": "",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "test-models": "node scripts/test-models.js"
+  },
+  "dependencies": {
+    "@google/genai": "^2.7.0",
+    "@google/generative-ai": "^0.24.1",
+    "@nut-tree-fork/nut-js": "^4.2.6",
+    "electron-store": "^9.0.0"
+  },
+  "devDependencies": {
+    "electron": "^32.2.1",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.refinezy.app",
+    "productName": "Refinezy",
+    "asar": true,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": false,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Refinezy"
+    }
+  },
+  "allowScripts": {
+    "electron@32.3.3": true
+  }
+}
