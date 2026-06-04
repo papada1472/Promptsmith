@@ -333,12 +333,110 @@ input:checked + .slider:before {
   transform: translateX(14px);
 }
 
-/* ═══ SHARE CARD ═══ */
-.share-card.hidden {
+/* ═══ SHARE CARD (full export card) ═══ */
+.share-section.hidden {
   display: none;
 }
 
+.share-section {
+  background: white;
+  border: 1px solid rgba(109, 94, 249, 0.10);
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  overflow: hidden;
+}
+
 .share-card {
+  padding: 0;
+}
+
+.share-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.04);
+}
+
+.share-header-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.share-header-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #25304a;
+}
+
+.share-content {
+  padding: 12px;
+}
+
+.share-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.share-stat {
+  text-align: center;
+}
+
+.share-stat-value {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0b1220;
+  line-height: 1.1;
+}
+
+.share-stat-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: #5b6477;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-top: 2px;
+}
+
+.share-actions {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px 12px;
+  flex-wrap: wrap;
+}
+
+.share-action-btn {
+  appearance: none;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: white;
+  color: #25304a;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.1s;
+}
+
+.share-action-btn:hover {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.share-action-btn:active {
+  background: rgba(15, 23, 42, 0.08);
+}
+
+/* ═══ MILESTONE CARD ═══ */
+.milestone-card.hidden {
+  display: none;
+}
+
+.milestone-card {
   background: white;
   border: 1px solid rgba(109, 94, 249, 0.10);
   border-radius: 12px;
@@ -346,32 +444,61 @@ input:checked + .slider:before {
   box-shadow: 0 2px 8px rgba(0,0,0,0.01);
 }
 
-.share-body {
+.milestone-card .share-body {
   display: flex;
   align-items: flex-start;
   gap: 8px;
 }
 
-.share-emoji {
+.milestone-card .share-emoji {
   font-size: 18px;
   line-height: 1;
   flex-shrink: 0;
 }
 
-.share-text {
+.milestone-card .share-text {
   flex: 1;
 }
 
-.share-title {
+.milestone-card .share-title {
   font-size: 12px;
   font-weight: 800;
   color: #0b1220;
 }
 
-.share-sub {
+.milestone-card .share-sub {
   font-size: 11px;
   color: #4a5368;
   margin-top: 1px;
+}
+
+.milestone-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.milestone-btn {
+  appearance: none;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  background: white;
+  color: #5b6477;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  transition: background 0.1s;
+}
+
+.milestone-btn:hover {
+  background: rgba(15, 23, 42, 0.04);
 }
 
 .share-close {
