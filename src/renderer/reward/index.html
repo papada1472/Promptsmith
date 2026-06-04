@@ -14,6 +14,7 @@
           <div class="divider"></div>
         </div>
 
+        <!-- Stats -->
         <div class="stats">
           <div class="row">
             <div class="k">Refinements Made</div>
@@ -35,6 +36,7 @@
 
         <div class="divider"></div>
 
+        <!-- Shortcut -->
         <div class="shortcut">
           <div class="k">Current Shortcut</div>
           <div class="badge" id="hotkey">Ctrl + Alt + Space</div>
@@ -42,9 +44,36 @@
 
         <div class="divider"></div>
 
+        <!-- Running indicator -->
         <div class="running">
           <span class="dot"></span>
           <span>Running</span>
+        </div>
+
+        <!-- ── Share / Reward Card ── -->
+        <div id="shareCard" class="share-card hidden">
+          <div class="divider"></div>
+          <div class="share-body">
+            <div class="share-emoji">&#127881;</div>
+            <div class="share-text">
+              <div class="share-title">Milestone Reached!</div>
+              <div class="share-sub">You've made <strong id="shareCount">0</strong> refinements. Great work!</div>
+            </div>
+            <button id="shareClose" class="share-close" aria-label="Dismiss">&times;</button>
+          </div>
+        </div>
+
+        <!-- ── Quota Modal (overlays the card) ── -->
+        <div id="quotaModal" class="quota-overlay hidden">
+          <div class="quota-card">
+            <div class="quota-icon">&#128274;</div>
+            <div class="quota-title">Daily Quota Reached</div>
+            <div class="quota-text">You've used all your refinements for today. Come back tomorrow or check your settings.</div>
+            <div class="quota-actions">
+              <button id="quotaOpenSettings" class="quota-btn primary">Open Settings</button>
+              <button id="quotaDismiss" class="quota-btn secondary">Dismiss</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -52,4 +81,3 @@
     <script src="./renderer.js"></script>
   </body>
 </html>
-

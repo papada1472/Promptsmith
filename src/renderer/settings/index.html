@@ -1,183 +1,340 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Refinezy</title>
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <div class="app">
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refinezy Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    },
+                    colors: {
+                        bg: 'var(--bg)',
+                        card: 'var(--card)',
+                        border: 'var(--border)',
+                        accent: 'var(--accent)',
+                        textMain: 'var(--text-main)',
+                        textSub: 'var(--text-sub)',
+                        textMuted: 'var(--text-muted)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --bg: #F9FAFB;
+            --card: #FFFFFF;
+            --border: #E5E7EB;
+            --accent: #6D5EF9;
+            --text-main: #111827;
+            --text-sub: #4B5563;
+            --text-muted: #9CA3AF;
+        }
+        .dark {
+            --bg: #0B0F19;
+            --card: #111827;
+            --border: #1E293B;
+            --accent: #6D5EF9;
+            --text-main: #FFFFFF;
+            --text-sub: #CBD5E1;
+            --text-muted: #64748B;
+        }
+        body { background-color: var(--bg); transition: background-color 0.3s ease; }
+        * { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    </style>
+</head>
+<body class="font-sans text-textMain min-h-screen flex flex-col">
 
-      <!-- ═══ HEADER ═══ -->
-      <header class="header">
-        <div class="header-left">
-          <div class="logo">
-            <svg width="18" height="18" viewBox="0 0 64 64" fill="none">
-              <rect x="10" y="10" width="44" height="44" rx="12" fill="url(#lg)"/>
-              <path d="M24 41V23h12c4 0 7 2.7 7 6.3 0 3.7-3 6.3-7 6.3h-8v5.4H24zm4-9h7.8c2.1 0 3.6-1.3 3.6-2.7 0-1.4-1.4-2.7-3.6-2.7H28V32z" fill="white" opacity="0.95"/>
-              <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6D5EF9"/><stop offset="1" stop-color="#00D4FF"/></linearGradient></defs>
-            </svg>
-            <span class="logo-text">Refinezy</span>
-          </div>
-          <span class="badge-free">Free</span>
-        </div>
-        <div class="header-right">
-          <span class="api-status" id="apiStatus">● Key set</span>
-          <span class="model-badge" id="modelBadge">gemini-2.5-flash</span>
-          <button class="theme-toggle" id="themeToggle" title="Toggle theme">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="5"/>
-              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-            </svg>
-          </button>
-        </div>
-      </header>
-
-      <!-- ═══ HERO ═══ -->
-      <section class="hero">
-        <div class="hero-greeting">Good <span id="greetingTime">evening</span>, <span id="userName">Rahul</span></div>
-        <div class="hero-stats">
-          <span><strong id="todayCount">0</strong> text enhanced today</span>
-          <span class="hero-dot">&middot;</span>
-          <span><strong id="timeReclaimed">0s</strong> reclaimed</span>
-        </div>
-        <button class="btn-share" id="shareStatsBtn">Share Stats</button>
-      </section>
-
-      <!-- ═══ SHORTCUT STRIP ═══ -->
-      <section class="shortcut-strip">
-        <span class="chip" id="shortcutChip">Ctrl + Alt + Space</span>
-        <span class="chip-description">Highlight &rarr; Press &rarr; Continue working.</span>
-      </section>
-
-      <!-- ═══ METRICS ═══ -->
-      <section class="metrics">
-        <div class="metric-card">
-          <div class="metric-icon">&#128221;</div>
-          <div class="metric-value" id="refinementsMade">0</div>
-          <div class="metric-label">Texts Enhanced</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-icon">&#9200;</div>
-          <div class="metric-value" id="timeSavedMetric">0m</div>
-          <div class="metric-label">Time Reclaimed</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-icon">&#128737;</div>
-          <div class="metric-value" id="retriesSaved">0</div>
-          <div class="metric-label">Retries Prevented</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-icon">&#9889;</div>
-          <div class="metric-value" id="avgTimeSaved">0s</div>
-          <div class="metric-label">Avg Time Saved</div>
-        </div>
-      </section>
-
-      <!-- ═══ SETTINGS ═══ -->
-      <section class="settings">
-        <div class="settings-card">
-          <div class="settings-label">API Key</div>
-          <div class="settings-row">
-            <input id="apiKey" class="input" type="password" placeholder="Paste your Gemini API key" />
-            <button class="btn-save" id="saveKeyBtn">Save</button>
-          </div>
-        </div>
-
-        <div class="settings-card">
-          <div class="settings-row">
-            <div class="settings-label">Launch on Startup</div>
-            <label class="switch">
-              <input id="launchToggle" type="checkbox" />
-              <span class="slider"></span>
-            </label>
-          </div>
-        </div>
-
-        <div class="settings-card">
-          <div class="settings-label">Hotkey</div>
-          <input id="hotkey" class="input" type="text" placeholder="Ctrl+Alt+Space" />
-        </div>
-      </section>
-
-      <!-- ═══ SHARE CARD ═══ -->
-      <section id="shareCard" class="share-section hidden">
-        <div class="share-card">
-          <div class="share-header">
-            <div class="share-header-left">
-              <svg width="16" height="16" viewBox="0 0 64 64" fill="none">
-                <rect x="10" y="10" width="44" height="44" rx="12" fill="url(#sg)"/>
-                <path d="M24 41V23h12c4 0 7 2.7 7 6.3 0 3.7-3 6.3-7 6.3h-8v5.4H24zm4-9h7.8c2.1 0 3.6-1.3 3.6-2.7 0-1.4-1.4-2.7-3.6-2.7H28V32z" fill="white" opacity="0.95"/>
-                <defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6D5EF9"/><stop offset="1" stop-color="#00D4FF"/></linearGradient></defs>
-              </svg>
-              <span class="share-header-title">Refinezy Stats</span>
+    <!-- Share Modal -->
+    <div id="share-modal" class="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-card border border-gray-200 dark:border-border rounded-2xl max-w-sm w-full overflow-hidden shadow-2xl relative">
+            <button id="shareCardClose" class="absolute top-3 right-3 text-white/80 hover:text-white bg-black/10 hover:bg-black/20 w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold z-10 transition-all">&times;</button>
+            <div id="shareCardContent" class="bg-gradient-to-br from-[#6D5EF9] to-[#00D4FF] p-6 text-center text-white">
+                <div class="flex items-center justify-center gap-2 mb-2">
+                    <div class="w-6 h-6 rounded-md bg-white/20 flex items-center justify-center font-bold text-xs">R</div>
+                    <span class="text-sm font-bold tracking-tight">Refinezy Stats</span>
+                </div>
+                <h3 class="text-xl font-bold tracking-tight">Your Refinezy Impact</h3>
+                <p class="text-blue-100 text-xs mt-1 font-medium">You're outperforming 94% of users!</p>
             </div>
-            <button id="shareCardClose" class="share-close" aria-label="Close">&times;</button>
-          </div>
-          <div id="shareCardContent" class="share-content">
-            <div class="share-grid">
-              <div class="share-stat">
-                <div class="share-stat-value" id="shareRefinements">0</div>
-                <div class="share-stat-label">Texts Enhanced</div>
-              </div>
-              <div class="share-stat">
-                <div class="share-stat-value" id="shareTime">0m</div>
-                <div class="share-stat-label">Time Saved</div>
-              </div>
-              <div class="share-stat">
-                <div class="share-stat-value" id="shareRetries">0</div>
-                <div class="share-stat-label">Retries Prevented</div>
-              </div>
-              <div class="share-stat">
-                <div class="share-stat-value" id="shareStreak">0</div>
-                <div class="share-stat-label">Day Streak</div>
-              </div>
+            <div class="grid grid-cols-2 gap-4 p-6 bg-card border-b border-border">
+                <div class="text-center">
+                    <p class="text-2xl font-bold tracking-tight text-textMain" id="shareTime">1.2h</p>
+                    <p class="text-xs text-textMuted mt-1">Time Saved</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-2xl font-bold tracking-tight text-textMain" id="shareRefinements">284</p>
+                    <p class="text-xs text-textMuted mt-1">Texts Enhanced</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-2xl font-bold tracking-tight text-textMain" id="shareStreak">5 Days</p>
+                    <p class="text-xs text-textMuted mt-1">Day Streak</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-2xl font-bold tracking-tight text-textMain" id="shareRetries">142</p>
+                    <p class="text-xs text-textMuted mt-1">Retries Avoided</p>
+                </div>
             </div>
-          </div>
-          <div class="share-actions">
-            <button class="share-action-btn" id="downloadPngBtn">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              PNG
+            <div class="px-6 py-4 space-y-3 bg-card">
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="downloadPngBtn" class="flex-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-textMain font-semibold py-2 rounded-lg flex items-center justify-center gap-2 text-xs transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                        Download PNG
+                    </button>
+                    <button id="copyImageBtn" class="flex-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-textMain font-semibold py-2 rounded-lg flex items-center justify-center gap-2 text-xs transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Copy Image
+                    </button>
+                </div>
+                <button id="shareLinkedInBtn" class="w-full bg-[#0A66C2] hover:bg-[#004182] text-white font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 text-sm transition-colors">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.063 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    Share on LinkedIn
+                </button>
+                <button id="shareXBtn" class="w-full bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 text-sm transition-colors">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    Share on X / Twitter
+                </button>
+                <p class="text-[10px] text-center text-textMuted leading-tight">
+                    ✨ Your data is fully secure, processed locally with end-to-end privacy.
+                </p>
+            </div>
+            <button id="shareCardCloseBtn" class="w-full py-3 border-t border-gray-100 dark:border-border text-sm font-medium text-textMuted hover:text-textMain transition-colors bg-card">
+                Close
             </button>
-            <button class="share-action-btn" id="copyImageBtn">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              Copy
-            </button>
-            <button class="share-action-btn" id="shareXBtn">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-              X
-            </button>
-            <button class="share-action-btn" id="shareLinkedInBtn">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-              LinkedIn
-            </button>
-          </div>
         </div>
-      </section>
-
-      <!-- ═══ MILESTONE SHARE CARD ═══ -->
-      <section id="milestoneCard" class="milestone-card hidden">
-        <div class="share-body">
-          <div class="share-emoji">&#127881;</div>
-          <div class="share-text">
-            <div class="share-title">Milestone Reached!</div>
-            <div class="share-sub">You've enhanced <strong id="milestoneCount">0</strong> texts.</div>
-          </div>
-          <div class="milestone-actions">
-            <button id="milestoneShare" class="milestone-btn" title="Open share card">&#128206;</button>
-            <button id="milestoneClose" class="share-close" aria-label="Dismiss">&times;</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- ═══ FOOTER ═══ -->
-      <footer class="footer">
-        <span class="version">v1.0.0</span>
-        <span class="privacy">Your data stays on your machine.</span>
-      </footer>
-
     </div>
+
+    <!-- Top Bar -->
+    <div class="w-full bg-card border-b border-border px-6 md:px-12 py-4 flex items-center justify-between">
+        <!-- Left: Brand -->
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-md bg-accent flex items-center justify-center text-white font-bold text-xs shadow-sm shadow-blue-500/20">R</div>
+                <span class="text-base font-semibold tracking-tight text-textMain">Refinezy</span>
+                <span class="bg-indigo-50 dark:bg-indigo-950/30 text-accent text-[9px] font-bold px-1.5 py-0.5 rounded border border-indigo-100 dark:border-indigo-900/40 uppercase tracking-widest">Free</span>
+            </div>
+            <div class="hidden md:block text-xs text-textMuted font-medium">
+                Improve any text. Stay in your flow.
+            </div>
+        </div>
+
+        <!-- Right: API, Model, Theme -->
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-4 text-xs text-textMuted font-mono">
+                <span class="flex items-center gap-1">
+                    API: <span id="apiStatus" class="font-sans font-semibold text-emerald-500">● Key set</span>
+                </span>
+                <span class="hidden sm:inline">|</span>
+                <span class="hidden sm:inline">
+                    Model: <span id="modelBadge" class="text-textSub font-semibold font-sans bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-[10px]">Gemini 2.5 Flash</span>
+                </span>
+            </div>
+            <button id="themeToggle" class="p-2 rounded-md bg-gray-100 dark:bg-gray-800 text-textMuted hover:text-textMain dark:hover:text-white transition-colors">
+                <svg id="icon-sun" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <svg id="icon-moon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto w-full px-6 md:px-12 py-8 flex-1 flex flex-col gap-6">
+        
+        <!-- Milestone Card celebration banner -->
+        <div id="milestoneCard" class="hidden bg-gradient-to-r from-indigo-500 to-purple-600 border border-indigo-400 text-white rounded-xl p-4 flex items-center justify-between shadow-lg mb-2">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">&#127881;</span>
+                <div>
+                    <h4 class="font-bold text-sm">Milestone Reached!</h4>
+                    <p class="text-xs text-indigo-100">You've enhanced <span id="milestoneCount" class="font-bold">0</span> texts using Refinezy.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="milestoneShare" class="bg-white/20 hover:bg-white/30 text-white font-medium text-xs px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                    Share Impact
+                </button>
+                <button id="milestoneClose" class="text-white/80 hover:text-white font-bold text-lg px-2">&times;</button>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="flex items-end justify-between">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-textMain mb-1">Good <span id="greetingTime">evening</span>, <span id="userName">Rahul</span></h1>
+                <p class="text-textSub text-sm font-medium"><span id="todayCount" class="font-bold">0</span> texts enhanced today · <span id="timeReclaimed" class="font-bold">0s</span> reclaimed</p>
+            </div>
+            <button id="shareStatsBtn" class="flex items-center gap-2 bg-card border border-border rounded-lg px-3 py-2 text-xs font-semibold text-textSub hover:text-accent hover:border-accent/30 shadow-sm transition-all hover:shadow">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                Share Stats
+            </button>
+        </div>
+
+        <!-- Shortcut Card -->
+        <div class="bg-card border border-border rounded-xl p-5 flex flex-col items-center justify-center text-center shadow-sm">
+            <div class="flex items-center gap-2 mb-3">
+                <span id="shortcutChip" class="bg-bg border border-border rounded-lg px-3 py-1 font-mono text-xs font-bold text-textMain shadow-[0_1px_2px_rgba(0,0,0,0.03)]">Ctrl + Alt + Space</span>
+            </div>
+            <p class="text-xs text-textSub font-medium">Highlight any text &rarr; Press shortcut &rarr; Text is refined instantly in-place.</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex gap-8 border-b border-border">
+            <button id="tab-dashboard" class="text-sm font-semibold pb-3 border-b-2 border-accent text-accent dark:text-white dark:border-white transition-colors">Dashboard</button>
+            <button id="tab-activity" class="text-sm font-medium pb-3 border-b-2 border-transparent text-textMuted hover:text-textSub transition-colors">Activity Feed</button>
+        </div>
+
+        <!-- PAGE 1: Dashboard -->
+        <div id="page-dashboard" class="flex flex-col gap-6">
+            <!-- Metric Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-card border border-border rounded-xl p-5 shadow-sm">
+                    <p class="text-xs font-semibold text-textMuted uppercase tracking-wider mb-2">✨ Texts Enhanced</p>
+                    <p class="text-2xl font-bold tracking-tight text-textMain leading-none mb-1" id="refinementsMade">0</p>
+                    <p class="text-[10px] text-textMuted mt-2 font-medium">All time processed</p>
+                </div>
+                <div class="bg-card border border-border rounded-xl p-5 shadow-sm">
+                    <p class="text-xs font-semibold text-textMuted uppercase tracking-wider mb-2">⏳ Time Reclaimed</p>
+                    <p class="text-2xl font-bold tracking-tight text-textMain leading-none mb-1" id="timeSavedMetric">0s</p>
+                    <p class="text-[10px] text-textMuted mt-2 font-medium">Total focus seconds saved</p>
+                </div>
+                <div class="bg-card border border-border rounded-xl p-5 shadow-sm">
+                    <p class="text-xs font-semibold text-textMuted uppercase tracking-wider mb-2">🛡️ Retries Prevented</p>
+                    <p class="text-2xl font-bold tracking-tight text-textMain leading-none mb-1" id="retriesSaved">0</p>
+                    <p class="text-[10px] text-textMuted mt-2 font-medium">Draft rewrites avoided</p>
+                </div>
+                <div class="bg-card border border-border rounded-xl p-5 shadow-sm">
+                    <p class="text-xs font-semibold text-textMuted uppercase tracking-wider mb-2">⚡ Avg. Time Saved</p>
+                    <p class="text-2xl font-bold tracking-tight text-textMain leading-none mb-1" id="avgTimeSaved">0s</p>
+                    <p class="text-[10px] text-textMuted mt-2 font-medium">Per enhancement cycle</p>
+                </div>
+            </div>
+
+            <!-- Lower Section -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Left Card: System Preferences & Configuration -->
+                <div class="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4">
+                    <h3 class="text-xs font-semibold text-textMuted uppercase tracking-wider">Preferences & Settings</h3>
+                    
+                    <!-- API Key Setting -->
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-textSub" for="apiKey">Gemini API Key</label>
+                        <div class="flex gap-2">
+                            <input id="apiKey" type="password" class="flex-1 bg-bg border border-border rounded-lg px-3 py-1.5 text-xs text-textMain outline-none focus:border-accent/40" placeholder="Paste your Gemini API key" />
+                            <button id="saveKeyBtn" class="bg-accent hover:bg-accent/90 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg transition-colors">Save</button>
+                        </div>
+                    </div>
+
+                    <!-- Hotkey Setting -->
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-textSub" for="hotkey">Global Activation Hotkey</label>
+                        <input id="hotkey" type="text" class="w-full bg-bg border border-border rounded-lg px-3 py-1.5 text-xs text-textMain outline-none focus:border-accent/40 font-mono" placeholder="Ctrl+Alt+Space" />
+                        <p class="text-[10px] text-textMuted">Press Enter to save. Format: Ctrl+Alt+Space, Alt+Shift+R, etc.</p>
+                    </div>
+
+                    <!-- Toggle: Startup -->
+                    <div class="flex items-center justify-between border-t border-border/60 pt-4 mt-2">
+                        <div>
+                            <p class="text-xs font-bold text-textSub">Launch on Startup</p>
+                            <p class="text-[10px] text-textMuted">Run automatically when you turn on your computer.</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input id="launchToggle" type="checkbox" class="sr-only peer" />
+                            <div class="w-9 h-5 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-accent"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Right Card: Status & Integrations -->
+                <div class="flex flex-col gap-6">
+                    <!-- Status list -->
+                    <div class="bg-card border border-border rounded-xl p-5 shadow-sm">
+                        <p class="text-xs font-semibold text-textMuted uppercase tracking-wider mb-4">System Status</p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                                <span class="text-xs text-textMain font-medium">AI Engine Online & Ready</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                                <span class="text-xs text-textMain font-medium">Global Shortcut Listener Active</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span id="statusStartupDot" class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                                <span class="text-xs text-textMain font-medium" id="statusStartupText">Launch on Startup Enabled</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Works Across Grid -->
+                    <div class="bg-card border border-border rounded-xl p-5 shadow-sm">
+                        <p class="text-xs font-semibold text-textMuted uppercase tracking-wider mb-4">Compatible Environments</p>
+                        <div class="grid grid-cols-2 gap-y-3 gap-x-4">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm">✉️</span>
+                                <span class="text-xs text-textMain font-medium">Email Drafts</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm">🤖</span>
+                                <span class="text-xs text-textMain font-medium">AI Chatboxes</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm">💼</span>
+                                <span class="text-xs text-textMain font-medium">LinkedIn Posts</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm">📝</span>
+                                <span class="text-xs text-textMain font-medium">Rich Documents</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm">💬</span>
+                                <span class="text-xs text-textMain font-medium">Messaging Apps</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm">💻</span>
+                                <span class="text-xs text-textMain font-medium">Code Editors</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 2: Activity -->
+        <div id="page-activity" class="flex-1 hidden flex flex-col gap-4">
+            <div>
+                <h2 class="text-lg font-bold text-textMain">Recent Activity Logs</h2>
+                <p class="text-xs text-textMuted mt-0.5">Your enhanced text history, saved securely and processed locally on this machine.</p>
+            </div>
+
+            <!-- List wrapper -->
+            <div class="bg-card border border-border rounded-xl overflow-hidden shadow-sm flex-1">
+                <div id="activityLogsContainer" class="flex flex-col divide-y divide-gray-100 dark:divide-border max-h-[380px] overflow-y-auto">
+                    <!-- Logs populated dynamically -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-6xl mx-auto w-full px-6 md:px-12 py-5 mt-auto flex items-center justify-between border-t border-border text-[10px] text-textMuted">
+        <p class="font-semibold">Refinezy Desktop v1.1.0 Premium</p>
+        <p class="font-medium">Data privacy guaranteed. Processed with Google Gemini AI.</p>
+    </footer>
+
     <script src="./renderer.js"></script>
-  </body>
+</body>
 </html>

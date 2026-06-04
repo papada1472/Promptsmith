@@ -1,8 +1,8 @@
 import { ipcMain } from "electron";
 import { applyLaunchOnStartup } from "./startup.js";
-import { getRewardStats, getSettingsSnapshot, store } from "./store.js";
+import { getRewardStats, getSettingsSnapshot, dismissShareCard, checkAndTrackQuota, store } from "./store.js";
 
-export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSettings }) {
+export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSettings, toastWindow }) {
   ipcMain.handle("settings:get", async () => {
     console.log("[Refinezy][Main] Main process received message: settings:get");
     return getSettingsSnapshot();
@@ -52,6 +52,38 @@ export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSet
   ipcMain.handle("app:openSettings", async () => {
     console.log("[Refinezy][Main] Main process received message: app:openSettings");
     openSettings();
+    return { ok: true };
+  });
+
+  // ── Toast ──
+  ipcMain.handle("toast:show", async (_e, opts) => {
+    console.log("[Refinezy][Main] Main process received message: toast:show", opts);
+    const { showToast } = await import("./windows.js");
+    if (toastWindow && !toastWindow.isDestroyed()) {
+      showToast(toastWindow, opts);
+    }
+    return { ok: true };
+  });
+
+  // ── Reward: Share Card ──
+  ipcMain.handle("reward:dismissShareCard", async () => {
+    dismissShareCard();
+    return { ok: true };
+  });
+
+  ipcMain.handle("reward:shareCardSeen", async () => {
+    // Used to track quota modal dismissal — no-op for now
+    return { ok: true };
+  });
+
+  // ── Settings: Quota ──
+  ipcMain.handle("settings:dismissQuota", async () => {
+    return { ok: true };
+  });
+
+  ipcMain.handle("settings:setTheme", async (_e, theme) => {
+    console.log("[Refinezy][Main] Main process received message: settings:setTheme", theme);
+    store.set("theme", String(theme || "light"));
     return { ok: true };
   });
 }

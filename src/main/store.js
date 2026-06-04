@@ -67,7 +67,8 @@ export function getSettingsSnapshot() {
     launchOnStartup: store.get("launchOnStartup"),
     activeModel: GeminiProvider.getModelName(),
     userName: store.get("userName"),
-    theme: store.get("theme")
+    theme: store.get("theme"),
+    refinementLogs: store.get("refinementLogs") || []
   };
 }
 

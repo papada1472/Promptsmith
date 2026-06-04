@@ -11,11 +11,12 @@ function preloadPath(...segments) {
 
 export function createSettingsWindow() {
   const win = new BrowserWindow({
-    width: 420,
+    width: 900,
     height: 640,
-    resizable: false,
-    maximizable: false,
-    minimizable: true,
+    minWidth: 720,
+    minHeight: 500,
+    resizable: true,
+    maximizable: true,
     show: false,
     title: "Refinezy",
     webPreferences: {
@@ -106,7 +107,6 @@ export function showToast(window, opts) {
   window.setPosition(x, y, false);
   window.webContents.send("toast:trigger", opts);
   window.showInactive();
-  // Auto-hide after duration
   const duration = opts.duration || 2500;
   setTimeout(() => {
     if (window && !window.isDestroyed()) {
@@ -132,4 +132,3 @@ export function positionRewardWindowNearTray(rewardWindow, trayBounds) {
 
   rewardWindow.setPosition(Math.round(x), Math.round(y), false);
 }
-

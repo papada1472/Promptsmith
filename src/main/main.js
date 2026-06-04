@@ -3,10 +3,10 @@ import { createTray } from "./tray.js";
 import { ensureAppUserModelId, notifyError, notifySuccess } from "./notifications.js";
 import { store } from "./store.js";
 import { applyLaunchOnStartup } from "./startup.js";
-import { createRewardWindow, createSettingsWindow, positionRewardWindowNearTray } from "./windows.js";
+import { createRewardWindow, createSettingsWindow, createToastWindow, positionRewardWindowNearTray } from "./windows.js";
 import { registerIpcHandlers } from "./ipc.js";
 import { registerHotkey, unregisterAllHotkeys } from "./shortcuts.js";
-import { refineSelectedText } from "./refineController.js";
+import { refineSelectedText, setToastWindow } from "./refineController.js";
 import { GeminiProvider } from "./ai/GeminiProvider.js";
 import { clipboard } from "electron";
 import path from "path";
@@ -14,6 +14,7 @@ import { SYSTEM_PROMPT, REFINE_TIMEOUT_MS } from "./constants.js";
 
 let settingsWindow = null;
 let rewardWindow = null;
+let toastWindow = null;
 let trayApi = null;
 let isRefining = false;
 
@@ -21,6 +22,13 @@ function openSettings() {
   if (!settingsWindow) settingsWindow = createSettingsWindow();
   settingsWindow.show();
   settingsWindow.focus();
+}
+
+function openCommandCenter() {
+  if (!settingsWindow) settingsWindow = createSettingsWindow();
+  settingsWindow.show();
+  settingsWindow.focus();
+  settingsWindow.webContents.send("command:refresh");
 }
 
 function toggleReward() {
@@ -139,16 +147,20 @@ async function initializeApp() {
 
     settingsWindow = createSettingsWindow();
     rewardWindow = createRewardWindow();
+    toastWindow = createToastWindow();
+    setToastWindow(toastWindow);
 
     const onQuitHandler = () => {
       console.log("[Refinezy][Main] Quit requested from tray");
       settingsWindow?.destroy();
       rewardWindow?.destroy();
+      toastWindow?.destroy();
       console.log("[Refinezy][Main] Windows destroyed, calling app.quit()");
       app.quit();
     };
 
     trayApi = createTray({
+      onOpenCommandCenter: openCommandCenter,
       onOpenSettings: openSettings,
       onToggleReward: toggleReward,
       onQuit: onQuitHandler,
@@ -163,7 +175,8 @@ async function initializeApp() {
     registerIpcHandlers({
       refreshTrayMenu: trayApi.refreshMenu,
       registerShortcut: (hk) => registerHotkey(hk, onHotkey),
-      openSettings
+      openSettings,
+      toastWindow
     });
 
     try {

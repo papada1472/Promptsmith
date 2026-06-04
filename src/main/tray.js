@@ -6,7 +6,7 @@ function svgToDataUrl(svg) {
   return `data:image/svg+xml;base64,${encoded}`;
 }
 
-export function createTray({ onOpenSettings, onToggleReward, onQuit, getHotkey, onDebugTriggerRefinement, onDebugPing, onDebugShowNotification, onDebugTestGemini, onDebugShowClipboard }) {
+export function createTray({ onOpenCommandCenter, onOpenSettings, onToggleReward, onQuit, getHotkey, onDebugTriggerRefinement, onDebugPing, onDebugShowNotification, onDebugTestGemini, onDebugShowClipboard }) {
   const svg = `
   <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
     <defs>
@@ -52,7 +52,7 @@ export function createTray({ onOpenSettings, onToggleReward, onQuit, getHotkey, 
   const setContext = () => tray.setContextMenu(buildMenu());
   setContext();
 
-  tray.on("click", () => onToggleReward());
+  tray.on("click", () => onOpenCommandCenter());
   tray.on("right-click", () => setContext());
 
   return {
