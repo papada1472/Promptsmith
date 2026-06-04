@@ -11,15 +11,15 @@ function preloadPath(...segments) {
 
 export function createSettingsWindow() {
   const win = new BrowserWindow({
-    width: 520,
-    height: 420,
+    width: 420,
+    height: 640,
     resizable: false,
     maximizable: false,
     minimizable: true,
     show: false,
-    title: "Refinezy Settings",
+    title: "Refinezy",
     webPreferences: {
-      preload: preloadPath("settingsPreload.js"),
+      preload: preloadPath("sharedPreload.js"),
       contextIsolation: true,
       nodeIntegration: false
     }
@@ -42,7 +42,7 @@ export function createSettingsWindow() {
 export function createRewardWindow() {
   const win = new BrowserWindow({
     width: 320,
-    height: 380,
+    height: 400,
     resizable: false,
     maximizable: false,
     minimizable: false,
@@ -53,7 +53,7 @@ export function createRewardWindow() {
     skipTaskbar: true,
     hasShadow: true,
     webPreferences: {
-      preload: preloadPath("rewardPreload.js"),
+      preload: preloadPath("sharedPreload.js"),
       contextIsolation: true,
       nodeIntegration: false
     }
@@ -66,6 +66,53 @@ export function createRewardWindow() {
   });
 
   return win;
+}
+
+export function createToastWindow() {
+  const win = new BrowserWindow({
+    width: 360,
+    height: 74,
+    resizable: false,
+    maximizable: false,
+    minimizable: false,
+    show: false,
+    frame: false,
+    transparent: true,
+    alwaysOnTop: true,
+    skipTaskbar: true,
+    hasShadow: true,
+    focusable: false,
+    webPreferences: {
+      preload: preloadPath("sharedPreload.js"),
+      contextIsolation: true,
+      nodeIntegration: false
+    }
+  });
+
+  win.setIgnoreMouseEvents(true, { forward: true });
+
+  win.loadFile(rendererPath("toast", "index.html"));
+
+  return win;
+}
+
+export function showToast(window, opts) {
+  const { screen } = require("electron");
+  const display = screen.getPrimaryDisplay();
+  const { width: screenW } = display.workAreaSize;
+  const [winW] = window.getSize();
+  const x = Math.round(display.workArea.x + (screenW - winW) / 2);
+  const y = Math.round(display.workArea.y + 36);
+  window.setPosition(x, y, false);
+  window.webContents.send("toast:trigger", opts);
+  window.showInactive();
+  // Auto-hide after duration
+  const duration = opts.duration || 2500;
+  setTimeout(() => {
+    if (window && !window.isDestroyed()) {
+      window.hide();
+    }
+  }, duration);
 }
 
 export function positionRewardWindowNearTray(rewardWindow, trayBounds) {
