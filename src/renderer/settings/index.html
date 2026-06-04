@@ -3,71 +3,123 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Refinzi Settings</title>
+    <title>Refinezy</title>
     <link rel="stylesheet" href="./styles.css" />
-    <link rel="stylesheet" href="../quotaModal/quotaModal.css" />
   </head>
   <body>
-    <div class="container">
-      <header>
-        <div class="title">Refinzi</div>
-        <div class="subtitle">Settings</div>
+    <div class="app">
+
+      <!-- ═══ HEADER ═══ -->
+      <header class="header">
+        <div class="header-left">
+          <div class="logo">
+            <svg width="18" height="18" viewBox="0 0 64 64" fill="none">
+              <rect x="10" y="10" width="44" height="44" rx="12" fill="url(#lg)"/>
+              <path d="M24 41V23h12c4 0 7 2.7 7 6.3 0 3.7-3 6.3-7 6.3h-8v5.4H24zm4-9h7.8c2.1 0 3.6-1.3 3.6-2.7 0-1.4-1.4-2.7-3.6-2.7H28V32z" fill="white" opacity="0.95"/>
+              <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6D5EF9"/><stop offset="1" stop-color="#00D4FF"/></linearGradient></defs>
+            </svg>
+            <span class="logo-text">Refinezy</span>
+          </div>
+          <span class="badge-free">Free</span>
+        </div>
+        <div class="header-right">
+          <span class="api-status" id="apiStatus">● Key set</span>
+          <span class="model-badge" id="modelBadge">gemini-2.5-flash</span>
+          <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+          </button>
+        </div>
       </header>
 
-      <!-- Built-in AI status -->
-      <section class="card card--status">
-        <div class="status-row">
-          <div class="status-label">Built-in AI</div>
-          <div id="builtinStatus" class="status-badge status-badge--active">✓ Active</div>
+      <!-- ═══ HERO ═══ -->
+      <section class="hero">
+        <div class="hero-greeting">Good <span id="greetingTime">evening</span>, <span id="userName">Rahul</span></div>
+        <div class="hero-stats">
+          <span><strong id="todayCount">0</strong> text enhanced today</span>
+          <span class="hero-dot">&middot;</span>
+          <span><strong id="timeReclaimed">0s</strong> reclaimed</span>
         </div>
-        <div class="hint">Works out of the box. No setup needed.</div>
+        <button class="btn-share" id="shareStatsBtn">Share Stats</button>
       </section>
 
-      <!-- Last refinement provider -->
-      <section class="card card--info">
-        <div class="hint" id="lastProviderHint">Last refinement: Built-in AI</div>
+      <!-- ═══ SHORTCUT STRIP ═══ -->
+      <section class="shortcut-strip">
+        <span class="chip" id="shortcutChip">Ctrl + Alt + Space</span>
+        <span class="chip-description">Highlight &rarr; Press &rarr; Continue working.</span>
       </section>
 
-      <!-- Advanced: personal API key -->
-      <details class="card card--advanced">
-        <summary class="label label--clickable">Advanced</summary>
-        <div class="advanced-body">
-          <label class="label" for="apiKey">Use your own API key (Optional)</label>
-          <input id="apiKey" class="input" type="password" placeholder="Paste your Gemini API key" />
-          <div class="hint">Stored locally using electron-store.</div>
+      <!-- ═══ METRICS ═══ -->
+      <section class="metrics">
+        <div class="metric-card">
+          <div class="metric-icon">&#128221;</div>
+          <div class="metric-value" id="refinementsMade">0</div>
+          <div class="metric-label">Texts Enhanced</div>
         </div>
-      </details>
+        <div class="metric-card">
+          <div class="metric-icon">&#9200;</div>
+          <div class="metric-value" id="timeSavedMetric">0m</div>
+          <div class="metric-label">Time Reclaimed</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">&#128737;</div>
+          <div class="metric-value" id="retriesSaved">0</div>
+          <div class="metric-label">Retries Prevented</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">&#9889;</div>
+          <div class="metric-value" id="avgTimeSaved">0s</div>
+          <div class="metric-label">Avg Time Saved</div>
+        </div>
+      </section>
 
-      <section class="card">
-        <div class="row">
-          <div>
-            <div class="label">Launch on Startup</div>
-            <div class="hint">Start Refinzi in the tray when Windows boots.</div>
+      <!-- ═══ SETTINGS ═══ -->
+      <section class="settings">
+        <div class="settings-card">
+          <div class="settings-label">API Key</div>
+          <div class="settings-row">
+            <input id="apiKey" class="input" type="password" placeholder="Paste your Gemini API key" />
+            <button class="btn-save" id="saveKeyBtn">Save</button>
           </div>
-          <label class="switch">
-            <input id="launchToggle" type="checkbox" />
-            <span class="slider"></span>
-          </label>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-row">
+            <div class="settings-label">Launch on Startup</div>
+            <label class="switch">
+              <input id="launchToggle" type="checkbox" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-label">Hotkey</div>
+          <input id="hotkey" class="input" type="text" placeholder="Ctrl+Alt+Space" />
         </div>
       </section>
 
-      <section class="card">
-        <label class="label" for="hotkey">Shortcut</label>
-        <input id="hotkey" class="input" type="text" placeholder="Ctrl+Alt+Space" />
-        <div class="hint">Use Electron accelerator format, e.g. <span class="mono">Ctrl+Alt+Space</span>.</div>
+      <!-- ═══ REWARD SHARE CARD ═══ -->
+      <section id="shareCard" class="share-card hidden">
+        <div class="share-body">
+          <div class="share-emoji">&#127881;</div>
+          <div class="share-text">
+            <div class="share-title">Milestone Reached!</div>
+            <div class="share-sub">You've enhanced <strong id="shareCount">0</strong> texts.</div>
+          </div>
+          <button id="shareClose" class="share-close" aria-label="Dismiss">&times;</button>
+        </div>
       </section>
 
-      <footer>
-        <button id="save" class="btn primary">Save</button>
-        <div id="status" class="status" aria-live="polite"></div>
+      <!-- ═══ FOOTER ═══ -->
+      <footer class="footer">
+        <span class="version">v1.0.0</span>
+        <span class="privacy">Your data stays on your machine.</span>
       </footer>
 
-      <div id="quotaCounter" class="quota-counter" aria-live="polite" title="Free-tier request usage in the last 60 seconds">
-        <span id="quotaCounterText">0 / 20 free requests used this minute</span>
-      </div>
     </div>
-
-    <script src="../quotaModal/quotaModal.js"></script>
     <script src="./renderer.js"></script>
   </body>
 </html>

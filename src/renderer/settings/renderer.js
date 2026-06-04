@@ -1,12 +1,15 @@
 // ── DOM refs ──
 const apiStatus = document.getElementById("apiStatus");
 const modelBadge = document.getElementById("modelBadge");
+const themeToggle = document.getElementById("themeToggle");
 const greetingTime = document.getElementById("greetingTime");
+const userNameEl = document.getElementById("userName");
 const todayCount = document.getElementById("todayCount");
-const retriesSaved = document.getElementById("retriesSaved");
+const timeReclaimed = document.getElementById("timeReclaimed");
 const refinementsMade = document.getElementById("refinementsMade");
+const timeSavedMetric = document.getElementById("timeSavedMetric");
+const retriesSaved = document.getElementById("retriesSaved");
 const avgTimeSaved = document.getElementById("avgTimeSaved");
-const usedToday = document.getElementById("usedToday");
 const shortcutChip = document.getElementById("shortcutChip");
 const apiKeyInput = document.getElementById("apiKey");
 const saveKeyBtn = document.getElementById("saveKeyBtn");
@@ -36,18 +39,27 @@ async function refresh() {
     apiStatus.className = "api-status" + (settings.geminiApiKey ? "" : " api-status--unset");
     modelBadge.textContent = settings.activeModel || "gemini-2.5-flash";
 
+    // Hero
+    userNameEl.textContent = settings.userName || "Rahul";
+    todayCount.textContent = String(s.refinementsMade ?? 0);
+
+    // Time reclaimed
+    const totalSeconds = s.timeSavedSeconds || 0;
+    if (totalSeconds >= 3600) {
+      timeReclaimed.textContent = Math.round(totalSeconds / 60) + "m";
+    } else {
+      timeReclaimed.textContent = totalSeconds + "s";
+    }
+    timeSavedMetric.textContent = totalSeconds >= 3600
+      ? Math.round(totalSeconds / 60) + "m"
+      : totalSeconds + "s";
+
     // Metrics
     refinementsMade.textContent = String(s.refinementsMade ?? 0);
     retriesSaved.textContent = String(Math.round((s.retriesAvoided ?? 0) * 10) / 10);
     avgTimeSaved.textContent = s.refinementsMade > 0
       ? Math.round((s.timeSavedSeconds ?? 0) / (s.refinementsMade ?? 1)) + "s"
       : "0s";
-
-    // Used today from quota
-    try {
-      const q = await window.refinezy.settings.get(); // re-reading same, but fine
-      usedToday.textContent = String(s.refinementsMade ?? 0);
-    } catch { usedToday.textContent = "0"; }
 
     // Shortcut chip
     shortcutChip.textContent = (s.hotkey || "Ctrl+Alt+Space").replaceAll("+", " + ");
@@ -66,10 +78,6 @@ async function refresh() {
       shareCard.classList.add("hidden");
     }
 
-    // Today count
-    const today = new Date().toISOString().slice(0, 10);
-    // approximate: use total refinements as today's count for simplicity
-    todayCount.textContent = String(Math.min(count, 50));
   } catch (e) {
     console.error("[CommandCenter] refresh failed", e);
   }

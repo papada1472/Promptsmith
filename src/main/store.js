@@ -41,6 +41,14 @@ const schema = {
       usedToday: 0,
       todayDate: null
     }
+  },
+  userName: {
+    type: "string",
+    default: "Rahul"
+  },
+  theme: {
+    type: "string",
+    default: "system"
   }
 };
 
@@ -57,7 +65,9 @@ export function getSettingsSnapshot() {
     geminiApiKey: store.get("geminiApiKey"),
     hotkey: store.get("hotkey"),
     launchOnStartup: store.get("launchOnStartup"),
-    activeModel: GeminiProvider.getModelName()
+    activeModel: GeminiProvider.getModelName(),
+    userName: store.get("userName"),
+    theme: store.get("theme")
   };
 }
 
