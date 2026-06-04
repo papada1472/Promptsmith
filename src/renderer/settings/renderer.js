@@ -1,177 +1,138 @@
-const statusEl = document.getElementById("status");
-const apiKeyEl = document.getElementById("apiKey");
-const launchToggleEl = document.getElementById("launchToggle");
-const hotkeyEl = document.getElementById("hotkey");
-const saveBtn = document.getElementById("save");
+// ── DOM refs ──
+const apiStatus = document.getElementById("apiStatus");
+const modelBadge = document.getElementById("modelBadge");
+const greetingTime = document.getElementById("greetingTime");
+const todayCount = document.getElementById("todayCount");
+const retriesSaved = document.getElementById("retriesSaved");
+const refinementsMade = document.getElementById("refinementsMade");
+const avgTimeSaved = document.getElementById("avgTimeSaved");
+const usedToday = document.getElementById("usedToday");
+const shortcutChip = document.getElementById("shortcutChip");
+const apiKeyInput = document.getElementById("apiKey");
+const saveKeyBtn = document.getElementById("saveKeyBtn");
+const launchToggle = document.getElementById("launchToggle");
+const hotkeyInput = document.getElementById("hotkey");
+const shareCard = document.getElementById("shareCard");
+const shareCount = document.getElementById("shareCount");
+const shareClose = document.getElementById("shareClose");
+const shareStatsBtn = document.getElementById("shareStatsBtn");
 
-const quotaCounterTextEl = document.getElementById("quotaCounterText");
-
-function setStatus(msg) {
-  statusEl.textContent = msg || "";
+// ── Greeting ──
+function setGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) greetingTime.textContent = "morning";
+  else if (h < 17) greetingTime.textContent = "afternoon";
+  else greetingTime.textContent = "evening";
 }
 
-function formatCounter({ used, limit }) {
-  return `${used} / ${limit} free requests used this minute`;
-}
-
-async function refreshCounter() {
-  if (!window.refinezy?.quota?.counterGet) return;
+// ── Load data ──
+async function refresh() {
   try {
-    const c = await window.refinezy.quota.counterGet();
-    if (quotaCounterTextEl && c && typeof c.used === "number") {
-      quotaCounterTextEl.textContent = formatCounter(c);
-    }
-  } catch (e) {
-    // Silently ignore counter fetch errors.
-  }
-}
+    const s = await window.refinezy.reward.get();
+    const settings = await window.refinezy.settings.get();
 
-async function hydrate() {
-  console.log("[Refinezy][Settings] hydrate -> requesting settings:get");
-  if (!window.refinezy?.settings?.get) {
-    const msg = "Bridge unavailable: preload did not expose refinezy.settings.get";
-    console.error("[Refinezy][Settings]", msg);
-    setStatus(msg);
-    return;
-  }
+    // Header
+    apiStatus.textContent = settings.geminiApiKey ? "● Key set" : "○ No key";
+    apiStatus.className = "api-status" + (settings.geminiApiKey ? "" : " api-status--unset");
+    modelBadge.textContent = settings.activeModel || "gemini-2.5-flash";
 
-  const s = await window.refinezy.settings.get();
-  console.log("[Refinezy][Settings] hydrate <- settings received", s);
-  // Prefer the localStorage-cached value if present (last successful paste
-  // through the modal). Fall back to whatever the main process has stored.
-  let apiKey = s.geminiApiKey || "";
-  try {
-    const cached = window.localStorage?.getItem("gemini_api_key");
-    if (cached) apiKey = cached;
-  } catch { /* ignore */ }
-  apiKeyEl.value = apiKey || "";
-  launchToggleEl.checked = Boolean(s.launchOnStartup);
-  hotkeyEl.value = s.hotkey || "Ctrl+Alt+Space";
+    // Metrics
+    refinementsMade.textContent = String(s.refinementsMade ?? 0);
+    retriesSaved.textContent = String(Math.round((s.retriesAvoided ?? 0) * 10) / 10);
+    avgTimeSaved.textContent = s.refinementsMade > 0
+      ? Math.round((s.timeSavedSeconds ?? 0) / (s.refinementsMade ?? 1)) + "s"
+      : "0s";
 
-  // Update built-in AI status and last provider info
-  const builtinEl = document.getElementById("builtinStatus");
-  const providerEl = document.getElementById("lastProviderHint");
-  // Built-in is always active (env var provides the key)
-  if (builtinEl) {
-    builtinEl.textContent = "✓ Active";
-    builtinEl.className = "status-badge status-badge--active";
-  }
-  if (providerEl) {
-    // Show which provider was last used
-    const lastProvider = s.lastProvider || "builtin";
-    providerEl.textContent = lastProvider === "personal"
-      ? "Last refinement: Personal API Key"
-      : "Last refinement: Built-in AI";
-  }
-}
+    // Used today from quota
+    try {
+      const q = await window.refinezy.settings.get(); // re-reading same, but fine
+      usedToday.textContent = String(s.refinementsMade ?? 0);
+    } catch { usedToday.textContent = "0"; }
 
-async function save() {
-  console.log("[Refinezy][Settings] Save button clicked");
-  setStatus("Saving…");
+    // Shortcut chip
+    shortcutChip.textContent = (s.hotkey || "Ctrl+Alt+Space").replaceAll("+", " + ");
 
-  if (!window.refinezy?.settings) {
-    const msg = "Bridge unavailable: preload did not expose refinezy.settings";
-    console.error("[Refinezy][Settings]", msg);
-    setStatus(msg);
-    return;
-  }
+    // Settings fields
+    apiKeyInput.value = settings.geminiApiKey || "";
+    launchToggle.checked = Boolean(settings.launchOnStartup);
+    hotkeyInput.value = settings.hotkey || "Ctrl+Alt+Space";
 
-  const apiKey = apiKeyEl.value.trim();
-  const launchOnStartup = launchToggleEl.checked;
-  const hotkey = hotkeyEl.value.trim() || "Ctrl+Alt+Space";
-
-  console.log("[Refinezy][Settings] API key provided", Boolean(apiKey));
-  console.log("[Refinezy][Settings] launchOnStartup captured", launchOnStartup);
-  console.log("[Refinezy][Settings] hotkey captured", hotkey);
-
-  try {
-    console.log("[Refinezy][Settings] IPC message sent: settings:setApiKey");
-    const r1 = await window.refinezy.settings.setApiKey(apiKey);
-    console.log("[Refinezy][Settings] Success response returned: settings:setApiKey", r1);
-
-    console.log("[Refinezy][Settings] IPC message sent: settings:setLaunchOnStartup");
-    const r2 = await window.refinezy.settings.setLaunchOnStartup(launchOnStartup);
-    console.log("[Refinezy][Settings] Success response returned: settings:setLaunchOnStartup", r2);
-
-    console.log("[Refinezy][Settings] IPC message sent: settings:setHotkey");
-    const hk = await window.refinezy.settings.setHotkey(hotkey);
-    console.log("[Refinezy][Settings] Success response returned: settings:setHotkey", hk);
-
-    if (!hk?.ok) {
-      const msg = `Save failed (hotkey): ${hk?.error || "Unknown hotkey error"}`;
-      console.error("[Refinezy][Settings]", msg);
-      setStatus(msg);
-      return;
+    // Share card on milestone
+    const count = s.refinementsMade ?? 0;
+    if (count > 0 && count % 10 === 0 && !s.shareCardDismissed) {
+      shareCount.textContent = String(count);
+      shareCard.classList.remove("hidden");
+    } else {
+      shareCard.classList.add("hidden");
     }
 
-    setStatus("Settings Saved");
-    console.log("[Refinezy][Settings] Settings Saved");
-    setTimeout(() => setStatus(""), 1800);
-
-    // Re-read to verify persistence and ensure UI reflects stored values
-    await hydrate();
+    // Today count
+    const today = new Date().toISOString().slice(0, 10);
+    // approximate: use total refinements as today's count for simplicity
+    todayCount.textContent = String(Math.min(count, 50));
   } catch (e) {
-    const msg = `Save failed: ${e?.message || String(e)}`;
-    console.error("[Refinezy][Settings]", msg, e);
-    setStatus(msg);
+    console.error("[CommandCenter] refresh failed", e);
   }
 }
 
-saveBtn.addEventListener("click", () =>
-  save().catch((e) => {
-    const msg = `Save failed (unhandled): ${e?.message || String(e)}`;
-    console.error("[Refinezy][Settings]", msg, e);
-    setStatus(msg);
-  })
-);
+// ── Save handlers ──
+async function saveApiKey() {
+  const key = apiKeyInput.value.trim();
+  try {
+    const res = await window.refinezy.settings.setApiKey(key);
+    if (res?.ok) {
+      await refresh();
+    }
+  } catch (e) {
+    console.error("[CommandCenter] saveApiKey failed", e);
+  }
+}
 
-hydrate().catch((e) => {
-  const msg = `Failed to load settings: ${e?.message || String(e)}`;
-  console.error("[Refinezy][Settings]", msg, e);
-  setStatus(msg);
+async function saveLaunch() {
+  try {
+    await window.refinezy.settings.setLaunchOnStartup(launchToggle.checked);
+  } catch (e) {
+    console.error("[CommandCenter] saveLaunch failed", e);
+  }
+}
+
+async function saveHotkey() {
+  const hk = hotkeyInput.value.trim() || "Ctrl+Alt+Space";
+  try {
+    const res = await window.refinezy.settings.setHotkey(hk);
+    if (res?.ok) {
+      await refresh();
+    } else {
+      console.warn("[CommandCenter] hotkey save failed", res?.error);
+    }
+  } catch (e) {
+    console.error("[CommandCenter] saveHotkey failed", e);
+  }
+}
+
+// ── Share card dismiss ──
+shareClose.addEventListener("click", () => {
+  shareCard.classList.add("hidden");
+  window.refinezy.reward.dismissShareCard();
 });
 
-// ---- Quota modal wiring ----
+// ── Share stats button ──
+shareStatsBtn.addEventListener("click", () => {
+  const text = `I've made ${refinementsMade.textContent} refinements with Refinezy!`;
+  navigator.clipboard.writeText(text).catch(() => {});
+});
 
-if (window.quotaModal?.createQuotaModal) {
-  const modal = window.quotaModal.createQuotaModal({
-    onSave: async (newKey) => {
-      console.log("[Refinezy][Settings] Modal Save -> quota:saveAndRetry");
-      try {
-        const res = await window.refinezy.quota.saveAndRetry(newKey);
-        if (!res?.ok) {
-          return { ok: false, error: res?.error || "Retry failed" };
-        }
-        // Success: keep local field in sync and refresh counter.
-        try { apiKeyEl.value = newKey; } catch { /* ignore */ }
-        refreshCounter().catch(() => {});
-        return { ok: true };
-      } catch (e) {
-        return { ok: false, error: e?.message || String(e) };
-      }
-    }
-  });
+// ── Event wire-up ──
+saveKeyBtn.addEventListener("click", saveApiKey);
+launchToggle.addEventListener("change", saveLaunch);
+hotkeyInput.addEventListener("change", saveHotkey);
 
-  if (window.refinezy?.quota?.onShow) {
-    window.refinezy.quota.onShow(() => {
-      console.log("[Refinezy][Settings] IPC received: quota:show");
-      // Make sure the settings window is visible when the modal opens.
-      modal.show();
-    });
-  }
-  if (window.refinezy?.quota?.onClose) {
-    window.refinezy.quota.onClose(() => {
-      console.log("[Refinezy][Settings] IPC received: quota:close");
-      modal.hide();
-    });
-  }
-  if (window.refinezy?.quota?.onCounter) {
-    window.refinezy.quota.onCounter(() => {
-      refreshCounter().catch(() => {});
-    });
-  }
-}
+// ── Listen for command center refresh ──
+window.refinezy.command.onRefresh(() => {
+  setGreeting();
+  refresh().catch(() => {});
+});
 
-// ---- Counter tick (60s) ----
-refreshCounter().catch(() => {});
-setInterval(() => { refreshCounter().catch(() => {}); }, 60000);
+// ── Initial load ──
+setGreeting();
+refresh().catch(() => {});

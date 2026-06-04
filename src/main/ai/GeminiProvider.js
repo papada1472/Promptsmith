@@ -2,13 +2,18 @@ import { GoogleGenAI } from "@google/genai";
 import { AIProvider } from "./AIProvider.js";
 
 export class GeminiProvider extends AIProvider {
+  static MODEL = "gemini-2.5-flash";
+
   constructor(opts) {
     super(opts);
     console.log("[Refinezy][GeminiProvider] Initializing with API key (length:", this.apiKey?.length, ")");
     console.log("[Refinezy][GeminiProvider] Creating GoogleGenAI client...");
     this.client = new GoogleGenAI({ apiKey: this.apiKey });
-    this.modelName = "gemini-3.5-flash";
-    console.log("[Refinezy][GeminiProvider] Client created, modelName set to:", this.modelName);
+    console.log("[Refinezy][GeminiProvider] Client created, modelName set to:", GeminiProvider.MODEL);
+  }
+
+  static getModelName() {
+    return GeminiProvider.MODEL;
   }
 
   async refine(text, opts = {}) {
@@ -27,12 +32,12 @@ export class GeminiProvider extends AIProvider {
       throw err;
     }
 
-    console.log("[Refinezy][GeminiProvider] Model:", this.modelName);
+    console.log("[Refinezy][GeminiProvider] Model:", GeminiProvider.MODEL);
 
     try {
       console.log("[Refinezy][GeminiProvider] Calling client.models.generateContent...");
       const response = await this.client.models.generateContent({
-        model: this.modelName,
+        model: GeminiProvider.MODEL,
         contents: `${this.systemPrompt}\n\nInstruction:\n${text}`
       });
       const responseText = response?.text || "";

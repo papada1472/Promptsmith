@@ -2,6 +2,7 @@ import Store from "electron-store";
 import { app } from "electron";
 import crypto from "crypto";
 import { DEFAULT_HOTKEY } from "./constants.js";
+import { GeminiProvider } from "./ai/GeminiProvider.js";
 
 function getEncryptionKey() {
   try {
@@ -28,6 +29,18 @@ const schema = {
   refinementLogs: {
     type: "array",
     default: []
+  },
+  shareCardDismissed: {
+    type: "boolean",
+    default: false
+  },
+  dailyQuota: {
+    type: "object",
+    default: {
+      maxPerDay: 50,
+      usedToday: 0,
+      todayDate: null
+    }
   }
 };
 
@@ -43,7 +56,8 @@ export function getSettingsSnapshot() {
   return {
     geminiApiKey: store.get("geminiApiKey"),
     hotkey: store.get("hotkey"),
-    launchOnStartup: store.get("launchOnStartup")
+    launchOnStartup: store.get("launchOnStartup"),
+    activeModel: GeminiProvider.getModelName()
   };
 }
 
@@ -94,11 +108,34 @@ export function recordSuccessfulRefinement() {
 
 export function getRewardStats() {
   const metrics = store.get("metrics");
+  const quota = store.get("dailyQuota");
+  const today = new Date().toISOString().slice(0, 10);
+  const quotaExceeded = quota.todayDate === today && (quota.usedToday || 0) >= (quota.maxPerDay || 50);
   return {
     refinementsMade: metrics.refinementsMade || 0,
     timeSavedSeconds: metrics.timeSavedSeconds || 0,
     retriesAvoided: metrics.retriesAvoided || 0,
-    currentStreak: metrics.currentStreak || 0
+    currentStreak: metrics.currentStreak || 0,
+    shareCardDismissed: store.get("shareCardDismissed"),
+    quotaExceeded
   };
+}
+
+export function dismissShareCard() {
+  store.set("shareCardDismissed", true);
+}
+
+export function checkAndTrackQuota() {
+  const quota = store.get("dailyQuota");
+  const today = new Date().toISOString().slice(0, 10);
+  if (quota.todayDate !== today) {
+    // Reset for new day
+    store.set("dailyQuota", { maxPerDay: 50, usedToday: 1, todayDate: today });
+    return { exceeded: false, used: 1, max: 50 };
+  }
+  const used = (quota.usedToday || 0) + 1;
+  const exceeded = used >= (quota.maxPerDay || 50);
+  store.set("dailyQuota", { ...quota, usedToday: used });
+  return { exceeded, used, max: quota.maxPerDay || 50 };
 }
 
