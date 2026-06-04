@@ -4,8 +4,26 @@ const launchToggleEl = document.getElementById("launchToggle");
 const hotkeyEl = document.getElementById("hotkey");
 const saveBtn = document.getElementById("save");
 
+const quotaCounterTextEl = document.getElementById("quotaCounterText");
+
 function setStatus(msg) {
   statusEl.textContent = msg || "";
+}
+
+function formatCounter({ used, limit }) {
+  return `${used} / ${limit} free requests used this minute`;
+}
+
+async function refreshCounter() {
+  if (!window.refinezy?.quota?.counterGet) return;
+  try {
+    const c = await window.refinezy.quota.counterGet();
+    if (quotaCounterTextEl && c && typeof c.used === "number") {
+      quotaCounterTextEl.textContent = formatCounter(c);
+    }
+  } catch (e) {
+    // Silently ignore counter fetch errors.
+  }
 }
 
 async function hydrate() {
@@ -19,9 +37,32 @@ async function hydrate() {
 
   const s = await window.refinezy.settings.get();
   console.log("[Refinezy][Settings] hydrate <- settings received", s);
-  apiKeyEl.value = s.geminiApiKey || "";
+  // Prefer the localStorage-cached value if present (last successful paste
+  // through the modal). Fall back to whatever the main process has stored.
+  let apiKey = s.geminiApiKey || "";
+  try {
+    const cached = window.localStorage?.getItem("gemini_api_key");
+    if (cached) apiKey = cached;
+  } catch { /* ignore */ }
+  apiKeyEl.value = apiKey || "";
   launchToggleEl.checked = Boolean(s.launchOnStartup);
   hotkeyEl.value = s.hotkey || "Ctrl+Alt+Space";
+
+  // Update built-in AI status and last provider info
+  const builtinEl = document.getElementById("builtinStatus");
+  const providerEl = document.getElementById("lastProviderHint");
+  // Built-in is always active (env var provides the key)
+  if (builtinEl) {
+    builtinEl.textContent = "✓ Active";
+    builtinEl.className = "status-badge status-badge--active";
+  }
+  if (providerEl) {
+    // Show which provider was last used
+    const lastProvider = s.lastProvider || "builtin";
+    providerEl.textContent = lastProvider === "personal"
+      ? "Last refinement: Personal API Key"
+      : "Last refinement: Built-in AI";
+  }
 }
 
 async function save() {
@@ -90,3 +131,47 @@ hydrate().catch((e) => {
   setStatus(msg);
 });
 
+// ---- Quota modal wiring ----
+
+if (window.quotaModal?.createQuotaModal) {
+  const modal = window.quotaModal.createQuotaModal({
+    onSave: async (newKey) => {
+      console.log("[Refinezy][Settings] Modal Save -> quota:saveAndRetry");
+      try {
+        const res = await window.refinezy.quota.saveAndRetry(newKey);
+        if (!res?.ok) {
+          return { ok: false, error: res?.error || "Retry failed" };
+        }
+        // Success: keep local field in sync and refresh counter.
+        try { apiKeyEl.value = newKey; } catch { /* ignore */ }
+        refreshCounter().catch(() => {});
+        return { ok: true };
+      } catch (e) {
+        return { ok: false, error: e?.message || String(e) };
+      }
+    }
+  });
+
+  if (window.refinezy?.quota?.onShow) {
+    window.refinezy.quota.onShow(() => {
+      console.log("[Refinezy][Settings] IPC received: quota:show");
+      // Make sure the settings window is visible when the modal opens.
+      modal.show();
+    });
+  }
+  if (window.refinezy?.quota?.onClose) {
+    window.refinezy.quota.onClose(() => {
+      console.log("[Refinezy][Settings] IPC received: quota:close");
+      modal.hide();
+    });
+  }
+  if (window.refinezy?.quota?.onCounter) {
+    window.refinezy.quota.onCounter(() => {
+      refreshCounter().catch(() => {});
+    });
+  }
+}
+
+// ---- Counter tick (60s) ----
+refreshCounter().catch(() => {});
+setInterval(() => { refreshCounter().catch(() => {}); }, 60000);

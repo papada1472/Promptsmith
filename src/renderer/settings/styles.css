@@ -150,3 +150,109 @@ input:checked + .slider:before{
   transform: translateX(18px);
 }
 
+/* Quota counter — subtle, bottom-right, matches existing palette */
+.quota-counter{
+  position: fixed;
+  right: 14px;
+  bottom: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(91, 100, 119, 0.95);
+  background: rgba(245, 247, 255, 0.88);
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 999px;
+  padding: 4px 10px;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: 0.1px;
+  backdrop-filter: blur(6px);
+}
+
+/* ---- Built-in AI status card ---- */
+.card--status {
+  background: linear-gradient(135deg, rgba(109, 94, 249, 0.04), rgba(0, 212, 255, 0.04));
+  border: 1px solid rgba(109, 94, 249, 0.12);
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.status-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #25304a;
+}
+
+.status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.2px;
+}
+
+.status-badge--active {
+  background: rgba(109, 94, 249, 0.10);
+  color: #6D5EF9;
+}
+
+.status-badge--inactive {
+  background: rgba(15, 23, 42, 0.06);
+  color: #5b6477;
+}
+
+/* ---- Info card (last provider) ---- */
+.card--info {
+  padding: 10px 14px;
+  background: #fafbfe;
+}
+
+.card--info .hint {
+  margin-top: 0;
+}
+
+/* ---- Advanced (details/summary) ---- */
+.card--advanced {
+  padding: 0;
+  overflow: hidden;
+}
+
+.card--advanced[open] {
+  padding: 14px;
+}
+
+.card--advanced summary {
+  padding: 14px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.card--advanced summary::-webkit-details-marker {
+  display: none;
+}
+
+.card--advanced summary::after {
+  content: "▸";
+  float: right;
+  font-size: 12px;
+  color: #5b6477;
+  transition: transform 0.15s ease;
+}
+
+.card--advanced[open] summary::after {
+  transform: rotate(90deg);
+}
+
+.label--clickable {
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.advanced-body {
+  padding-top: 4px;
+}

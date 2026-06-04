@@ -3,27 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Refinezy Settings</title>
+    <title>Refinzi Settings</title>
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="../quotaModal/quotaModal.css" />
   </head>
   <body>
     <div class="container">
       <header>
-        <div class="title">Refinezy</div>
+        <div class="title">Refinzi</div>
         <div class="subtitle">Settings</div>
       </header>
 
-      <section class="card">
-        <label class="label" for="apiKey">Gemini API Key</label>
-        <input id="apiKey" class="input" type="password" placeholder="Paste your API key" />
-        <div class="hint">Stored locally using electron-store.</div>
+      <!-- Built-in AI status -->
+      <section class="card card--status">
+        <div class="status-row">
+          <div class="status-label">Built-in AI</div>
+          <div id="builtinStatus" class="status-badge status-badge--active">✓ Active</div>
+        </div>
+        <div class="hint">Works out of the box. No setup needed.</div>
       </section>
+
+      <!-- Last refinement provider -->
+      <section class="card card--info">
+        <div class="hint" id="lastProviderHint">Last refinement: Built-in AI</div>
+      </section>
+
+      <!-- Advanced: personal API key -->
+      <details class="card card--advanced">
+        <summary class="label label--clickable">Advanced</summary>
+        <div class="advanced-body">
+          <label class="label" for="apiKey">Use your own API key (Optional)</label>
+          <input id="apiKey" class="input" type="password" placeholder="Paste your Gemini API key" />
+          <div class="hint">Stored locally using electron-store.</div>
+        </div>
+      </details>
 
       <section class="card">
         <div class="row">
           <div>
             <div class="label">Launch on Startup</div>
-            <div class="hint">Start Refinezy in the tray when Windows boots.</div>
+            <div class="hint">Start Refinzi in the tray when Windows boots.</div>
           </div>
           <label class="switch">
             <input id="launchToggle" type="checkbox" />
@@ -42,9 +61,13 @@
         <button id="save" class="btn primary">Save</button>
         <div id="status" class="status" aria-live="polite"></div>
       </footer>
+
+      <div id="quotaCounter" class="quota-counter" aria-live="polite" title="Free-tier request usage in the last 60 seconds">
+        <span id="quotaCounterText">0 / 20 free requests used this minute</span>
+      </div>
     </div>
 
+    <script src="../quotaModal/quotaModal.js"></script>
     <script src="./renderer.js"></script>
   </body>
 </html>
-
