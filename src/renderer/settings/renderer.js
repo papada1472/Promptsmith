@@ -52,6 +52,30 @@ const onboardingModal = document.getElementById("onboardingModal");
 const onboardingModalClose = document.getElementById("onboardingModalClose");
 const onboardingModalGotIt = document.getElementById("onboardingModalGotIt");
 
+// Theme toggle
+const themeDarkBtn = document.getElementById("themeDarkBtn");
+const themeLightBtn = document.getElementById("themeLightBtn");
+const themeKey = "refinezy:theme";
+
+function applyTheme(theme) {
+  const isLight = theme === "light";
+  document.documentElement.setAttribute("data-theme", isLight ? "light" : "");
+  localStorage.setItem(themeKey, isLight ? "light" : "dark");
+  if (themeDarkBtn) {
+    themeDarkBtn.classList.toggle("is-active", !isLight);
+    themeDarkBtn.setAttribute("aria-checked", !isLight);
+  }
+  if (themeLightBtn) {
+    themeLightBtn.classList.toggle("is-active", isLight);
+    themeLightBtn.setAttribute("aria-checked", isLight);
+  }
+}
+
+function applySavedTheme() {
+  const saved = localStorage.getItem(themeKey) || "dark";
+  applyTheme(saved);
+}
+
 // Premium Toast Notification Helper
 function showInAppNotification(message) {
   const toast = document.createElement("div");
@@ -475,6 +499,14 @@ if (onboardingModal) {
   });
 }
 
+// Theme toggle wiring
+if (themeDarkBtn) {
+  themeDarkBtn.addEventListener("click", () => applyTheme("dark"));
+}
+if (themeLightBtn) {
+  themeLightBtn.addEventListener("click", () => applyTheme("light"));
+}
+
 // ── Listen for command center refresh ──
 window.refinezy.command.onRefresh(() => {
   setGreeting();
@@ -484,3 +516,4 @@ window.refinezy.command.onRefresh(() => {
 // ── Initial load ──
 setGreeting();
 refresh().catch(() => { });
+applySavedTheme();

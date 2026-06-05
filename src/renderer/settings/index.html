@@ -180,7 +180,12 @@
           <span class="setting-desc">Choose your preferred color scheme</span>
         </div>
         <div class="setting-control">
-          <span class="badge-coming-soon">Coming Soon</span>
+          <div class="theme-toggle" role="radiogroup" aria-label="Theme">
+            <button type="button" class="theme-option is-active" id="themeDarkBtn" role="radio" aria-checked="true"
+              data-theme-value="dark">Dark</button>
+            <button type="button" class="theme-option" id="themeLightBtn" role="radio" aria-checked="false"
+              data-theme-value="light">Light</button>
+          </div>
         </div>
       </div>
     </section>

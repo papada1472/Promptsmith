@@ -30,7 +30,7 @@ export function createTray({ onOpenSettings, onToggleReward, onQuit, getHotkey, 
         { label: APP_NAME, enabled: false },
         { label: "✓ Running", enabled: false },
         { type: "separator" },
-        { label: "Open Dashboard", click: onToggleReward },
+        { label: "Open Dashboard", click: onOpenSettings },
         { type: "separator" },
         { label: "Quit", click: onQuit }
       ]);
@@ -41,7 +41,7 @@ export function createTray({ onOpenSettings, onToggleReward, onQuit, getHotkey, 
 
   tray.on("click", () => {
     console.log("[DEBUG] TRAY LEFT CLICK");
-    onToggleReward();
+    onOpenSettings();
   });
   tray.on("right-click", () => {
     console.log("[DEBUG] TRAY RIGHT CLICK");
