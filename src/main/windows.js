@@ -121,22 +121,29 @@ export function createToastWindow() {
 }
 
 export function showToast(window, opts) {
-  const { screen } = require("electron");
-  const display = screen.getPrimaryDisplay();
-  const { width: screenW } = display.workAreaSize;
-  const [winW] = window.getSize();
-  const x = Math.round(display.workArea.x + (screenW - winW) / 2);
-  const y = Math.round(display.workArea.y + 36);
-  window.setPosition(x, y, false);
-  window.webContents.send("toast:trigger", opts);
-  window.showInactive();
-  // Auto-hide after duration
-  const duration = opts.duration || 2500;
-  setTimeout(() => {
+  try {
+    const display = screen.getPrimaryDisplay();
+    const { width: screenW } = display.workAreaSize;
+    const [winW] = window.getSize();
+    const x = Math.round(display.workArea.x + (screenW - winW) / 2);
+    const y = Math.round(display.workArea.y + 36);
+
     if (window && !window.isDestroyed()) {
-      window.hide();
+      window.setPosition(x, y, false);
+      window.webContents.send("toast:trigger", opts);
+      window.showInactive();
+
+      // Auto-hide after duration
+      const duration = opts.duration || 2500;
+      setTimeout(() => {
+        if (window && !window.isDestroyed()) {
+          window.hide();
+        }
+      }, duration);
     }
-  }, duration);
+  } catch (err) {
+    console.warn("[Refinezy][Windows] Failed to show toast:", err.message);
+  }
 }
 
 export function positionRewardWindowNearTray(rewardWindow, trayBounds) {
