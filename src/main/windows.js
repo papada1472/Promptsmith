@@ -10,6 +10,7 @@ function preloadPath(...segments) {
 }
 
 export function createSettingsWindow() {
+  console.log("[DEBUG] createSettingsWindow()");
   const win = new BrowserWindow({
     width: 420,
     height: 640,
@@ -18,6 +19,7 @@ export function createSettingsWindow() {
     minimizable: true,
     show: false,
     title: "Refinezy",
+    autoHideMenuBar: true,
     webPreferences: {
       preload: preloadPath("sharedPreload.js"),
       contextIsolation: true,
@@ -25,10 +27,13 @@ export function createSettingsWindow() {
     }
   });
 
+  win.removeMenu();
+
   win.webContents.on("console-message", (_event, level, message) => {
     console.log(`[Refinezy][SettingsWindow][console][${level}] ${message}`);
   });
 
+  console.log("[DEBUG] SETTINGS HTML:", rendererPath("settings", "index.html"));
   win.loadFile(rendererPath("settings", "index.html"));
   win.on("close", (e) => {
     // minimize-to-tray behavior
@@ -40,6 +45,7 @@ export function createSettingsWindow() {
 }
 
 export function createRewardWindow() {
+  console.log("[DEBUG] createRewardWindow()");
   const win = new BrowserWindow({
     width: 320,
     height: 400,
@@ -52,6 +58,7 @@ export function createRewardWindow() {
     alwaysOnTop: true,
     skipTaskbar: true,
     hasShadow: true,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: preloadPath("sharedPreload.js"),
       contextIsolation: true,
@@ -59,6 +66,9 @@ export function createRewardWindow() {
     }
   });
 
+  win.removeMenu();
+
+  console.log("[DEBUG] REWARD HTML:", rendererPath("reward", "index.html"));
   win.loadFile(rendererPath("reward", "index.html"));
 
   win.on("blur", () => {
@@ -69,6 +79,7 @@ export function createRewardWindow() {
 }
 
 export function createToastWindow() {
+  console.log("[DEBUG] createToastWindow()");
   const win = new BrowserWindow({
     width: 360,
     height: 74,
@@ -82,6 +93,7 @@ export function createToastWindow() {
     skipTaskbar: true,
     hasShadow: true,
     focusable: false,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: preloadPath("sharedPreload.js"),
       contextIsolation: true,
@@ -89,8 +101,11 @@ export function createToastWindow() {
     }
   });
 
+  win.removeMenu();
+
   win.setIgnoreMouseEvents(true, { forward: true });
 
+  console.log("[DEBUG] TOAST HTML:", rendererPath("toast", "index.html"));
   win.loadFile(rendererPath("toast", "index.html"));
 
   return win;
@@ -132,4 +147,3 @@ export function positionRewardWindowNearTray(rewardWindow, trayBounds) {
 
   rewardWindow.setPosition(Math.round(x), Math.round(y), false);
 }
-
