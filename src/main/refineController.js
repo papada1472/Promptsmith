@@ -2,7 +2,8 @@ import { REFINE_TIMEOUT_MS, SYSTEM_PROMPT } from "./constants.js";
 import { GeminiProvider } from "./ai/GeminiProvider.js";
 import { autoCopySelectedText, readClipboardText, writeClipboardText, autoPaste } from "./clipboardFlow.js";
 import { appendRefinementLog, recordSuccessfulRefinement, checkAndTrackQuota, store } from "./store.js";
-
+// Prevent multiple simultaneous refinements
+let isRefining = false;
 // Cache for the toast window reference (set from main.js)
 let toastWindowRef = null;
 
@@ -22,6 +23,13 @@ function showInAppToast(type, title, message) {
 }
 
 export async function refineSelectedText({ notifySuccess, notifyError }) {
+  if (isRefining) {
+    console.log("[Refinezy][RefineController] Refinement already running, ignoring hotkey.");
+    return;
+  }
+
+  isRefining = true;
+
   console.log("[Refinezy][RefineController] Refinement handler entered");
 
   const before = readClipboardText();
@@ -90,7 +98,7 @@ export async function refineSelectedText({ notifySuccess, notifyError }) {
     });
 
     return { ok: true, input, output };
-  } catch (e) {
+    } catch (e) {
     const errMsg = e?.message || "Refinement failed";
     console.error("[Refinezy][RefineController] Refinement failed:", e?.code, "-", errMsg);
     console.log("[Refinezy][RefineController] Restoring previous clipboard content...");
@@ -104,6 +112,9 @@ export async function refineSelectedText({ notifySuccess, notifyError }) {
     notifyError(errMsg);
     showInAppToast("error", "Couldn't improve this selection.", "Click the tray icon to review settings.");
     return { ok: false, error: errMsg };
+
+  } finally {
+    isRefining = false;
+    console.log("[Refinezy][RefineController] Refinement lock released.");
   }
 }
-
