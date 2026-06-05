@@ -268,22 +268,18 @@ body {
   max-width: 560px;
 }
 
-.hero-description .kbd {
+.hero-shortcut-badge {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: 28px;
-  height: 28px;
-  padding: 0 8px;
+  padding: 6px 14px;
   background: var(--secondary-surface);
   border: 1px solid var(--border);
-  border-radius: 6px;
-  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-  font-size: 12px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
   font-weight: 600;
-  color: var(--text-primary);
-  margin: 0 2px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  letter-spacing: 0.02em;
 }
 
 .hero-stats-wrapper {
