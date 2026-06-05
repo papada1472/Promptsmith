@@ -10,7 +10,9 @@
 
 <body>
   <div class="app">
-    <!-- HEADER -->
+    <!-- ============================================================
+         1. HEADER
+         ============================================================ -->
     <header class="header">
       <div class="header-left">
         <div class="logo">
@@ -34,27 +36,60 @@
         <div class="model-chip">
           <span id="modelBadge">Loading model...</span>
         </div>
-        <div class="status-chip">
-          <span class="status-dot"></span>
+        <div class="status-chip" id="statusChip">
+          <span class="status-dot" id="statusDot"></span>
           <span id="apiStatus">Connected</span>
+        </div>
+        <div class="theme-toggle" role="radiogroup" aria-label="Theme">
+          <button type="button" class="theme-option is-active" id="themeDarkBtn" role="radio" aria-checked="true"
+            data-theme-value="dark">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <span class="theme-label">Dark</span>
+          </button>
+          <button type="button" class="theme-option" id="themeLightBtn" role="radio" aria-checked="false"
+            data-theme-value="light">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+            <span class="theme-label">Light</span>
+          </button>
         </div>
       </div>
     </header>
 
-    <!-- HERO -->
+    <!-- ============================================================
+         2. HERO
+         ============================================================ -->
     <section class="hero">
       <div class="hero-content">
-        <h1 class="hero-title">Turn rough ideas<br>into production-ready prompts.</h1>
-        <div class="hero-subtitle">
-          <span>Highlight text.</span>
-          <span class="dot">•</span>
-          <span>Press Ctrl + Alt + Space.</span>
-          <span class="dot">•</span>
-          <span>Continue working without switching tabs.</span>
-        </div>
-        <div class="hero-actions">
-          <button class="btn-primary" id="shareStatsBtn">Share Progress</button>
-          <button class="btn-secondary" id="rewardCardBtn">Reward Card</button>
+        <h1 class="hero-title">Turn rough ideas into<br>production-ready prompts.</h1>
+        <p class="hero-description">
+          Highlight text anywhere. Press <kbd class="kbd">Ctrl</kbd> + <kbd class="kbd">Alt</kbd> + <kbd
+            class="kbd">Space</kbd>.
+          Refinzi refines it instantly and pastes it back. No context switching. No friction.
+        </p>
+        <div class="hero-stats" id="heroStats">
+          <div class="hero-stat">
+            <div class="hero-stat-value" id="heroRefinements">0</div>
+            <div class="hero-stat-label">Refinements</div>
+          </div>
+          <div class="hero-stat-divider" aria-hidden="true"></div>
+          <div class="hero-stat">
+            <div class="hero-stat-value" id="heroRewritesAvoided">0</div>
+            <div class="hero-stat-label">Rewrites Avoided</div>
+          </div>
         </div>
       </div>
       <div class="hero-visual">
@@ -64,203 +99,280 @@
       </div>
     </section>
 
-    <!-- ONBOARDING / EMPTY STATE (shown only when refinementCount === 0) -->
-    <section class="onboarding-state" id="onboardingState">
-      <div class="onboarding-card">
-        <div class="onboarding-icon">✨</div>
-        <h2 class="onboarding-title">Turn rough ideas into production-ready prompts</h2>
-        <p class="onboarding-body">
-          Highlight any text anywhere.<br>
-          Press <kbd class="onboarding-kbd">Ctrl</kbd> + <kbd class="onboarding-kbd">Alt</kbd> + <kbd
-            class="onboarding-kbd">Space</kbd><br>
-          Refinzi improves it automatically and pastes it back into your workflow.
-        </p>
+    <!-- ============================================================
+         3. AI PROVIDER (Always Visible - BYOK Core Value Prop)
+         ============================================================ -->
+    <section class="provider-section" aria-labelledby="providerTitle">
+      <header class="provider-header">
+        <h2 id="providerTitle" class="provider-title">AI Provider</h2>
+        <p class="provider-subtitle">Bring Your Own Key — your API key never leaves this device.</p>
+      </header>
+      <div class="provider-card">
+        <div class="provider-row">
+          <div class="provider-select-wrapper">
+            <label for="providerSelect" class="visually-hidden">AI Provider</label>
+            <select id="providerSelect" class="provider-select" aria-label="Select AI Provider">
+              <option value="gemini">Google Gemini</option>
+              <option value="openai" disabled>OpenAI (coming soon)</option>
+              <option value="anthropic" disabled>Anthropic (coming soon)</option>
+            </select>
+          </div>
+          <div class="provider-model-wrapper">
+            <label for="modelSelect" class="visually-hidden">Model</label>
+            <select id="modelSelect" class="provider-select" aria-label="Select Model">
+              <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+              <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+              <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+              <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+            </select>
+          </div>
+        </div>
+        <div class="provider-row api-key-row">
+          <label for="apiKey" class="visually-hidden">API Key</label>
+          <div class="api-key-input-wrapper">
+            <input type="password" id="apiKey" class="input-field api-key-input" placeholder="Paste your API key here"
+              autocomplete="off" aria-label="API Key">
+            <button type="button" class="btn-toggle-visibility" id="toggleApiKey" aria-label="Toggle API key visibility"
+              aria-pressed="false">
+              <svg class="icon-eye" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <svg class="icon-eye-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                style="display:none;">
+                <path
+                  d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                </path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="provider-row provider-actions">
+          <button type="button" class="btn-primary" id="testConnectionBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="2"></rect>
+              <path d="M6 9h12"></path>
+              <path d="M6 15h12"></path>
+            </svg>
+            <span>Test Connection</span>
+          </button>
+          <button type="button" class="btn-secondary" id="saveKeyBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            <span>Save Key</span>
+          </button>
+        </div>
+        <p class="provider-hint" id="providerHint">Your API key stays on your device.</p>
+        <div class="connection-status" id="connectionStatus" aria-live="polite">
+          <span class="connection-indicator" id="connectionIndicator"></span>
+          <span class="connection-text" id="connectionText">Not tested</span>
+        </div>
+      </div>
+    </section>
 
-        <div class="onboarding-journey">
-          <div class="onboarding-journey-title">Your Journey</div>
-          <div class="onboarding-journey-stats">
-            <div class="onboarding-stat">
-              <div class="onboarding-stat-value">0</div>
-              <div class="onboarding-stat-label">Refinements</div>
+    <!-- ============================================================
+         4. YOUR PROGRESS (Dashboard Widget)
+         ============================================================ -->
+    <section class="progress-section" aria-labelledby="progressTitle">
+      <header class="progress-header">
+        <h2 id="progressTitle" class="progress-title">Your Progress</h2>
+      </header>
+      <div class="progress-grid">
+        <div class="progress-stat-card">
+          <div class="progress-stat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+          </div>
+          <div class="progress-stat-content">
+            <div class="progress-stat-value" id="progressRefinements">0</div>
+            <div class="progress-stat-label">Refinements</div>
+          </div>
+        </div>
+        <div class="progress-stat-card">
+          <div class="progress-stat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <div class="progress-stat-content">
+            <div class="progress-stat-value" id="progressRewritesAvoided">0</div>
+            <div class="progress-stat-label">Rewrites Avoided</div>
+          </div>
+        </div>
+        <div class="progress-stat-card">
+          <div class="progress-stat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </div>
+          <div class="progress-stat-content">
+            <div class="progress-stat-value" id="progressTimeSaved">0m</div>
+            <div class="progress-stat-label">Time Saved</div>
+          </div>
+        </div>
+      </div>
+      <div class="progress-actions">
+        <button type="button" class="progress-btn btn-secondary" id="previewBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <span>Preview</span>
+        </button>
+        <button type="button" class="progress-btn btn-secondary" id="downloadBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Download</span>
+        </button>
+        <button type="button" class="progress-btn btn-primary" id="shareBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          <span>Share</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         5. ADVANCED SETTINGS (Collapsible)
+         ============================================================ -->
+    <section class="advanced-section" aria-labelledby="advancedTitle">
+      <header class="advanced-header" id="advancedHeader" role="button" tabindex="0" aria-expanded="false"
+        aria-controls="advancedContent">
+        <h2 id="advancedTitle" class="advanced-title">Advanced Settings</h2>
+        <svg class="advanced-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </header>
+      <div class="advanced-content" id="advancedContent" role="region" hidden>
+        <div class="advanced-grid">
+          <div class="advanced-item">
+            <div class="advanced-item-info">
+              <span class="advanced-item-name">Shortcut</span>
+              <span class="advanced-item-desc">Keyboard shortcut to activate the refinement panel</span>
             </div>
-            <div class="onboarding-stat">
-              <div class="onboarding-stat-value">0</div>
-              <div class="onboarding-stat-label">Rewrites Avoided</div>
+            <div class="advanced-item-control">
+              <input type="text" id="hotkeyInput" class="input-field hotkey-input" placeholder="Ctrl+Alt+Space"
+                aria-label="Hotkey">
             </div>
-            <div class="onboarding-stat">
-              <div class="onboarding-stat-value">0</div>
-              <div class="onboarding-stat-label">Minutes Saved</div>
+          </div>
+          <div class="advanced-item">
+            <div class="advanced-item-info">
+              <span class="advanced-item-name">Launch on Startup</span>
+              <span class="advanced-item-desc">Automatically start Refinzi when you log in</span>
+            </div>
+            <div class="advanced-item-control">
+              <label class="switch">
+                <input type="checkbox" id="launchToggle" aria-label="Launch on startup">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="advanced-item">
+            <div class="advanced-item-info">
+              <span class="advanced-item-name">Future Options</span>
+              <span class="advanced-item-desc">Additional settings will appear here</span>
+            </div>
+            <div class="advanced-item-control">
+              <span class="badge-coming-soon">Coming soon</span>
             </div>
           </div>
         </div>
-
-        <button class="onboarding-cta" id="onboardingCta">Try Your First Refinement</button>
       </div>
     </section>
 
-    <!-- METRICS STRIP -->
-    <section class="metrics-strip" id="metricsStrip">
-      <div class="metric-card">
-        <div class="metric-value" id="refinementsMade">0</div>
-        <div class="metric-label">Refinements</div>
-        <div class="metric-meta">+14% this week</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value" id="timeSavedMetric">0</div>
-        <div class="metric-label">Hours Saved</div>
-        <div class="metric-meta">+8% this week</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value" id="retriesSaved">0</div>
-        <div class="metric-label">Success Rate</div>
-        <div class="metric-meta">98.2%</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value" id="avgTimeSaved">0</div>
-        <div class="metric-label">Today</div>
-        <div class="metric-meta">Active now</div>
-      </div>
-    </section>
-
-    <!-- MAIN CONTENT -->
-    <div class="main-layout">
-      <div class="panel-left">
-        <h2 class="section-title">Recent Activity</h2>
-        <div class="activity-list" id="activityList">
-          <div class="empty-state">No refinements yet.</div>
-        </div>
-      </div>
-      <div class="panel-right">
-        <h2 class="section-title">Quick Actions</h2>
-        <div class="action-grid">
-          <button class="action-btn" id="openRewardCard">Open Reward Card</button>
-          <button class="action-btn" id="shareProgressBtn">Share Progress</button>
-          <button class="action-btn" id="copyLastOutput">Copy Last Output</button>
-          <button class="action-btn" id="openSettings">Open Settings</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- SETTINGS -->
-    <section class="settings-section" id="settingsContainer">
-      <div class="settings-row">
-        <div class="setting-info">
-          <span class="setting-name">API Key</span>
-          <span class="setting-desc">Your Gemini API key for AI-powered refinements</span>
-        </div>
-        <div class="setting-control">
-          <input type="password" id="apiKey" class="input-field" placeholder="Paste your Gemini API key">
-          <button class="btn-save" id="saveKeyBtn">Save</button>
-        </div>
-      </div>
-      <div class="settings-row">
-        <div class="setting-info">
-          <span class="setting-name">Launch on Startup</span>
-          <span class="setting-desc">Automatically start Refinzi when you log in</span>
-        </div>
-        <div class="setting-control">
-          <label class="switch">
-            <input type="checkbox" id="launchToggle">
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
-      <div class="settings-row">
-        <div class="setting-info">
-          <span class="setting-name">Shortcut</span>
-          <span class="setting-desc">Keyboard shortcut to activate the refinement panel</span>
-        </div>
-        <div class="setting-control">
-          <input type="text" id="hotkey" class="input-field" placeholder="Ctrl+Alt+Space">
-        </div>
-      </div>
-      <div class="settings-row">
-        <div class="setting-info">
-          <span class="setting-name">Theme</span>
-          <span class="setting-desc">Choose your preferred color scheme</span>
-        </div>
-        <div class="setting-control">
-          <div class="theme-toggle" role="radiogroup" aria-label="Theme">
-            <button type="button" class="theme-option is-active" id="themeDarkBtn" role="radio" aria-checked="true"
-              data-theme-value="dark">Dark</button>
-            <button type="button" class="theme-option" id="themeLightBtn" role="radio" aria-checked="false"
-              data-theme-value="light">Light</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- REWARD SECTION -->
-    <section class="reward-section" id="rewardSectionContainer">
-      <div class="reward-card">
-        <div class="reward-text">
-          <h3>Your Progress</h3>
-          <p>Track your personal AI productivity.</p>
-        </div>
-        <div class="reward-actions">
-          <button class="reward-btn" id="previewBtn">Preview</button>
-          <button class="reward-btn" id="downloadBtn">Download</button>
-          <button class="reward-btn" id="shareBtn">Share</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- FOOTER -->
+    <!-- ============================================================
+         6. FOOTER
+         ============================================================ -->
     <footer class="footer">
-      <span>Refinzi</span>
-      <span id="footerStats">0 refinements • 0 rewrites avoided</span>
-      <span>Made with ❤️ • Your data stays on your device.</span>
+      <div class="footer-content">
+        <span class="footer-brand">Refinzi</span>
+        <span class="footer-divider" aria-hidden="true">•</span>
+        <span class="footer-stats" id="footerStats">0 refinements • 0 rewrites avoided</span>
+        <span class="footer-divider" aria-hidden="true">•</span>
+        <span class="footer-tagline">Made with ❤️ • Your data stays on your device.</span>
+      </div>
     </footer>
-  </div>
 
-  <!-- Hidden Share Card (preserved ID) -->
-  <div id="shareCard" class="share-overlay hidden">
-    <div class="share-modal">
-      <div class="modal-header">
-        <span class="modal-title">Refinzi Stats</span>
-        <button id="shareCardClose">&times;</button>
-      </div>
-      <div id="shareCardContent" class="modal-body">
-        <!-- Content injected by JS -->
+    <!-- ============================================================
+         OVERLAYS (Preserved from original)
+         ============================================================ -->
+
+    <!-- Share Card -->
+    <div id="shareCard" class="share-overlay hidden">
+      <div class="share-modal">
+        <div class="modal-header">
+          <span class="modal-title">Refinzi Stats</span>
+          <button id="shareCardClose">&times;</button>
+        </div>
+        <div id="shareCardContent" class="modal-body">
+          <!-- Content injected by JS -->
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Milestone Card (preserved ID) -->
-  <div id="milestoneCard" class="milestone-overlay hidden">
-    <div class="milestone-content">
-      <div class="milestone-emoji">🏆</div>
-      <h3 class="milestone-title">Milestone Reached</h3>
-      <p class="milestone-stat"><span id="milestoneCount">0</span> refinements completed</p>
-      <p class="milestone-stat-sub">≈ <span id="milestoneRewrites">0</span> prompt rewrites avoided.</p>
-      <p class="milestone-encourage">Keep building.</p>
-      <div class="milestone-btns">
-        <button id="milestoneShare" class="milestone-btn milestone-btn-share">Share Progress</button>
-        <button id="milestoneClose" class="milestone-btn milestone-btn-close">Close</button>
+    <!-- Milestone Card -->
+    <div id="milestoneCard" class="milestone-overlay hidden">
+      <div class="milestone-content">
+        <div class="milestone-emoji">🏆</div>
+        <h3 class="milestone-title">Milestone Reached</h3>
+        <p class="milestone-stat"><span id="milestoneCount">0</span> refinements completed</p>
+        <p class="milestone-stat-sub">≈ <span id="milestoneRewrites">0</span> prompt rewrites avoided.</p>
+        <p class="milestone-encourage">Keep building.</p>
+        <div class="milestone-btns">
+          <button id="milestoneShare" class="milestone-btn milestone-btn-share">Share Progress</button>
+          <button id="milestoneClose" class="milestone-btn milestone-btn-close">Close</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Onboarding instructional modal -->
-  <div id="onboardingModal" class="onboarding-modal-overlay hidden">
-    <div class="onboarding-modal">
-      <div class="onboarding-modal-header">
-        <span class="onboarding-modal-title">Try Your First Refinement</span>
-        <button id="onboardingModalClose" class="onboarding-modal-close">&times;</button>
-      </div>
-      <ol class="onboarding-modal-steps">
-        <li><span class="onboarding-step-num">1</span> Highlight any text.</li>
-        <li><span class="onboarding-step-num">2</span> Press <kbd class="onboarding-kbd">Ctrl</kbd> + <kbd
-            class="onboarding-kbd">Alt</kbd> + <kbd class="onboarding-kbd">Space</kbd>.</li>
-        <li><span class="onboarding-step-num">3</span> Watch Refinzi improve it instantly.</li>
-      </ol>
-      <div class="onboarding-modal-actions">
-        <button id="onboardingModalGotIt" class="onboarding-modal-btn">Got it</button>
+    <!-- Onboarding instructional modal -->
+    <div id="onboardingModal" class="onboarding-modal-overlay hidden">
+      <div class="onboarding-modal">
+        <div class="onboarding-modal-header">
+          <span class="onboarding-modal-title">Try Your First Refinement</span>
+          <button id="onboardingModalClose" class="onboarding-modal-close">&times;</button>
+        </div>
+        <ol class="onboarding-modal-steps">
+          <li><span class="onboarding-step-num">1</span> Highlight any text.</li>
+          <li><span class="onboarding-step-num">2</span> Press <kbd class="onboarding-kbd">Ctrl</kbd> + <kbd
+              class="onboarding-kbd">Alt</kbd> + <kbd class="onboarding-kbd">Space</kbd>.</li>
+          <li><span class="onboarding-step-num">3</span> Watch Refinzi improve it instantly.</li>
+        </ol>
+        <div class="onboarding-modal-actions">
+          <button id="onboardingModalGotIt" class="onboarding-modal-btn">Got it</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <script src="./renderer.js"></script>
+    <script src="./renderer.js"></script>
+  </div>
 </body>
 
 </html>
