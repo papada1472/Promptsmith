@@ -229,13 +229,13 @@
   <div id="milestoneCard" class="milestone-overlay hidden">
     <div class="milestone-content">
       <div class="milestone-emoji">🏆</div>
-      <div class="milestone-text">
-        <h3>Milestone Reached!</h3>
-        <p>You've enhanced <span id="milestoneCount">0</span> texts.</p>
-      </div>
+      <h3 class="milestone-title">Milestone Reached</h3>
+      <p class="milestone-stat"><span id="milestoneCount">0</span> refinements completed</p>
+      <p class="milestone-stat-sub">≈ <span id="milestoneRewrites">0</span> prompt rewrites avoided.</p>
+      <p class="milestone-encourage">Keep building.</p>
       <div class="milestone-btns">
-        <button id="milestoneShare">Share</button>
-        <button id="milestoneClose">&times;</button>
+        <button id="milestoneShare" class="milestone-btn milestone-btn-share">Share Progress</button>
+        <button id="milestoneClose" class="milestone-btn milestone-btn-close">Close</button>
       </div>
     </div>
   </div>

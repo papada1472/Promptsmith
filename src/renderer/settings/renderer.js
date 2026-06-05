@@ -39,6 +39,7 @@ const shareLinkedInBtn = document.getElementById("shareLinkedInBtn");
 // Milestone inline card
 const milestoneCard = document.getElementById("milestoneCard");
 const milestoneCount = document.getElementById("milestoneCount");
+const milestoneRewrites = document.getElementById("milestoneRewrites");
 const milestoneShare = document.getElementById("milestoneShare");
 const milestoneClose = document.getElementById("milestoneClose");
 
@@ -308,6 +309,7 @@ async function refresh() {
     if (milestoneCard) {
       if (count > 0 && count % 10 === 0 && !s.shareCardDismissed) {
         if (milestoneCount) milestoneCount.textContent = String(count);
+        if (milestoneRewrites) milestoneRewrites.textContent = String(Math.round((s.retriesAvoided ?? 0)));
         milestoneCard.classList.remove("hidden");
       } else {
         milestoneCard.classList.add("hidden");
