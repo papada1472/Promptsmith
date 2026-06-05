@@ -46,6 +46,9 @@ const milestoneClose = document.getElementById("milestoneClose");
 // Share stats button in hero
 const shareStatsBtn = document.getElementById("shareStatsBtn");
 
+// Footer stats
+const footerStats = document.getElementById("footerStats");
+
 // Onboarding / first-run state
 const onboardingState = document.getElementById("onboardingState");
 const onboardingCta = document.getElementById("onboardingCta");
@@ -303,6 +306,12 @@ async function refresh() {
 
     // Share card content
     populateShareCard(s);
+
+    // Footer stats
+    if (footerStats) {
+      const rc = s.refinementsMade ?? 0;
+      footerStats.textContent = `${rc} refinements \u2022 ${rc * 2} rewrites avoided`;
+    }
 
     // Milestone card on milestone
     const count = s.refinementsMade ?? 0;
