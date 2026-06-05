@@ -1,0 +1,175 @@
+[1mdiff --git a/src/main/constants.js b/src/main/constants.js[m
+[1mindex 9a7d94c..f4185bb 100644[m
+[1m--- a/src/main/constants.js[m
+[1m+++ b/src/main/constants.js[m
+[36m@@ -1,8 +1,8 @@[m
+[31m-export const APP_NAME = "Refinezy";[m
+[32m+[m[32mexport const APP_NAME = "Refinzi";[m
+ [m
+ export const DEFAULT_HOTKEY = "Alt+Shift+F";[m
+ [m
+[31m-export const SYSTEM_PROMPT = `You are Refinezy, an AI that transforms rough instructions into precise, actionable prompts.[m
+[32m+[m[32mexport const SYSTEM_PROMPT = `You are Refinzi, an AI that transforms rough instructions into precise, actionable prompts.[m
+ [m
+ Your job is to take what the user wrote and produce the BEST possible polished version — the kind of prompt an expert would write.[m
+ [m
+[1mdiff --git a/src/main/ipc.js b/src/main/ipc.js[m
+[1mindex dae0bbc..e12b68f 100644[m
+[1m--- a/src/main/ipc.js[m
+[1m+++ b/src/main/ipc.js[m
+[36m@@ -1,8 +1,8 @@[m
+ import { ipcMain } from "electron";[m
+ import { applyLaunchOnStartup } from "./startup.js";[m
+[31m-import { getRewardStats, getSettingsSnapshot, store } from "./store.js";[m
+[32m+[m[32mimport { getRewardStats, getSettingsSnapshot, dismissShareCard, checkAndTrackQuota, store } from "./store.js";[m
+ [m
+[31m-export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSettings }) {[m
+[32m+[m[32mexport function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSettings, toastWindow }) {[m
+   ipcMain.handle("settings:get", async () => {[m
+     console.log("[Refinezy][Main] Main process received message: settings:get");[m
+     return getSettingsSnapshot();[m
+[36m@@ -54,5 +54,37 @@[m [mexport function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSet[m
+     openSettings();[m
+     return { ok: true };[m
+   });[m
+[32m+[m
+[32m+[m[32m  // ── Toast ──[m
+[32m+[m[32m  ipcMain.handle("toast:show", async (_e, opts) => {[m
+[32m+[m[32m    console.log("[Refinezy][Main] Main process received message: toast:show", opts);[m
+[32m+[m[32m    const { showToast } = await import("./windows.js");[m
+[32m+[m[32m    if (toastWindow && !toastWindow.isDestroyed()) {[m
+[32m+[m[32m      showToast(toastWindow, opts);[m
+[32m+[m[32m    }[m
+[32m+[m[32m    return { ok: true };[m
+[32m+[m[32m  });[m
+[32m+[m
+[32m+[m[32m  // ── Reward: Share Card ──[m
+[32m+[m[32m  ipcMain.handle("reward:dismissShareCard", async () => {[m
+[32m+[m[32m    dismissShareCard();[m
+[32m+[m[32m    return { ok: true };[m
+[32m+[m[32m  });[m
+[32m+[m
+[32m+[m[32m  ipcMain.handle("reward:shareCardSeen", async () => {[m
+[32m+[m[32m    // Used to track quota modal dismissal — no-op for now[m
+[32m+[m[32m    return { ok: true };[m
+[32m+[m[32m  });[m
+[32m+[m
+[32m+[m[32m  // ── Settings: Quota ──[m
+[32m+[m[32m  ipcMain.handle("settings:dismissQuota", async () => {[m
+[32m+[m[32m    return { ok: true };[m
+[32m+[m[32m  });[m
+[32m+[m
+[32m+[m[32m  ipcMain.handle("settings:setTheme", async (_e, theme) => {[m
+[32m+[m[32m    console.log("[Refinezy][Main] Main process received message: settings:setTheme", theme);[m
+[32m+[m[32m    store.set("theme", String(theme || "light"));[m
+[32m+[m[32m    return { ok: true };[m
+[32m+[m[32m  });[m
+ }[m
+ [m
+[1mdiff --git a/src/main/main.js b/src/main/main.js[m
+[1mindex 1a2c5c4..867e6ea 100644[m
+[1m--- a/src/main/main.js[m
+[1m+++ b/src/main/main.js[m
+[36m@@ -3,10 +3,10 @@[m [mimport { createTray } from "./tray.js";[m
+ import { ensureAppUserModelId, notifyError, notifySuccess } from "./notifications.js";[m
+ import { store } from "./store.js";[m
+ import { applyLaunchOnStartup } from "./startup.js";[m
+[31m-import { createRewardWindow, createSettingsWindow, positionRewardWindowNearTray } from "./windows.js";[m
+[32m+[m[32mimport { createRewardWindow, createSettingsWindow, createToastWindow, positionRewardWindowNearTray } from "./windows.js";[m
+ import { registerIpcHandlers } from "./ipc.js";[m
+ import { registerHotkey, unregisterAllHotkeys } from "./shortcuts.js";[m
+[31m-import { refineSelectedText } from "./refineController.js";[m
+[32m+[m[32mimport { refineSelectedText, setToastWindow } from "./refineController.js";[m
+ import { GeminiProvider } from "./ai/GeminiProvider.js";[m
+ import { clipboard } from "electron";[m
+ import path from "path";[m
+[36m@@ -14,6 +14,7 @@[m [mimport { SYSTEM_PROMPT, REFINE_TIMEOUT_MS } from "./constants.js";[m
+ [m
+ let settingsWindow = null;[m
+ let rewardWindow = null;[m
+[32m+[m[32mlet toastWindow = null;[m
+ let trayApi = null;[m
+ let isRefining = false;[m
+ [m
+[36m@@ -23,6 +24,13 @@[m [mfunction openSettings() {[m
+   settingsWindow.focus();[m
+ }[m
+ [m
+[32m+[m[32mfunction openCommandCenter() {[m
+[32m+[m[32m  if (!settingsWindow) settingsWindow = createSettingsWindow();[m
+[32m+[m[32m  settingsWindow.show();[m
+[32m+[m[32m  settingsWindow.focus();[m
+[32m+[m[32m  settingsWindow.webContents.send("command:refresh");[m
+[32m+[m[32m}[m
+[32m+[m
+ function toggleReward() {[m
+   if (!rewardWindow) rewardWindow = createRewardWindow();[m
+   if (!trayApi?.tray) {[m
+[36m@@ -139,16 +147,20 @@[m [masync function initializeApp() {[m
+ [m
+     settingsWindow = createSettingsWindow();[m
+     rewardWindow = createRewardWindow();[m
+[32m+[m[32m    toastWindow = createToastWindow();[m
+[32m+[m[32m    setToastWindow(toastWindow);[m
+ [m
+     const onQuitHandler = () => {[m
+       console.log("[Refinezy][Main] Quit requested from tray");[m
+       settingsWindow?.destroy();[m
+       rewardWindow?.destroy();[m
+[32m+[m[32m      toastWindow?.destroy();[m
+       console.log("[Refinezy][Main] Windows destroyed, calling app.quit()");[m
+       app.quit();[m
+     };[m
+ [m
+     trayApi = createTray({[m
+[32m+[m[32m      onOpenCommandCenter: openCommandCenter,[m
+       onOpenSettings: openSettings,[m
+       onToggleReward: toggleReward,[m
+       onQuit: onQuitHandler,[m
+[36m@@ -163,7 +175,8 @@[m [masync function initializeApp() {[m
+     registerIpcHandlers({[m
+       refreshTrayMenu: trayApi.refreshMenu,[m
+       registerShortcut: (hk) => registerHotkey(hk, onHotkey),[m
+[31m-      openSettings[m
+[32m+[m[32m      openSettings,[m
+[32m+[m[32m      toastWindow[m
+     });[m
+ [m
+     try {[m
+[1mdiff --git a/src/main/store.js b/src/main/store.js[m
+[1mindex 5f48ecc..b5b7c55 100644[m
+[1m--- a/src/main/store.js[m
+[1m+++ b/src/main/store.js[m
+[36m@@ -67,7 +67,8 @@[m [mexport function getSettingsSnapshot() {[m
+     launchOnStartup: store.get("launchOnStartup"),[m
+     activeModel: GeminiProvider.getModelName(),[m
+     userName: store.get("userName"),[m
+[31m-    theme: store.get("theme")[m
+[32m+[m[32m    theme: store.get("theme"),[m
+[32m+[m[32m    refinementLogs: store.get("refinementLogs") || [][m
+   };[m
+ }[m
+ [m
+[1mdiff --git a/src/main/tray.js b/src/main/tray.js[m
+[1mindex d3a94c8..8922213 100644[m
+[1m--- a/src/main/tray.js[m
+[1m+++ b/src/main/tray.js[m
+[36m@@ -6,7 +6,7 @@[m [mfunction svgToDataUrl(svg) {[m
+   return `data:image/svg+xml;base64,${encoded}`;[m
+ }[m
+ [m
+[31m-export function createTray({ onOpenSettings, onToggleReward, onQuit, getHotkey, onDebugTriggerRefinement, onDebugPing, onDebugShowNotification, onDebugTestGemini, onDebugShowClipboard }) {[m
+[32m+[m[32mexport function createTray({ onOpenCommandCenter, onOpenSettings, onToggleReward, onQuit, getHotkey, onDebugTriggerRefinement, onDebugPing, onDebugShowNotification, onDebugTestGemini, onDebugShowClipboard }) {[m
+   const svg = `[m
+   <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">[m
+     <defs>[m
+[36m@@ -52,7 +52,7 @@[m [mexport function createTray({ onOpenSettings, onToggleReward, onQuit, getHotkey,[m
+   const setContext = () => tray.setContextMenu(buildMenu());[m
+   setContext();[m
+ [m
+[31m-  tray.on("click", () => onToggleReward());[m
+[32m+[m[32m  tray.on("click", () => onOpenCommandCenter());[m
+   tray.on("right-click", () => setContext());[m
+ [m
+   return {[m
+[1mdiff --git a/sr
