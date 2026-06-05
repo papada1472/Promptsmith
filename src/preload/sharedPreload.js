@@ -27,6 +27,7 @@ contextBridge.exposeInMainWorld("refinezy", {
   settings: {
     get: () => invoke("settings:get"),
     setApiKey: (key) => invoke("settings:setApiKey", key),
+    verifyApiKey: (key) => invoke("settings:verifyApiKey", key),
     setLaunchOnStartup: (enabled) => invoke("settings:setLaunchOnStartup", enabled),
     setHotkey: (hotkey) => invoke("settings:setHotkey", hotkey),
     dismissQuota: () => invoke("settings:dismissQuota"),

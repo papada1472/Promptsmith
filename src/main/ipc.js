@@ -2,8 +2,26 @@ import { ipcMain } from "electron";
 import { applyLaunchOnStartup } from "./startup.js";
 import { getRewardStats, getSettingsSnapshot, store } from "./store.js";
 import { notifySuccess, notifyError, notifyWarning } from "./notifications.js";
+import { GeminiProvider } from "./ai/GeminiProvider.js";
+import { SYSTEM_PROMPT, REFINE_TIMEOUT_MS } from "./constants.js";
 
 export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSettings }) {
+  ipcMain.handle("settings:verifyApiKey", async (_e, key) => {
+    try {
+      if (!key) return { ok: false, error: "No API key provided" };
+      const provider = new GeminiProvider({
+        apiKey: key,
+        systemPrompt: SYSTEM_PROMPT,
+        timeoutMs: REFINE_TIMEOUT_MS
+      });
+      await provider.refine("Reply only with OK");
+      return { ok: true };
+    } catch (err) {
+      console.error("[Refinezy][IPC] API Key verification failed", err);
+      return { ok: false, error: err?.message || "Connection failed" };
+    }
+  });
+
   ipcMain.handle("app:showToast", async (_e, opts) => {
     if (opts.type === "success") notifySuccess(opts.message);
     else if (opts.type === "error") notifyError(opts.message);
