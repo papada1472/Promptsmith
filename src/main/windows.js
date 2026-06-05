@@ -12,10 +12,12 @@ function preloadPath(...segments) {
 export function createSettingsWindow() {
   console.log("[DEBUG] createSettingsWindow()");
   const win = new BrowserWindow({
-    width: 420,
-    height: 640,
-    resizable: false,
-    maximizable: false,
+    width: 1180,
+    height: 780,
+    minWidth: 1000,
+    minHeight: 700,
+    resizable: true,
+    maximizable: true,
     minimizable: true,
     show: false,
     title: "Refinezy",
