@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Refinzi</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
+
 <body>
   <div class="app">
     <!-- HEADER -->
@@ -62,8 +64,42 @@
       </div>
     </section>
 
+    <!-- ONBOARDING / EMPTY STATE (shown only when refinementCount === 0) -->
+    <section class="onboarding-state" id="onboardingState">
+      <div class="onboarding-card">
+        <div class="onboarding-icon">✨</div>
+        <h2 class="onboarding-title">Turn rough ideas into production-ready prompts</h2>
+        <p class="onboarding-body">
+          Highlight any text anywhere.<br>
+          Press <kbd class="onboarding-kbd">Ctrl</kbd> + <kbd class="onboarding-kbd">Alt</kbd> + <kbd
+            class="onboarding-kbd">Space</kbd><br>
+          Refinzi improves it automatically and pastes it back into your workflow.
+        </p>
+
+        <div class="onboarding-journey">
+          <div class="onboarding-journey-title">Your Journey</div>
+          <div class="onboarding-journey-stats">
+            <div class="onboarding-stat">
+              <div class="onboarding-stat-value">0</div>
+              <div class="onboarding-stat-label">Refinements</div>
+            </div>
+            <div class="onboarding-stat">
+              <div class="onboarding-stat-value">0</div>
+              <div class="onboarding-stat-label">Rewrites Avoided</div>
+            </div>
+            <div class="onboarding-stat">
+              <div class="onboarding-stat-value">0</div>
+              <div class="onboarding-stat-label">Minutes Saved</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="onboarding-cta" id="onboardingCta">Try Your First Refinement</button>
+      </div>
+    </section>
+
     <!-- METRICS STRIP -->
-    <section class="metrics-strip">
+    <section class="metrics-strip" id="metricsStrip">
       <div class="metric-card">
         <div class="metric-value" id="refinementsMade">0</div>
         <div class="metric-label">Refinements</div>
@@ -199,6 +235,26 @@
     </div>
   </div>
 
+  <!-- Onboarding instructional modal -->
+  <div id="onboardingModal" class="onboarding-modal-overlay hidden">
+    <div class="onboarding-modal">
+      <div class="onboarding-modal-header">
+        <span class="onboarding-modal-title">Try Your First Refinement</span>
+        <button id="onboardingModalClose" class="onboarding-modal-close">&times;</button>
+      </div>
+      <ol class="onboarding-modal-steps">
+        <li><span class="onboarding-step-num">1</span> Highlight any text.</li>
+        <li><span class="onboarding-step-num">2</span> Press <kbd class="onboarding-kbd">Ctrl</kbd> + <kbd
+            class="onboarding-kbd">Alt</kbd> + <kbd class="onboarding-kbd">Space</kbd>.</li>
+        <li><span class="onboarding-step-num">3</span> Watch Refinzi improve it instantly.</li>
+      </ol>
+      <div class="onboarding-modal-actions">
+        <button id="onboardingModalGotIt" class="onboarding-modal-btn">Got it</button>
+      </div>
+    </div>
+  </div>
+
   <script src="./renderer.js"></script>
 </body>
+
 </html>

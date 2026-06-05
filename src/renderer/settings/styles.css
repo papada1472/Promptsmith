@@ -39,8 +39,13 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 /* HEADER */
@@ -93,7 +98,8 @@ body {
   gap: 12px;
 }
 
-.model-chip, .status-chip {
+.model-chip,
+.status-chip {
   height: 28px;
   padding: 0 12px;
   border-radius: 14px;
@@ -204,9 +210,26 @@ body {
   background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
 }
 
-.circle-lg { width: 100px; height: 100px; top: 15%; right: 10%; }
-.circle-md { width: 65px; height: 65px; bottom: 20%; left: 20%; }
-.circle-sm { width: 45px; height: 45px; top: 45%; right: 35%; }
+.circle-lg {
+  width: 100px;
+  height: 100px;
+  top: 15%;
+  right: 10%;
+}
+
+.circle-md {
+  width: 65px;
+  height: 65px;
+  bottom: 20%;
+  left: 20%;
+}
+
+.circle-sm {
+  width: 45px;
+  height: 45px;
+  top: 45%;
+  right: 35%;
+}
 
 /* METRICS STRIP */
 .metrics-strip {
@@ -436,7 +459,10 @@ body {
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: var(--secondary-surface);
   transition: .4s;
   border-radius: 34px;
@@ -455,11 +481,11 @@ body {
   border-radius: 50%;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: var(--accent-primary);
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   transform: translateX(14px);
 }
 
@@ -535,11 +561,17 @@ input:checked + .slider:before {
 }
 
 /* OVERLAYS */
-.hidden { display: none !important; }
+.hidden {
+  display: none !important;
+}
 
-.share-overlay, .milestone-overlay {
+.share-overlay,
+.milestone-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(8px);
   display: flex;
@@ -548,7 +580,8 @@ input:checked + .slider:before {
   z-index: 1000;
 }
 
-.share-modal, .milestone-content {
+.share-modal,
+.milestone-content {
   background: var(--bg-color);
   border: 1px solid var(--border);
   border-radius: 24px;
@@ -574,7 +607,8 @@ input:checked + .slider:before {
   padding: 24px;
 }
 
-.modal-close, #shareCardClose {
+.modal-close,
+#shareCardClose {
   background: none;
   border: none;
   color: var(--text-muted);
@@ -613,4 +647,224 @@ input:checked + .slider:before {
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
+}
+
+/* ONBOARDING / EMPTY STATE */
+.onboarding-state {
+  margin-bottom: 28px;
+  animation: fadeIn 200ms ease-in;
+}
+
+.onboarding-card {
+  background: var(--primary-surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 18px;
+  box-shadow: var(--shadow);
+}
+
+.onboarding-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.onboarding-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+  max-width: 640px;
+}
+
+.onboarding-body {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+.onboarding-kbd {
+  display: inline-block;
+  background: var(--secondary-surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 2px;
+}
+
+.onboarding-journey {
+  width: 100%;
+  max-width: 560px;
+  background: var(--secondary-surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 22px;
+  margin-top: 6px;
+}
+
+.onboarding-journey-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+}
+
+.onboarding-journey-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.onboarding-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.onboarding-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.onboarding-stat-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.onboarding-cta {
+  height: 48px;
+  padding: 0 28px;
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms;
+  margin-top: 4px;
+}
+
+.onboarding-cta:hover {
+  background: var(--accent-hover);
+}
+
+/* ONBOARDING MODAL */
+.onboarding-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.onboarding-modal {
+  background: var(--bg-color);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 460px;
+  max-width: 90%;
+  padding: 24px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: var(--shadow);
+}
+
+.onboarding-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.onboarding-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.onboarding-modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.onboarding-modal-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.onboarding-modal-steps li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.onboarding-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--secondary-surface);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.onboarding-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.onboarding-modal-btn {
+  height: 36px;
+  padding: 0 18px;
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms;
+}
+
+.onboarding-modal-btn:hover {
+  background: var(--accent-hover);
 }
