@@ -80,15 +80,17 @@
             class="kbd">Space</kbd>.
           Refinzi refines it instantly and pastes it back. No context switching. No friction.
         </p>
-        <div class="hero-stats" id="heroStats">
-          <div class="hero-stat">
-            <div class="hero-stat-value" id="heroRefinements">0</div>
-            <div class="hero-stat-label">Refinements</div>
-          </div>
-          <div class="hero-stat-divider" aria-hidden="true"></div>
-          <div class="hero-stat">
-            <div class="hero-stat-value" id="heroRewritesAvoided">0</div>
-            <div class="hero-stat-label">Rewrites Avoided</div>
+        <div class="hero-stats-wrapper">
+          <div class="hero-stats-card" id="heroStats">
+            <div class="hero-stat">
+              <div class="hero-stat-value" id="heroRefinements">0</div>
+              <div class="hero-stat-label">Refinements</div>
+            </div>
+            <div class="hero-stat-divider" aria-hidden="true"></div>
+            <div class="hero-stat">
+              <div class="hero-stat-value" id="heroRewritesAvoided">0</div>
+              <div class="hero-stat-label">Rewrites</div>
+            </div>
           </div>
         </div>
       </div>
@@ -100,14 +102,14 @@
     </section>
 
     <!-- ============================================================
-         3. AI PROVIDER (Always Visible - BYOK Core Value Prop)
+         3. AI PROVIDER (Premium Surface Card)
          ============================================================ -->
-    <section class="provider-section" aria-labelledby="providerTitle">
-      <header class="provider-header">
-        <h2 id="providerTitle" class="provider-title">AI Provider</h2>
-        <p class="provider-subtitle">Bring Your Own Key — your API key never leaves this device.</p>
+    <section class="premium-card provider-section" aria-labelledby="providerTitle">
+      <header class="card-header">
+        <h2 id="providerTitle" class="card-title">AI Provider</h2>
+        <p class="card-subtitle">Bring Your Own Key — your API key never leaves this device.</p>
       </header>
-      <div class="provider-card">
+      <div class="card-content">
         <div class="provider-row">
           <div class="provider-select-wrapper">
             <label for="providerSelect" class="visually-hidden">AI Provider</label>
@@ -179,128 +181,135 @@
     </section>
 
     <!-- ============================================================
-         4. YOUR PROGRESS (Dashboard Widget)
+         4. YOUR PROGRESS (Premium Surface Card)
          ============================================================ -->
-    <section class="progress-section" aria-labelledby="progressTitle">
-      <header class="progress-header">
-        <h2 id="progressTitle" class="progress-title">Your Progress</h2>
+    <section class="premium-card progress-section" aria-labelledby="progressTitle">
+      <header class="card-header">
+        <h2 id="progressTitle" class="card-title">Your Progress</h2>
       </header>
-      <div class="progress-grid">
-        <div class="progress-stat-card">
-          <div class="progress-stat-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-            </svg>
+      <div class="card-content">
+        <div class="progress-grid">
+          <div class="progress-stat-card">
+            <div class="progress-stat-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+            </div>
+            <div class="progress-stat-content">
+              <div class="progress-stat-value" id="progressRefinements">0</div>
+              <div class="progress-stat-label">Refinements</div>
+            </div>
           </div>
-          <div class="progress-stat-content">
-            <div class="progress-stat-value" id="progressRefinements">0</div>
-            <div class="progress-stat-label">Refinements</div>
+          <div class="progress-stat-card">
+            <div class="progress-stat-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
+            <div class="progress-stat-content">
+              <div class="progress-stat-value" id="progressRewritesAvoided">0</div>
+              <div class="progress-stat-label">Rewrites Avoided</div>
+            </div>
+          </div>
+          <div class="progress-stat-card">
+            <div class="progress-stat-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+            </div>
+            <div class="progress-stat-content">
+              <div class="progress-stat-value" id="progressTimeSaved">0m</div>
+              <div class="progress-stat-label">Time Saved</div>
+            </div>
           </div>
         </div>
-        <div class="progress-stat-card">
-          <div class="progress-stat-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        <div class="progress-actions">
+          <button type="button" class="progress-btn btn-secondary" id="previewBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
             </svg>
-          </div>
-          <div class="progress-stat-content">
-            <div class="progress-stat-value" id="progressRewritesAvoided">0</div>
-            <div class="progress-stat-label">Rewrites Avoided</div>
-          </div>
-        </div>
-        <div class="progress-stat-card">
-          <div class="progress-stat-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            <span>Preview</span>
+          </button>
+          <button type="button" class="progress-btn btn-secondary" id="downloadBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="17 8 12 3 7 8"></polyline>
-              <line x1="12" y1="3" x2="12" y2="15"></line>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
             </svg>
-          </div>
-          <div class="progress-stat-content">
-            <div class="progress-stat-value" id="progressTimeSaved">0m</div>
-            <div class="progress-stat-label">Time Saved</div>
-          </div>
+            <span>Download</span>
+          </button>
+          <button type="button" class="progress-btn btn-primary" id="shareBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            <span>Share</span>
+          </button>
         </div>
-      </div>
-      <div class="progress-actions">
-        <button type="button" class="progress-btn btn-secondary" id="previewBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>
-          <span>Preview</span>
-        </button>
-        <button type="button" class="progress-btn btn-secondary" id="downloadBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          <span>Download</span>
-        </button>
-        <button type="button" class="progress-btn btn-primary" id="shareBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="18" cy="5" r="3"></circle>
-            <circle cx="6" cy="12" r="3"></circle>
-            <circle cx="18" cy="19" r="3"></circle>
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-          </svg>
-          <span>Share</span>
-        </button>
       </div>
     </section>
 
     <!-- ============================================================
-         5. ADVANCED SETTINGS (Collapsible)
+         5. ADVANCED SETTINGS (Collapsible Premium Card)
          ============================================================ -->
-    <section class="advanced-section" aria-labelledby="advancedTitle">
-      <header class="advanced-header" id="advancedHeader" role="button" tabindex="0" aria-expanded="false"
+    <section class="premium-card advanced-section" aria-labelledby="advancedTitle">
+      <header class="card-header advanced-card-header" id="advancedHeader" role="button" tabindex="0" aria-expanded="false"
         aria-controls="advancedContent">
-        <h2 id="advancedTitle" class="advanced-title">Advanced Settings</h2>
+        <div class="advanced-header-text">
+          <h2 id="advancedTitle" class="card-title">Advanced Settings</h2>
+          <p class="card-subtitle">Configure hotkeys and startup behavior.</p>
+        </div>
         <svg class="advanced-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
       </header>
       <div class="advanced-content" id="advancedContent" role="region" hidden>
-        <div class="advanced-grid">
-          <div class="advanced-item">
-            <div class="advanced-item-info">
-              <span class="advanced-item-name">Shortcut</span>
-              <span class="advanced-item-desc">Keyboard shortcut to activate the refinement panel</span>
+        <div class="card-content">
+          <div class="advanced-grid">
+            <div class="advanced-item">
+              <div class="advanced-item-info">
+                <span class="advanced-item-name">Shortcut</span>
+                <span class="advanced-item-desc">Keyboard shortcut to activate the refinement panel</span>
+              </div>
+              <div class="advanced-item-control">
+                <input type="text" id="hotkeyInput" class="input-field hotkey-input" placeholder="Ctrl+Alt+Space"
+                  aria-label="Hotkey">
+              </div>
             </div>
-            <div class="advanced-item-control">
-              <input type="text" id="hotkeyInput" class="input-field hotkey-input" placeholder="Ctrl+Alt+Space"
-                aria-label="Hotkey">
+            <div class="advanced-item">
+              <div class="advanced-item-info">
+                <span class="advanced-item-name">Launch on Startup</span>
+                <span class="advanced-item-desc">Automatically start Refinzi when you log in</span>
+              </div>
+              <div class="advanced-item-control">
+                <label class="switch">
+                  <input type="checkbox" id="launchToggle" aria-label="Launch on startup">
+                  <span class="slider"></span>
+                </label>
+              </div>
             </div>
-          </div>
-          <div class="advanced-item">
-            <div class="advanced-item-info">
-              <span class="advanced-item-name">Launch on Startup</span>
-              <span class="advanced-item-desc">Automatically start Refinzi when you log in</span>
-            </div>
-            <div class="advanced-item-control">
-              <label class="switch">
-                <input type="checkbox" id="launchToggle" aria-label="Launch on startup">
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div>
-          <div class="advanced-item">
-            <div class="advanced-item-info">
-              <span class="advanced-item-name">Future Options</span>
-              <span class="advanced-item-desc">Additional settings will appear here</span>
-            </div>
-            <div class="advanced-item-control">
-              <span class="badge-coming-soon">Coming soon</span>
+            <div class="advanced-item">
+              <div class="advanced-item-info">
+                <span class="advanced-item-name">Future Options</span>
+                <span class="advanced-item-desc">Additional settings will appear here</span>
+              </div>
+              <div class="advanced-item-control">
+                <span class="badge-coming-soon">Coming soon</span>
+              </div>
             </div>
           </div>
         </div>
