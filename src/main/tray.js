@@ -25,39 +25,31 @@ export function createTray({ onOpenSettings, onToggleReward, onQuit, getHotkey, 
   tray.setToolTip(`${APP_NAME} — Running`);
 
   function buildMenu() {
-    const hotkey = String(getHotkey() || "Not set").trim() || "Not set";
-    return Menu.buildFromTemplate([
-      { label: APP_NAME, enabled: false },
-      { label: "✓ Running", enabled: false },
-      { type: "separator" },
-      { label: "Settings", click: onOpenSettings },
-      { label: "Statistics", click: onToggleReward },
-      { type: "separator" },
-      { label: `Shortcut: ${hotkey}`, enabled: false },
-      { type: "separator" },
-      {
-        label: "Debug",
-        submenu: [
-          { label: "Ping", click: onDebugPing },
-          { label: "Show Notification", click: onDebugShowNotification },
-          { label: "Test Gemini", click: onDebugTestGemini },
-          { label: "Show Clipboard", click: onDebugShowClipboard }
-        ]
-      },
-      { type: "separator" },
-      { label: "Quit", click: onQuit }
-    ]);
+      const hotkey = String(getHotkey() || "Not set").trim() || "Not set";
+      return Menu.buildFromTemplate([
+        { label: APP_NAME, enabled: false },
+        { label: "✓ Running", enabled: false },
+        { type: "separator" },
+        { label: "Open Dashboard", click: onToggleReward },
+        { type: "separator" },
+        { label: "Quit", click: onQuit }
+      ]);
   }
 
   const setContext = () => tray.setContextMenu(buildMenu());
   setContext();
 
-  tray.on("click", () => onToggleReward());
-  tray.on("right-click", () => setContext());
+  tray.on("click", () => {
+    console.log("[DEBUG] TRAY LEFT CLICK");
+    onToggleReward();
+  });
+  tray.on("right-click", () => {
+    console.log("[DEBUG] TRAY RIGHT CLICK");
+    setContext();
+  });
 
   return {
     tray,
     refreshMenu: setContext
   };
 }
-
