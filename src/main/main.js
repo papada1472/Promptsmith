@@ -1,6 +1,6 @@
 import { app, globalShortcut } from "electron";
 import { createTray } from "./tray.js";
-import { ensureAppUserModelId, notifyError, notifySuccess } from "./notifications.js";
+import { ensureAppUserModelId, notifyError, notifySuccess, notifyWarning } from "./notifications.js";
 import { store } from "./store.js";
 import { applyLaunchOnStartup } from "./startup.js";
 import { createRewardWindow, createSettingsWindow, positionRewardWindowNearTray } from "./windows.js";
@@ -45,7 +45,7 @@ async function onHotkey() {
   if (isRefining) return;
   isRefining = true;
   try {
-    await refineSelectedText({ notifySuccess, notifyError });
+    await refineSelectedText({ notifySuccess, notifyError, notifyWarning });
   } finally {
     isRefining = false;
     if (rewardWindow && rewardWindow.isVisible()) {
@@ -190,5 +190,8 @@ app.whenReady().then(initializeApp).catch((err) => {
 
 app.on("quit", () => {
   console.log("[Refinezy][Main] quit event fired, app is terminating");
+});
+
+ing");
 });
 

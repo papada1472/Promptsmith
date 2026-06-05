@@ -1,8 +1,16 @@
 import { ipcMain } from "electron";
 import { applyLaunchOnStartup } from "./startup.js";
 import { getRewardStats, getSettingsSnapshot, store } from "./store.js";
+import { notifySuccess, notifyError, notifyWarning } from "./notifications.js";
 
 export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSettings }) {
+  ipcMain.handle("app:showToast", async (_e, opts) => {
+    if (opts.type === "success") notifySuccess(opts.message);
+    else if (opts.type === "error") notifyError(opts.message);
+    else if (opts.type === "warning") notifyWarning(opts.message);
+    return { ok: true };
+  });
+
   ipcMain.handle("settings:get", async () => {
     console.log("[Refinezy][Main] Main process received message: settings:get");
     return getSettingsSnapshot();

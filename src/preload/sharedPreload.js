@@ -52,6 +52,7 @@ contextBridge.exposeInMainWorld("refinezy", {
 
   // ── App ──
   app: {
-    openSettings: () => invoke("app:openSettings")
+    openSettings: () => invoke("app:openSettings"),
+    showToast: (opts) => invoke("app:showToast", opts)
   }
 });

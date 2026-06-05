@@ -97,47 +97,8 @@ function applySavedTheme() {
 }
 
 // ── Premium Toast Notification ──
-function showInAppNotification(message) {
-  const existing = document.querySelector(".app-toast");
-  if (existing) existing.remove();
-
-  const toast = document.createElement("div");
-  toast.className = "app-toast";
-  toast.style.cssText = `
-    position: fixed;
-    top: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-10px);
-    background: #222834;
-    color: #F8FAFC;
-    padding: 12px 24px;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0px 12px 40px rgba(0,0,0,0.5);
-    z-index: 9999;
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 200ms ease, transform 200ms ease;
-  `;
-  toast.textContent = message;
-  document.body.appendChild(toast);
-
-  // Force reflow
-  toast.offsetHeight;
-
-  toast.style.opacity = "1";
-  toast.style.transform = "translateX(-50%) translateY(0)";
-
-  setTimeout(() => {
-    toast.style.opacity = "0";
-    toast.style.transform = "translateX(-50%) translateY(-10px)";
-    setTimeout(() => {
-      toast.remove();
-    }, 200);
-  }, 2500);
+function showNotification(type, message) {
+  window.refinezy.app.showToast({ type, message }).catch(() => { });
 }
 
 // ── Populate share card ──
@@ -272,15 +233,17 @@ async function testConnection() {
     if (result?.ok) {
       connectionIndicator.className = "connection-indicator success";
       connectionText.textContent = "Connected successfully";
-      showInAppNotification("Connection successful!");
+      showNotification("success", "Connection successful!");
     } else {
       connectionIndicator.className = "connection-indicator error";
       connectionText.textContent = result?.error || "Connection failed";
+      showNotification("error", result?.error || "Connection failed");
     }
   } catch (e) {
     console.error("[CommandCenter] testConnection failed", e);
     connectionIndicator.className = "connection-indicator error";
     connectionText.textContent = "Connection failed";
+    showNotification("error", "Connection failed");
   }
 }
 
@@ -463,7 +426,7 @@ async function saveApiKey() {
   try {
     const res = await window.refinezy.settings.setApiKey(key);
     if (res?.ok) {
-      showInAppNotification("API key saved successfully.");
+      showNotification("success", "API key saved successfully.");
 
       // Update connection status
       if (connectionIndicator) {
@@ -475,6 +438,7 @@ async function saveApiKey() {
     }
   } catch (e) {
     console.error("[CommandCenter] saveApiKey failed", e);
+    showNotification("error", "Failed to save API key.");
   }
 }
 
@@ -482,9 +446,10 @@ async function saveLaunch() {
   if (!launchToggle) return;
   try {
     await window.refinezy.settings.setLaunchOnStartup(launchToggle.checked);
-    showInAppNotification(`Launch on startup ${launchToggle.checked ? "enabled" : "disabled"}.`);
+    showNotification("success", `Launch on startup ${launchToggle.checked ? "enabled" : "disabled"}.`);
   } catch (e) {
     console.error("[CommandCenter] saveLaunch failed", e);
+    showNotification("error", "Failed to update launch settings.");
   }
 }
 
@@ -494,14 +459,15 @@ async function saveHotkey() {
   try {
     const res = await window.refinezy.settings.setHotkey(hk);
     if (res?.ok) {
-      showInAppNotification(`Hotkey updated to ${hk}`);
+      showNotification("success", `Hotkey updated to ${hk}`);
       await refresh();
     } else {
       console.warn("[CommandCenter] hotkey save failed", res?.error);
-      showInAppNotification(`Hotkey update failed: ${res?.error}`);
+      showNotification("error", `Hotkey update failed: ${res?.error}`);
     }
   } catch (e) {
     console.error("[CommandCenter] saveHotkey failed", e);
+    showNotification("error", "An error occurred while saving the hotkey.");
   }
 }
 

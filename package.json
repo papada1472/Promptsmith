@@ -23,7 +23,9 @@
   },
   "devDependencies": {
     "electron": "^32.2.1",
-    "electron-builder": "^24.13.3"
+    "electron-builder": "^24.13.3",
+    "jimp": "^1.6.1",
+    "png-to-ico": "^3.0.1"
   },
   "build": {
     "appId": "com.refinezy.app",
@@ -34,9 +36,11 @@
     },
     "files": [
       "src/**/*",
+      "assets/**/*",
       "package.json"
     ],
     "win": {
+      "icon": "assets/icons/app.ico",
       "target": [
         "nsis"
       ]

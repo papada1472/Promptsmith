@@ -4,25 +4,8 @@ import { autoCopySelectedText, readClipboardText, writeClipboardText, autoPaste 
 import { appendRefinementLog, recordSuccessfulRefinement, checkAndTrackQuota, store } from "./store.js";
 // Prevent multiple simultaneous refinements
 let isRefining = false;
-// Cache for the toast window reference (set from main.js)
-let toastWindowRef = null;
 
-export function setToastWindow(win) {
-  toastWindowRef = win;
-}
-
-function showInAppToast(type, title, message) {
-  try {
-    if (toastWindowRef && !toastWindowRef.isDestroyed()) {
-      const { showToast } = require("./windows.js");
-      showToast(toastWindowRef, { type, title, message, duration: 4000 });
-    }
-  } catch {
-    // fallback silently
-  }
-}
-
-export async function refineSelectedText({ notifySuccess, notifyError }) {
+export async function refineSelectedText({ notifySuccess, notifyError, notifyWarning }) {
   if (isRefining) {
     console.log("[Refinezy][RefineController] Refinement already running, ignoring hotkey.");
     return;
@@ -36,7 +19,7 @@ export async function refineSelectedText({ notifySuccess, notifyError }) {
   console.log("[Refinezy][RefineController] Previous clipboard content saved (length:", (before || "").length, ")");
 
   // Show processing toast immediately
-  showInAppToast("processing", "Improving your selection", "This usually takes a second.");
+  if (notifyWarning) notifyWarning("Improving your selection...");
 
   try {
     console.log("[Refinezy][RefineController] Starting clipboard capture");
@@ -88,7 +71,6 @@ export async function refineSelectedText({ notifySuccess, notifyError }) {
 
     await autoPaste();
     notifySuccess("Refined instruction copied and pasted.");
-    showInAppToast("success", "Saved 2 retries", "Copied to clipboard.");
 
     recordSuccessfulRefinement();
     appendRefinementLog({
@@ -110,7 +92,6 @@ export async function refineSelectedText({ notifySuccess, notifyError }) {
     }
 
     notifyError(errMsg);
-    showInAppToast("error", "Couldn't improve this selection.", "Click the tray icon to review settings.");
     return { ok: false, error: errMsg };
 
   } finally {

@@ -9,6 +9,10 @@ function preloadPath(...segments) {
   return path.join(app.getAppPath(), "src", "preload", ...segments);
 }
 
+function getIconPath() {
+  return path.join(app.getAppPath(), "assets", "icons", "icon-256.png");
+}
+
 export function createSettingsWindow() {
   console.log("[DEBUG] createSettingsWindow()");
   const win = new BrowserWindow({
@@ -21,6 +25,7 @@ export function createSettingsWindow() {
     minimizable: true,
     show: false,
     title: "Refinezy",
+    icon: getIconPath(),
     autoHideMenuBar: true,
     webPreferences: {
       preload: preloadPath("sharedPreload.js"),
@@ -56,6 +61,7 @@ export function createRewardWindow() {
     minimizable: false,
     show: false,
     frame: false,
+    icon: getIconPath(),
     transparent: true,
     alwaysOnTop: true,
     skipTaskbar: true,
@@ -90,6 +96,7 @@ export function createToastWindow() {
     minimizable: false,
     show: false,
     frame: false,
+    icon: getIconPath(),
     transparent: true,
     alwaysOnTop: true,
     skipTaskbar: true,
