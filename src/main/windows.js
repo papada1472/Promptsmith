@@ -133,13 +133,15 @@ export function showToast(window, opts) {
       window.webContents.send("toast:trigger", opts);
       window.showInactive();
 
-      // Auto-hide after duration
-      const duration = opts.duration || 2500;
-      setTimeout(() => {
-        if (window && !window.isDestroyed()) {
-          window.hide();
-        }
-      }, duration);
+      // If not persistent, auto-hide after duration
+      if (!opts.persistent) {
+        const duration = opts.duration || 2500;
+        setTimeout(() => {
+          if (window && !window.isDestroyed()) {
+            window.hide();
+          }
+        }, duration);
+      }
     }
   } catch (err) {
     console.warn("[Refinezy][Windows] Failed to show toast:", err.message);

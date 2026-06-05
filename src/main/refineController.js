@@ -2,6 +2,7 @@ import { REFINE_TIMEOUT_MS, SYSTEM_PROMPT } from "./constants.js";
 import { GeminiProvider } from "./ai/GeminiProvider.js";
 import { autoCopySelectedText, readClipboardText, writeClipboardText, autoPaste } from "./clipboardFlow.js";
 import { appendRefinementLog, recordSuccessfulRefinement, checkAndTrackQuota, store } from "./store.js";
+
 // Prevent multiple simultaneous refinements
 let isRefining = false;
 
@@ -18,8 +19,10 @@ export async function refineSelectedText({ notifySuccess, notifyError, notifyWar
   const before = readClipboardText();
   console.log("[Refinezy][RefineController] Previous clipboard content saved (length:", (before || "").length, ")");
 
-  // Show processing toast immediately
-  if (notifyWarning) notifyWarning("Improving your selection...");
+  // Show persistent processing toast
+  if (notifyWarning) {
+    notifyWarning("Refining with your AI...", "Your prompts stay on your device.", true);
+  }
 
   try {
     console.log("[Refinezy][RefineController] Starting clipboard capture");
@@ -70,7 +73,10 @@ export async function refineSelectedText({ notifySuccess, notifyError, notifyWar
     }
 
     await autoPaste();
-    notifySuccess("Refined instruction copied and pasted.");
+
+    if (notifySuccess) {
+      notifySuccess("✓ Done", 300);
+    }
 
     recordSuccessfulRefinement();
     appendRefinementLog({
@@ -80,7 +86,7 @@ export async function refineSelectedText({ notifySuccess, notifyError, notifyWar
     });
 
     return { ok: true, input, output };
-    } catch (e) {
+  } catch (e) {
     const errMsg = e?.message || "Refinement failed";
     console.error("[Refinezy][RefineController] Refinement failed:", e?.code, "-", errMsg);
     console.log("[Refinezy][RefineController] Restoring previous clipboard content...");
@@ -91,7 +97,9 @@ export async function refineSelectedText({ notifySuccess, notifyError, notifyWar
       console.error("[Refinezy][RefineController] Failed to restore clipboard:", restoreErr?.message);
     }
 
-    notifyError(errMsg);
+    if (notifyError) {
+      notifyError("Couldn't refine this selection.", errMsg, 3000);
+    }
     return { ok: false, error: errMsg };
 
   } finally {

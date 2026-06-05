@@ -1,7 +1,6 @@
 const container = document.getElementById("toastContainer");
-const QUEUE_DELAY = 600;
-let queue = [];
-let showing = false;
+let activeToast = null;
+let activeToastOpts = null;
 
 function createToast(opts) {
   const el = document.createElement("div");
@@ -9,7 +8,7 @@ function createToast(opts) {
 
   const icon = document.createElement("span");
   icon.className = "toast-icon";
-  icon.textContent = opts.icon || (opts.type === "error" ? "😕" : opts.type === "processing" ? "✨" : "✓");
+  icon.textContent = opts.icon || (opts.type === "error" ? "⚠" : opts.type === "processing" ? "✨" : "✓");
   el.appendChild(icon);
 
   const body = document.createElement("div");
@@ -29,37 +28,52 @@ function createToast(opts) {
   return el;
 }
 
-function showNext() {
-  if (showing || queue.length === 0) return;
-  showing = true;
+function dismissToast(el, callback) {
+  el.classList.remove("visible");
+  el.classList.add("hiding");
+  setTimeout(() => {
+    if (el.parentNode) el.parentNode.removeChild(el);
+    if (callback) callback();
+  }, 250);
+}
 
-  const entry = queue.shift();
-  const el = createToast(entry);
+function show(opts) {
+  // If there's an active toast, dismiss it first (or update it immediately if we wanted to be fancy)
+  // For simplicity and matching the requested transition feel, we'll replace it.
+  if (activeToast) {
+    const oldToast = activeToast;
+    activeToast = null;
+    dismissToast(oldToast, () => {
+      renderNewToast(opts);
+    });
+  } else {
+    renderNewToast(opts);
+  }
+}
 
-  // Remove previous toasts
+function renderNewToast(opts) {
+  const el = createToast(opts);
   while (container.firstChild) container.removeChild(container.firstChild);
   container.appendChild(el);
 
-  // Trigger animation: small delay for DOM to settle
+  activeToast = el;
+  activeToastOpts = opts;
+
   requestAnimationFrame(() => {
     el.classList.add("visible");
   });
 
-  const duration = entry.duration || 2500;
-  setTimeout(() => {
-    el.classList.remove("visible");
-    el.classList.add("hiding");
+  // If not persistent, auto-dismiss
+  if (!opts.persistent) {
+    const duration = opts.duration || 2500;
     setTimeout(() => {
-      if (el.parentNode) el.parentNode.removeChild(el);
-      showing = false;
-      setTimeout(showNext, 100);
-    }, 250);
-  }, duration);
-}
-
-function show(opts) {
-  queue.push(opts);
-  if (!showing) showNext();
+      if (activeToast === el) {
+        dismissToast(el, () => {
+          activeToast = null;
+        });
+      }
+    }, duration);
+  }
 }
 
 // ── Listen for IPC ──

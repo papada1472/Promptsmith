@@ -19,26 +19,29 @@ function displayToast(opts) {
   showToast(toastWindow, opts);
 }
 
-export function notifySuccess(message) {
+export function notifySuccess(message, duration = 2500) {
   displayToast({
     type: "success",
     title: "Success",
-    message: String(message || "Refined instruction copied")
+    message: String(message || "Refined instruction copied"),
+    duration
   });
 }
 
-export function notifyError(message) {
+export function notifyError(title, message, duration = 3000) {
   displayToast({
     type: "error",
-    title: "Error",
-    message: String(message || "Unknown error")
+    title: String(title || "Error"),
+    message: String(message || "Unknown error"),
+    duration
   });
 }
 
-export function notifyWarning(message) {
+export function notifyWarning(title, message, persistent = false) {
   displayToast({
     type: "warning",
-    title: "Warning",
-    message: String(message || "Attention required")
+    title: String(title || "Warning"),
+    message: String(message || "Attention required"),
+    persistent
   });
 }
