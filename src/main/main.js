@@ -192,6 +192,3 @@ app.on("quit", () => {
   console.log("[Refinezy][Main] quit event fired, app is terminating");
 });
 
-ing");
-});
-
