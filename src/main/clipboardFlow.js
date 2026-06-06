@@ -34,27 +34,29 @@ export async function autoPaste() {
 
 /**
  * Captures selected text by simulating Ctrl+C and reading the clipboard.
- * Retries up to 3 times if clipboard doesn't change.
+ * Retries up to 3 times if sentinel marker is still present.
  * 
  * Flow:
- * 1. Save current clipboard content
+ * 1. Write a unique sentinel marker to the clipboard
  * 2. Execute Ctrl+C via performCopy()
  * 3. Wait for clipboard update
  * 4. Read updated clipboard
- * 5. Return the selected text
+ * 5. If clipboard does not contain the sentinel, return the text
+ * 6. Otherwise, retry
  */
 export async function autoCopySelectedText() {
   const maxRetries = 3;
-  const delayMs = 300;
+  const delayMs = 150;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     console.log(`[Refinezy][ClipboardFlow] CAPTURE_ATTEMPT_${attempt}`);
 
-    // Save current clipboard content
-    const before = clipboard.readText() || "";
-    console.log(`[Refinezy][ClipboardFlow] Clipboard before length: ${before.length}`);
+    const sentinel = `__REFINEZY_${Date.now()}_${Math.random().toString(36).substring(7)}__`;
 
     try {
+      // Write sentinel to clipboard
+      clipboard.writeText(sentinel);
+
       // Execute Ctrl+C to copy selected text
       await performCopy();
 
@@ -63,15 +65,14 @@ export async function autoCopySelectedText() {
 
       // Read updated clipboard
       const after = clipboard.readText() || "";
-      console.log(`[Refinezy][ClipboardFlow] Clipboard after length: ${after.length}`);
 
-      // Check if clipboard changed (new content was copied)
-      if (after !== before) {
+      // Check if clipboard still contains the sentinel
+      if (after !== sentinel) {
         console.log("[Refinezy][ClipboardFlow] SELECTION_CAPTURE_SUCCESS");
         return after;
       }
 
-      console.log(`[Refinezy][ClipboardFlow] Attempt ${attempt}: Clipboard unchanged, will retry...`);
+      console.log(`[Refinezy][ClipboardFlow] Attempt ${attempt}: Sentinel still present, will retry...`);
     } catch (e) {
       console.error(`[Refinezy][ClipboardFlow] Attempt ${attempt} failed:`, e?.message || e);
     }

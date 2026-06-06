@@ -1,7 +1,8 @@
 import { REFINE_TIMEOUT_MS, SYSTEM_PROMPT } from "./constants.js";
-import { GeminiProvider } from "./ai/GeminiProvider.js";
+import { ProviderManager } from "./ai/ProviderManager.js";
 import { autoCopySelectedText, readClipboardText, writeClipboardText, autoPaste } from "./clipboardFlow.js";
-import { appendRefinementLog, recordSuccessfulRefinement, checkAndTrackQuota, store } from "./store.js";
+import { store } from "./store.js";
+import { metricsService } from "./services/metricsService.js";
 
 // Prevent multiple simultaneous refinements
 let isRefining = false;
@@ -37,7 +38,7 @@ export async function refineSelectedText({ notifySuccess, notifyError, notifyWar
     }
 
     // Check quota first
-    const quota = checkAndTrackQuota();
+    const quota = metricsService.checkAndTrackQuota();
     if (quota.exceeded) {
       const err = new Error("Daily refinement quota reached (50/50).");
       err.code = "QUOTA_EXCEEDED";
@@ -55,7 +56,7 @@ export async function refineSelectedText({ notifySuccess, notifyError, notifyWar
       throw err;
     }
 
-    const provider = new GeminiProvider({
+    const provider = ProviderManager.createProvider("gemini", {
       apiKey,
       systemPrompt: SYSTEM_PROMPT,
       timeoutMs: REFINE_TIMEOUT_MS
@@ -78,8 +79,8 @@ export async function refineSelectedText({ notifySuccess, notifyError, notifyWar
       notifySuccess("✓ Done", 300);
     }
 
-    recordSuccessfulRefinement();
-    appendRefinementLog({
+    metricsService.recordSuccess();
+    metricsService.appendLog({
       input,
       output,
       timestamp: new Date().toISOString()
