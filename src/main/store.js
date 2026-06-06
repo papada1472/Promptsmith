@@ -2,7 +2,7 @@ import Store from "electron-store";
 import { app } from "electron";
 import crypto from "crypto";
 import { DEFAULT_HOTKEY } from "./constants.js";
-import { GeminiProvider } from "./ai/GeminiProvider.js";
+import { ProviderManager } from "./ai/ProviderManager.js";
 
 function getEncryptionKey() {
   try {
@@ -65,7 +65,7 @@ export function getSettingsSnapshot() {
     geminiApiKey: store.get("geminiApiKey"),
     hotkey: store.get("hotkey"),
     launchOnStartup: store.get("launchOnStartup"),
-    activeModel: GeminiProvider.getModelName(),
+    activeModel: ProviderManager.getDefaultModel("gemini"),
     userName: store.get("userName"),
     theme: store.get("theme")
   };
