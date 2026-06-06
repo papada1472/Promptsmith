@@ -21,7 +21,7 @@ export async function refineSelectedText({ notifySuccess, notifyError, notifyWar
 
   // Show persistent processing toast
   if (notifyWarning) {
-    notifyWarning("Refining with your AI...", "Your prompts stay on your device.", true);
+    notifyWarning("Improving your workflow", "Your prompts stay on your device.", true);
   }
 
   try {
