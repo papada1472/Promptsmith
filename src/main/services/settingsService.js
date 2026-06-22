@@ -9,21 +9,27 @@ export class SettingsService {
   getSettings() {
     return {
       geminiApiKey: store.get("geminiApiKey"),
+      openRouterApiKey: store.get("openRouterApiKey"),
       hotkey: store.get("hotkey"),
       launchOnStartup: store.get("launchOnStartup"),
-      activeModel: providerService.getDefaultModel(),
+      activeProvider: store.get("activeProvider") || "gemini",
+      activeModel: store.get("activeModel") || providerService.getDefaultModel(),
       userName: store.get("userName"),
-      theme: store.get("theme")
+      theme: store.get("theme"),
+      saveHistoryLocally: store.get("saveHistoryLocally"),
+      onboardingSeen: store.get("onboardingSeen")
     };
   }
 
   /**
-   * Persists the Gemini API key.
+   * Persists an API key for a specific provider.
    * @param {string} apiKey 
+   * @param {string} provider 
    * @returns {Object}
    */
-  setApiKey(apiKey) {
-    store.set("geminiApiKey", String(apiKey || ""));
+  setApiKey(apiKey, provider = "gemini") {
+    const key = provider?.toLowerCase() === "openrouter" ? "openRouterApiKey" : "geminiApiKey";
+    store.set(key, String(apiKey || ""));
     return { ok: true };
   }
 

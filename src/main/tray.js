@@ -2,7 +2,7 @@ import { Menu, Tray, nativeImage, app } from "electron";
 import { APP_NAME } from "./constants.js";
 import path from "path";
 
-export function createTray({ onOpenSettings, onToggleReward, onQuit, getHotkey, onDebugTriggerRefinement, onDebugPing, onDebugShowNotification, onDebugTestGemini, onDebugShowClipboard }) {
+export function createTray({ onOpenSettings, onQuit, getHotkey, onDebugTriggerRefinement, onDebugPing, onDebugShowNotification, onDebugTestGemini, onDebugShowClipboard }) {
   const iconPath = path.join(app.getAppPath(), "assets", "icons", "tray.png");
   const tray = new Tray(iconPath);
   tray.setToolTip(`${APP_NAME} — Running`);
@@ -14,6 +14,7 @@ export function createTray({ onOpenSettings, onToggleReward, onQuit, getHotkey, 
         { label: "✓ Running", enabled: false },
         { type: "separator" },
         { label: "Open Dashboard", click: onOpenSettings },
+        { label: "View Stats", click: onOpenSettings },
         { type: "separator" },
         { label: "Quit", click: onQuit }
       ]);
@@ -23,12 +24,12 @@ export function createTray({ onOpenSettings, onToggleReward, onQuit, getHotkey, 
   setContext();
 
   tray.on("click", () => {
-    console.log("[DEBUG] TRAY LEFT CLICK");
+    console.log("[DEBUG] TRAY LEFT CLICK - Opening Dashboard");
     onOpenSettings();
   });
   tray.on("right-click", () => {
-    console.log("[DEBUG] TRAY RIGHT CLICK");
-    setContext();
+    console.log("[DEBUG] TRAY RIGHT CLICK - Opening Dashboard");
+    onOpenSettings();
   });
 
   return {

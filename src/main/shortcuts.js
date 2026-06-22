@@ -11,7 +11,7 @@ export function registerHotkey(accelerator, handler) {
   }
 
   if (normalized === registeredAccelerator) {
-    console.log("[Refinezy][Shortcuts] Hotkey already registered", normalized);
+    console.log("[Refinzi][Shortcuts] Hotkey already registered", normalized);
     return;
   }
 
@@ -19,27 +19,27 @@ export function registerHotkey(accelerator, handler) {
   if (previous) {
     try {
       globalShortcut.unregister(previous);
-      console.log("[Refinezy][Shortcuts] Unregistered previous hotkey", previous);
+      console.log("[Refinzi][Shortcuts] Unregistered previous hotkey", previous);
     } catch {
       // ignore
     }
   }
 
   const wrappedHandler = () => {
-    console.log("[Refinezy][Shortcuts] Shortcut fired:", normalized);
+    console.log("[Refinzi][Shortcuts] Shortcut fired:", normalized);
     try {
       handler();
     } catch (e) {
-      console.error("[Refinezy][Shortcuts] Shortcut handler error:", e?.message || e);
+      console.error("[Refinzi][Shortcuts] Shortcut handler error:", e?.message || e);
     }
   };
 
   const ok = globalShortcut.register(normalized, wrappedHandler);
   if (!ok) {
-    console.error("[Refinezy][Shortcuts] Failed to register hotkey:", normalized);
+    console.error("[Refinzi][Shortcuts] Failed to register hotkey:", normalized);
     if (previous) {
       try {
-        console.log("[Refinezy][Shortcuts] Attempting to restore previous hotkey", previous);
+        console.log("[Refinzi][Shortcuts] Attempting to restore previous hotkey", previous);
         globalShortcut.register(previous, handler);
       } catch {
         // ignore
@@ -50,7 +50,7 @@ export function registerHotkey(accelerator, handler) {
     throw err;
   }
 
-  console.log("[Refinezy][Shortcuts] Successfully registered hotkey:", normalized);
+  console.log("[Refinzi][Shortcuts] Successfully registered hotkey:", normalized);
   registeredAccelerator = normalized;
 }
 

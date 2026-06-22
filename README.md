@@ -1,10 +1,10 @@
-# Refinezy (Windows Desktop Utility)
+# Refinzi (Windows Desktop Utility)
 
-Refinezy is a lightweight background tray utility (not a chatbot, not a web app) that refines selected text into **expert-level AI instructions** using the Gemini API.
+Refinzi is a lightweight background tray utility (not a chatbot, not a web app) that refines selected text into **expert-level AI instructions** using the Gemini API.
 
 ## Core Flow
 
-Select text anywhere → press `Ctrl + Alt + Space` → Refinezy auto-copies → sends to Gemini → replaces clipboard → Windows notification: **✓ Refined instruction copied**
+Select text anywhere → press `Ctrl + Alt + Space` → Refinzi auto-copies → sends to Gemini → replaces clipboard → Windows notification: **✓ Refined instruction copied**
 
 ## Setup
 

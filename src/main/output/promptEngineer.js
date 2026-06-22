@@ -49,6 +49,8 @@ function buildPreserveSystemPrompt(envelope) {
     "- Never change the user's objective.",
     "- Never explain reasoning.",
     "- Never mention prompt engineering.",
+    "- **Smart Skip (REF-OE-012)**: If prompt quality is already high (e.g. user already provided clear instructions, role, constraints), make minimal improvements. Avoid rewriting for the sake of rewriting. Only optimize by 5% to 10% when appropriate.",
+    "- **Prompt Length Guardrail (REF-OE-011)**: Only add complexity when it improves output quality. Do not inflate prompt length unnecessarily. A simple request should remain simple (e.g. 'Translate this to Hindi' should NOT become 'You are a world-class translation expert...').",
     "- Return only the optimized request.",
   ];
 
@@ -107,6 +109,10 @@ function buildExpertSystemPrompt(envelope) {
     "- explain optimization steps,",
     "- invent facts,",
     "- change the user's actual goal.",
+    "",
+    "Guidelines:",
+    "- **Smart Skip (REF-OE-012)**: If prompt quality is already high (e.g. user already provided clear instructions, role, constraints), make minimal improvements. Avoid rewriting for the sake of rewriting. Only optimize by 5% to 10% when appropriate.",
+    "- **Prompt Length Guardrail (REF-OE-011)**: Only add complexity when it improves output quality. Do not inflate prompt length unnecessarily. A simple request should remain simple (e.g. 'Translate this to Hindi' should NOT become 'You are a world-class translation expert...').",
     "",
     "Return only the final optimized request.",
   ];

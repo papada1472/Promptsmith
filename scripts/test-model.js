@@ -30,7 +30,7 @@ const TEST_PROMPT = "Say hello in one word.";
  */
 function getEncryptionKey() {
   try {
-    const userDataPath = path.join(os.homedir(), "AppData", "Roaming", "Refinezy");
+    const userDataPath = path.join(os.homedir(), "AppData", "Roaming", "Refinzi");
     const key = crypto.createHash("sha256").update(userDataPath).digest("hex");
     console.log("[test-model] Encryption key generated from:", userDataPath);
     return key;
@@ -94,7 +94,7 @@ async function testModel(client, modelName) {
  * Main function
  */
 async function main() {
-  console.log("[test-model] Refinezy Gemini Model Diagnostic");
+  console.log("[test-model] Refinzi Gemini Model Diagnostic");
   console.log("[test-model] =====================================\n");
   
   const apiKey = getApiKey();
@@ -104,7 +104,7 @@ async function main() {
     console.error("[test-model] Usage: node scripts/test-model.js <API_KEY>");
     console.error("[test-model]   OR: GEMINI_API_KEY=<API_KEY> node scripts/test-model.js");
     console.error("[test-model] ");
-    console.error("[test-model] Alternatively, run the Refinezy app, save your API key in Settings,");
+    console.error("[test-model] Alternatively, run the Refinzi app, save your API key in Settings,");
     console.error("[test-model] then add a helper in src/main/main.js to expose it.");
     process.exit(1);
   }

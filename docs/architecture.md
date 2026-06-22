@@ -1,13 +1,13 @@
-# Refinezy — Architecture
+# Refinzi — Architecture
 
 > Snapshot of the current Electron application as it exists today. No code modifications.
-> Scope: the `refinezy-desktop` repository at the current `HEAD`.
+> Scope: the `refinzi-desktop` repository at the current `HEAD`.
 
 ---
 
 ## 1. Product in One Paragraph
 
-Refinezy is a Windows-only, tray-resident background utility. The user highlights text in **any** application, presses a global hotkey, and Refinezy:
+Refinzi is a Windows-only, tray-resident background utility. The user highlights text in **any** application, presses a global hotkey, and Refinzi:
 
 1. Simulates `Ctrl+C` to copy the selection.
 2. Sends the text to Google Gemini with a refinement system prompt.
@@ -22,7 +22,7 @@ The app is a **tray-first, no-main-window** Electron app. It also exposes two se
 ## 2. Current Folder Structure
 
 ```
-refinezy-desktop/
+refinzi-desktop/
 ├── assets/
 │   ├── branding/                 # logo-mark.png (referenced by settings)
 │   └── icons/                    # tray.png, icon-256.png, favicon.ico, app.ico
@@ -71,7 +71,7 @@ refinezy-desktop/
 
 - **Main process is ESM** (`"type": "module"` in `package.json`); preload scripts are **CommonJS** because that is what Electron's `webPreferences.preload` loads on Windows in dev. The comments in each preload file explicitly call this out.
 - **No build step for the renderer.** HTML / CSS / JS are loaded as plain files via `win.loadFile(...)`. No bundler, no transpiler, no framework.
-- **Three isolated windows**, each with its own `index.html` and `renderer.js`. They share a `refinezy` global on `window` but no JS modules cross window boundaries.
+- **Three isolated windows**, each with its own `index.html` and `renderer.js`. They share a `refinzi` global on `window` but no JS modules cross window boundaries.
 
 ---
 
@@ -85,7 +85,7 @@ refinezy-desktop/
 
 1. `app.whenReady()` → `initializeApp()`.
 2. `app.setPath("cache", <userData>/cache)` — moves Electron's cache to a writable location.
-3. `ensureAppUserModelId()` — `app.setAppUserModelId("com.refinezy.app")` for Windows toast identity.
+3. `ensureAppUserModelId()` — `app.setAppUserModelId("com.refinzi.app")` for Windows toast identity.
 4. `applyLaunchOnStartup(store.get("launchOnStartup"))` — configures login item.
 5. Creates both `settingsWindow` and `rewardWindow` up front (both start hidden).
 6. Builds the **tray** with a set of callback handlers (`onOpenSettings`, `onToggleReward`, `onQuit`, plus four debug handlers).
@@ -145,7 +145,7 @@ The `sharedPreload.js` is currently the only one in active use by all three wind
 
 ### 3.3 Tray — `src/main/tray.js`
 
-- Loads `assets/icons/tray.png`, sets tooltip `"Refinezy — Running"`.
+- Loads `assets/icons/tray.png`, sets tooltip `"Refinzi — Running"`.
 - Context menu: app name, ✓ Running (disabled), Open Dashboard, Quit.
 - Left click → `onOpenSettings`. Right click → rebuild menu.
 - Returns `{ tray, refreshMenu }`. `refreshMenu` is exposed so IPC handlers (e.g. hotkey change) can re-render the menu.
@@ -160,7 +160,7 @@ The `sharedPreload.js` is currently the only one in active use by all three wind
 
 ### 3.5 Persistence — `src/main/store.js`
 
-A single `electron-store` instance, named `refinezy`, configured with a schema and an **encryption key derived from `app.getPath("userData")`** (SHA-256 hash). The schema is the single source of truth for persisted keys.
+A single `electron-store` instance, named `refinzi`, configured with a schema and an **encryption key derived from `app.getPath("userData")`** (SHA-256 hash). The schema is the single source of truth for persisted keys.
 
 **Schema:**
 
@@ -222,16 +222,16 @@ Note: the preload exposes several channels that **are not registered** in `ipc.j
 
 ## 4. Renderer Process
 
-Three independent renderer bundles, each with `contextIsolation: true` and `nodeIntegration: false`. They communicate with the main process **only** through the `window.refinezy` global defined by their preload.
+Three independent renderer bundles, each with `contextIsolation: true` and `nodeIntegration: false`. They communicate with the main process **only** through the `window.refinzi` global defined by their preload.
 
 ### 4.1 Settings / "Command Center" — `src/renderer/settings/`
 
-- **Largest surface (1180×780).** Self-styles as "Refinzi" (branding inconsistency: code/README says "Refinezy", HTML says "Refinzi").
+- **Largest surface (1180×780).** Self-styles as "Refinzi" (branding inconsistency: code/README says "Refinzi", HTML says "Refinzi").
 - Contains: header (logo, model chip, connection chip, theme toggle), hero (shortcut badge + headline + 2 stats), AI Provider card (provider select, model select, API key input with show/hide, Test Connection, Save Key), Your Progress card (3 stats + Preview / Share), Advanced Settings (collapsible: hotkey input, launch-on-startup toggle, "Coming soon" placeholder), footer.
 - Overlays: Share Card modal (PNG download via canvas, "copy image" via `navigator.clipboard.write`, share to X / LinkedIn), Milestone Card (shown when `refinementsMade % 10 === 0` and not dismissed), Onboarding modal.
-- All persistence is via `window.refinezy.settings.*` and `window.refinezy.reward.*`.
-- Subscribes to `window.refinezy.command.onRefresh` — a refresh signal that has no current producer in `ipc.js`.
-- Theme is stored in `localStorage` under `refinezy:theme` (duplicated against the unused `store.theme` schema key).
+- All persistence is via `window.refinzi.settings.*` and `window.refinzi.reward.*`.
+- Subscribes to `window.refinzi.command.onRefresh` — a refresh signal that has no current producer in `ipc.js`.
+- Theme is stored in `localStorage` under `refinzi:theme` (duplicated against the unused `store.theme` schema key).
 
 ### 4.2 Reward Popover — `src/renderer/reward/`
 
@@ -252,7 +252,7 @@ Three independent renderer bundles, each with `contextIsolation: true` and `node
 `sharedPreload.js` is the bridge in active use (referenced by all three windows). It exposes:
 
 ```js
-window.refinezy = {
+window.refinzi = {
   reward:    { get, onRefresh, dismissShareCard, shareCardSeen },
   settings:  { get, setApiKey, verifyApiKey, setLaunchOnStartup, setHotkey,
               dismissQuota, setTheme },
@@ -262,7 +262,7 @@ window.refinezy = {
 }
 ```
 
-`settingsPreload.js` and `rewardPreload.js` are narrower alternatives (only a subset of channels) but **are not currently wired** into any `BrowserWindow` — they appear to be an abandoned refactor. The renderer never actually receives two different `window.refinezy` shapes.
+`settingsPreload.js` and `rewardPreload.js` are narrower alternatives (only a subset of channels) but **are not currently wired** into any `BrowserWindow` — they appear to be an abandoned refactor. The renderer never actually receives two different `window.refinzi` shapes.
 
 ---
 
@@ -470,9 +470,9 @@ This is a string literal — there is no way for the user to customize it withou
 | `ai/AIProvider.js` | abstract base class | `class AIProvider` |
 | `ai/GeminiProvider.js` | Gemini implementation | `class GeminiProvider` (with `static getModelName`) |
 | `constants.js` | shared constants | `APP_NAME`, `DEFAULT_HOTKEY`, `SYSTEM_PROMPT`, `REFINE_TIMEOUT_MS` |
-| `sharedPreload.js` | contextBridge for all windows | `window.refinezy.*` |
-| `settingsPreload.js` | narrower bridge (unused) | `window.refinezy.settings.*` |
-| `rewardPreload.js` | narrower bridge (unused) | `window.refinezy.reward.*` |
+| `sharedPreload.js` | contextBridge for all windows | `window.refinzi.*` |
+| `settingsPreload.js` | narrower bridge (unused) | `window.refinzi.settings.*` |
+| `rewardPreload.js` | narrower bridge (unused) | `window.refinzi.reward.*` |
 
 ---
 
@@ -542,7 +542,7 @@ The list is **not** sourced from the provider or from any IPC call. Adding a mod
 
 ### 9.11 Brand-name drift
 
-- `package.json`, `package-lock.json`, `main.js`, `windows.js`, `tray.js`, README: **"Refinezy"**.
+- `package.json`, `package-lock.json`, `main.js`, `windows.js`, `tray.js`, README: **"Refinzi"**.
 - `src/renderer/settings/index.html` (multiple places, including `<title>Refinzi</title>` and the footer / hero / share modal labels): **"Refinzi"**.
 - The user-facing name shown in the Command Center does not match the app metadata or the executable name.
 
@@ -554,11 +554,11 @@ Three preload files exist (`sharedPreload.js`, `settingsPreload.js`, `rewardPrel
 
 The Settings renderer calls:
 
-- `window.refinezy.settings.set({ activeProvider })` — **no such method** in any preload.
-- `window.refinezy.settings.set({ activeModel })` — **no such method** in any preload.
-- `window.refinezy.command.onRefresh(...)` — `ipcMain` never emits `command:refresh`.
-- `window.refinezy.reward.dismissShareCard()` — preload exposes it, but `ipcMain` has **no handler** for `reward:dismissShareCard`.
-- `window.refinezy.toast.show(...)` and `toast:show` — no main-side handler.
+- `window.refinzi.settings.set({ activeProvider })` — **no such method** in any preload.
+- `window.refinzi.settings.set({ activeModel })` — **no such method** in any preload.
+- `window.refinzi.command.onRefresh(...)` — `ipcMain` never emits `command:refresh`.
+- `window.refinzi.reward.dismissShareCard()` — preload exposes it, but `ipcMain` has **no handler** for `reward:dismissShareCard`.
+- `window.refinzi.toast.show(...)` and `toast:show` — no main-side handler.
 
 These silently no-op (the preload's `invoke` rejects and the renderer `.catch(() => {})` swallows it). The error path is invisible in production.
 
@@ -577,13 +577,13 @@ Failure modes this does not handle:
 - Another process wrote to the clipboard between (1) and (4) — `after !== before` will be true even though no selection was made.
 - The focused app does not implement `Ctrl+C` (e.g. some custom widgets, terminals) — `after === before` triggers an unnecessary retry, then `SELECTION_CAPTURE_FAILED`.
 - The selection is identical to the prior clipboard content — treated as a failure.
-- The active app is the Reward popover or Settings window — `Ctrl+C` is fired into Refinezy's own UI; the clipboard is overwritten with the wrong text.
+- The active app is the Reward popover or Settings window — `Ctrl+C` is fired into Refinzi's own UI; the clipboard is overwritten with the wrong text.
 
 There is no input-event-based capture, no accessibility / UI Automation fallback, and no signal to distinguish "no selection" from "selection not copyable".
 
 ### 9.15 Auto-paste fires into the wrong window
 
-`autoPaste()` is called from `refineController` *after* `notifyWarning` is dismissed, but if the user has switched focus during the network call (very possible on a 15 s timeout), `Ctrl+V` lands wherever focus currently is — not where the selection came from. The Refinezy reward popover and Settings window are both candidates for receiving the paste.
+`autoPaste()` is called from `refineController` *after* `notifyWarning` is dismissed, but if the user has switched focus during the network call (very possible on a 15 s timeout), `Ctrl+V` lands wherever focus currently is — not where the selection came from. The Refinzi reward popover and Settings window are both candidates for receiving the paste.
 
 ### 9.16 `main.js` mixes lifecycle, hotkey, and debug
 
@@ -596,7 +596,7 @@ There is no input-event-based capture, no accessibility / UI Automation fallback
 ### 9.18 Theme state lives in two places
 
 - `electron-store` schema has a `theme: "system"` key — **never read or written** by anyone.
-- Renderer uses `localStorage.getItem("refinezy:theme")` exclusively.
+- Renderer uses `localStorage.getItem("refinzi:theme")` exclusively.
 
 A future "sync settings across devices" or "load settings from main" will collide with the existing renderer-only theme.
 

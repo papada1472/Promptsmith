@@ -1,4 +1,4 @@
-import { BrowserWindow, app, ipcMain, screen, clipboard } from "electron";
+import { BrowserWindow, app, ipcMain, screen, clipboard, Menu } from "electron";
 import path from "path";
 import { buildEnvelope } from "./output/compiler.js";
 import { optimizeEnvelope } from "./output/optimizer.js";
@@ -10,11 +10,13 @@ import { classifyClipboardContent } from "./artifactDetector.js";
 import { ProviderManager } from "./ai/ProviderManager.js";
 import { REFINE_TIMEOUT_MS } from "./constants.js";
 import { notifySuccess } from "./notifications.js";
-import { captureActiveSelection, restoreClipboard, autoPaste } from "./clipboardFlow.js";
+import { checkActiveElementIsEditable, captureActivePrompt, replaceActivePrompt, restoreClipboard } from "./clipboardFlow.js";
 import { metricsService } from "./services/metricsService.js";
-import { refreshRewardDashboard } from "./windows.js";
+import { refreshRewardDashboard, createOutputModalWindow } from "./windows.js";
+import { upgradeToExpertPrompt } from "./artifactAnalyzer.js";
 
 let orbWindow = null;
+let outputModalWindow = null;
 let pipelineRegistered = false;
 let isOrbRunning = false;
 
@@ -102,42 +104,25 @@ function trackQuotaUsage() {
 }
 
 /**
- * Log a single analytics event to the existing refinementLogs store.
+ * Log a single analytics event to the telemetryLogs store.
  * Every Orb interaction generates exactly one event.
  * NEVER stores: clipboard contents, user prompts, user documents.
  */
-function logAnalyticsEvent({ mode, artifactType, success, failure, retryCount, copiedToClipboard, inputLength }) {
-  const logs = store.get("refinementLogs") || [];
-  const finalInputLength = typeof inputLength === "number" ? inputLength : 0;
+function logAnalyticsEvent({ mode, success, prompt_length_before, prompt_length_after, duration_ms }) {
+  const logs = store.get("telemetryLogs") || [];
+  const normalizedMode = mode === "expert" ? "gold" : "sparkle";
   logs.push({
-    timestamp: new Date().toISOString(),
-    artifactType: artifactType || "text",
-    mode: mode || "preserve",
-    success,
-    failure: failure || null,
-    retryCount: retryCount || 0,
-    copiedToClipboard: copiedToClipboard || false,
-    inputLength: finalInputLength,
+    mode: normalizedMode,
+    success: !!success,
+    prompt_length_before: prompt_length_before || 0,
+    prompt_length_after: prompt_length_after || 0,
+    duration_ms: duration_ms || 0,
+    timestamp: new Date().toISOString()
   });
   const capped = logs.length > 500 ? logs.slice(logs.length - 500) : logs;
-  store.set("refinementLogs", capped);
+  store.set("telemetryLogs", capped);
 
-  // Capitalized, clean artifact types using typeDisplayMap
-  const typeDisplayMap = {
-    url: "URL",
-    email: "Email",
-    code: "Code",
-    prompt: "Prompt",
-    plainText: "Plain Text",
-    linkedin: "LinkedIn Post",
-    twitter: "X/Twitter Post",
-    text: "Plain Text",
-  };
-
-  const displayType = typeDisplayMap[artifactType] || (artifactType ? artifactType.charAt(0).toUpperCase() + artifactType.slice(1) : "Plain Text");
-  const displayMode = mode ? mode.charAt(0).toUpperCase() + mode.slice(1) : "Preserve";
-
-  console.log(`[Usage]\nLength: ${finalInputLength}\nArtifact: ${displayType}\nMode: ${displayMode}`);
+  console.log(`[Usage] Mode: ${normalizedMode}, Success: ${success}, Before: ${prompt_length_before}, After: ${prompt_length_after}, Duration: ${duration_ms}ms`);
 }
 
 // ── Deferred persistence ──
@@ -183,6 +168,9 @@ function flushPendingState() {
     }
     if (state.analytics) {
       logAnalyticsEvent(state.analytics);
+      if (state.analytics.success) {
+        metricsService.recordSuccess();
+      }
     }
   }, 0);
 
@@ -191,6 +179,7 @@ function flushPendingState() {
 }
 
 async function runPipeline(mode, input, artifactType, { selectionCaptured, geminiCalls }) {
+  const startTime = Date.now();
   console.log("[Orb] Actual input:\n" + input);
   console.log(`[Orb] Running pipeline in ${mode} mode with input: "${input}"`);
 
@@ -209,40 +198,27 @@ async function runPipeline(mode, input, artifactType, { selectionCaptured, gemin
   const optimized = optimizeEnvelope(envelope);
   const { systemPrompt, userPrompt } = buildExecutionPlan(optimized, mode);
 
-  console.log(`[Orb] systemPrompt:\n${systemPrompt}`);
-  console.log(`[Orb] userPrompt:\n${userPrompt}`);
+  const activeProvider = store.get("activeProvider") || "gemini";
+  const apiKey = store.get(activeProvider === "openrouter" ? "openRouterApiKey" : "geminiApiKey");
+  const activeModel = store.get("activeModel") || ProviderManager.getDefaultModel(activeProvider);
 
-  const apiKey = store.get("geminiApiKey");
-  if (!apiKey) {
-    console.error("[Orb] No Gemini API key configured. Skipping provider call.");
-    metricsService.logEvent("refine_failed", {
-      mode,
-      artifactType,
-      failure: "no_api_key",
-      retryCount: 0,
-      inputLength: input.length,
-    });
-    deferAnalyticsEvent({
-      mode,
-      artifactType,
-      success: false,
-      failure: "no_api_key",
-      retryCount: 0,
-      copiedToClipboard: false,
-      inputLength: input.length,
-    });
-    sendResponse("No API key configured. Please add one in Settings.");
-    flushPendingState();
-    return;
+  const providerId = ProviderManager.getActiveProviderId({ 
+    activeProvider,
+    geminiApiKey: store.get("geminiApiKey"),
+    openRouterApiKey: store.get("openRouterApiKey")
+  });
+  
+  if (providerId === "gateway") {
+    console.log("[Orb] No Gemini API key found. Routing to GatewayProvider.");
   }
 
-  const provider = ProviderManager.createProvider("gemini", {
-    apiKey,
+  const provider = ProviderManager.createProvider(providerId, {
+    apiKey: providerId === "gateway" ? undefined : apiKey,
+    model: activeModel,
     systemPrompt,
     timeoutMs: REFINE_TIMEOUT_MS,
   });
 
-  // Reduced retries: one retry max for both 503 and 429
   const RETRIES_503 = [2000];
   const RETRIES_429 = 1;
 
@@ -252,73 +228,52 @@ async function runPipeline(mode, input, artifactType, { selectionCaptured, gemin
     try {
       geminiCalls++;
       const modelResponse = await provider.refine(userPrompt);
-      console.log(`[Orb] Gemini response:\n${modelResponse}`);
+      const latency = Date.now() - startTime;
+      
+      console.log(`[Orb] AI response received in ${latency}ms`);
       sendStatus("✅ Done");
+
+      // Save to lastRefinement store for Undo (REF-015)
+      store.set("lastRefinement", {
+        before: input,
+        after: modelResponse,
+        timestamp: new Date().toISOString()
+      });
 
       // Save the previous clipboard content before writing the AI response
       const previousClipboard = clipboard.readText();
-
-      // Write AI response to clipboard for paste-back
-      clipboard.writeText(modelResponse);
-
-      // Defer clipboard persistence — not during paste/clipboard ops
-      deferClipboardPersist(previousClipboard);
-
-      // ── Replace in place (Grammarly-style) ──
-      // Hide orb momentarily so the source application is clearly in view
+      
       const wasVisible = orbWindow && orbWindow.isVisible();
       if (wasVisible) {
         orbWindow.hide();
-        // Brief delay to ensure any pending OS input processing settles
         await sleep(80);
       }
 
-      let clipboardResult = true;
+      let clipboardResult = false;
       try {
-        // Simulate Ctrl+V to paste (replaces the still-selected text)
-        // focusable:false ensures source app never lost focus — paste works directly
-        await autoPaste();
-        console.log("[Orb] Response pasted in place.");
-        // Restore original clipboard content (paste succeeded — result no longer on clipboard)
-        restoreClipboard(previousClipboard);
-        notifySuccess("✅ Improved");
-        clipboardResult = false;
+        await replaceActivePrompt(modelResponse);
+        notifySuccess(mode === "expert" ? "🧠 Expert Prompt Created" : "✨ Prompt Improved", 2000);
       } catch (pasteErr) {
-        // Fallback: auto-paste failed - keep result on clipboard
-        console.log("[Orb] Fallback: clipboard mode");
-        notifySuccess("⚠️ Couldn't replace automatically. Result copied to clipboard.");
-        // Do NOT restore clipboard - result stays on clipboard for manual paste
+        clipboard.writeText(modelResponse);
+        notifySuccess("⚠️ Couldn't replace automatically. Result copied to clipboard.", 2500);
         clipboardResult = true;
       }
 
-      // Re-show the orb so the user can interact with it again (in both cases)
       if (wasVisible && orbWindow) {
         orbWindow.showInactive();
       }
 
-      // Telemetry logging
-      console.log(`[Orb] TELEMETRY selectionCaptured=${selectionCaptured} geminiCalls=${geminiCalls} inputLen=${input.length} outputLen=${modelResponse.length}`);
-
-      // Defer quota tracking and analytics — not during interaction
+      // Detailed Success Telemetry
       deferQuotaTracking();
-      metricsService.logEvent("refine_completed", {
-        mode,
-        artifactType,
-        retryCount: attempt - 1,
-        inputLength: input.length,
-      });
       deferAnalyticsEvent({
         mode,
-        artifactType,
         success: true,
-        failure: null,
-        retryCount: attempt - 1,
-        copiedToClipboard: clipboardResult,
-        inputLength: input.length,
+        prompt_length_before: input.length,
+        prompt_length_after: modelResponse.length,
+        duration_ms: latency
       });
 
       sendResponse(modelResponse);
-      // Persist state AFTER the user has received the response
       flushPendingState();
       return;
     } catch (e) {
@@ -329,25 +284,16 @@ async function runPipeline(mode, input, artifactType, { selectionCaptured, gemin
         const delayIndex = attempt - 1;
         if (delayIndex < RETRIES_503.length) {
           const delay = RETRIES_503[delayIndex];
-          console.log(`[Retry] 503 Attempt ${attempt}/${RETRIES_503.length + 1}`);
           await sleep(delay);
           continue;
         }
-        metricsService.logEvent("refine_failed", {
-          mode,
-          artifactType,
-          failure: "service_unavailable",
-          retryCount: attempt - 1,
-          inputLength: input.length,
-        });
+        
         deferAnalyticsEvent({
           mode,
-          artifactType,
           success: false,
-          failure: "service_unavailable",
-          retryCount: attempt - 1,
-          copiedToClipboard: false,
-          inputLength: input.length,
+          prompt_length_before: input.length,
+          prompt_length_after: 0,
+          duration_ms: Date.now() - startTime
         });
         sendResponse("Unable to process right now. Please try again.");
         flushPendingState();
@@ -357,47 +303,29 @@ async function runPipeline(mode, input, artifactType, { selectionCaptured, gemin
       if (is429Error(e)) {
         if (attempt <= RETRIES_429) {
           const delay = getRetryDelay(e);
-          console.log(`[Retry] 429 Attempt ${attempt}/${RETRIES_429 + 1}`);
           await sleep(delay);
           continue;
         }
-        metricsService.logEvent("refine_failed", {
-          mode,
-          artifactType,
-          failure: "rate_limited",
-          retryCount: attempt - 1,
-          inputLength: input.length,
-        });
+        
         deferAnalyticsEvent({
           mode,
-          artifactType,
           success: false,
-          failure: "rate_limited",
-          retryCount: attempt - 1,
-          copiedToClipboard: false,
-          inputLength: input.length,
+          prompt_length_before: input.length,
+          prompt_length_after: 0,
+          duration_ms: Date.now() - startTime
         });
         sendResponse("Unable to process right now. Please try again.");
         flushPendingState();
         return;
       }
 
-      // Never expose raw error messages (429, 503, Gemini, stack traces)
-      metricsService.logEvent("refine_failed", {
-        mode,
-        artifactType,
-        failure: "unknown",
-        retryCount: attempt - 1,
-        inputLength: input.length,
-      });
+      // Unknown failure telemetry
       deferAnalyticsEvent({
         mode,
-        artifactType,
         success: false,
-        failure: "unknown",
-        retryCount: attempt - 1,
-        copiedToClipboard: false,
-        inputLength: input.length,
+        prompt_length_before: input.length,
+        prompt_length_after: 0,
+        duration_ms: Date.now() - startTime
       });
       sendResponse("Unable to process right now. Please try again.");
       flushPendingState();
@@ -405,21 +333,12 @@ async function runPipeline(mode, input, artifactType, { selectionCaptured, gemin
     }
   }
 
-  metricsService.logEvent("refine_failed", {
-    mode,
-    artifactType,
-    failure: "retries_exhausted",
-    retryCount: 4,
-    inputLength: input.length,
-  });
   deferAnalyticsEvent({
     mode,
-    artifactType,
     success: false,
-    failure: "retries_exhausted",
-    retryCount: 4,
-    copiedToClipboard: false,
-    inputLength: input.length,
+    prompt_length_before: input.length,
+    prompt_length_after: 0,
+    duration_ms: Date.now() - startTime
   });
   sendResponse("Unable to process right now. Please try again.");
   flushPendingState();
@@ -432,6 +351,9 @@ function registerPipelineHandler() {
   ipcMain.handle("orb:clicked", async (_e, { mode }) => {
     console.log(`[Orb] ${mode === "expert" ? "Expert mode armed" : "Preserve triggered"}`);
 
+    const apiKey = store.get("geminiApiKey");
+    const providerId = ProviderManager.getActiveProviderId({ geminiApiKey: apiKey });
+
     // P0: Guard — prevent parallel Gemini calls
     if (isOrbRunning) {
       console.log("[Orb] Pipeline already running, ignoring click.");
@@ -443,13 +365,11 @@ function registerPipelineHandler() {
         inputLength: 0,
       });
       deferAnalyticsEvent({
-        mode: mode || "preserve",
-        artifactType: "text",
+        mode,
         success: false,
-        failure: "already_running",
-        retryCount: 0,
-        copiedToClipboard: false,
-        inputLength: 0,
+        prompt_length_before: 0,
+        prompt_length_after: 0,
+        duration_ms: 0
       });
       flushPendingState();
       return { ok: false, reason: "already_running" };
@@ -468,77 +388,60 @@ function registerPipelineHandler() {
           inputLength: 0,
         });
         deferAnalyticsEvent({
-          mode: mode || "preserve",
-          artifactType: "text",
+          mode,
           success: false,
-          failure: "quota_exceeded",
-          retryCount: 0,
-          copiedToClipboard: false,
-          inputLength: 0,
+          prompt_length_before: 0,
+          prompt_length_after: 0,
+          duration_ms: 0
         });
         sendResponse("Daily refinement quota reached (50/50).");
         flushPendingState();
         return { ok: false, reason: "quota_exceeded" };
       }
 
-      // Step 1: Capture active selection immediately at invocation time
-      // No polling, no caching — fresh capture on every click
-      const captureResult = await captureActiveSelection();
-      const input = captureResult.text;
-      const selectionCaptured = !captureResult.fromClipboard;
+      // Step 1: Detect active element
+      const isEditable = await checkActiveElementIsEditable();
+      if (!isEditable) {
+        console.log("[Orb] Active element is not editable.");
+        notifyError("Focus a textbox", "Please click into a text field to improve your prompt.", 2500);
+        deferAnalyticsEvent({
+          mode,
+          success: false,
+          prompt_length_before: 0,
+          prompt_length_after: 0,
+          duration_ms: 0
+        });
+        flushPendingState();
+        return { ok: false, reason: "not_editable" };
+      }
 
-      console.log(`[Orb] Input source: ${selectionCaptured ? "active selection" : "clipboard fallback"}`);
+      // Step 2: Capture active prompt
+      const captureResult = await captureActivePrompt();
+      const input = captureResult.text;
+
       console.log(`[Orb] Captured text length:`, input?.length || 0);
 
       if (!input || !input.trim()) {
-        const errMsg = "No selected text found. Select text and try again.";
-        console.error("[Orb] ERROR - NO_SELECTION");
-        metricsService.logEvent("refine_failed", {
-          mode: mode || "preserve",
-          artifactType: "text",
-          failure: "no_selection",
-          retryCount: 0,
-          inputLength: 0,
-        });
+        console.error("[Orb] ERROR - NO_SELECTION / EMPTY_PROMPT");
+        notifyError("Empty Prompt", "Please type a prompt in the text box first.", 2500);
         deferAnalyticsEvent({
-          mode: mode || "preserve",
-          artifactType: "text",
+          mode,
           success: false,
-          failure: "no_selection",
-          retryCount: 0,
-          copiedToClipboard: false,
-          inputLength: 0,
+          prompt_length_before: 0,
+          prompt_length_after: 0,
+          duration_ms: 0
         });
-        sendResponse(errMsg);
         flushPendingState();
         return { ok: false, reason: "no_selection" };
       }
 
-      // Step 2: Run the pipeline with telemetry tracking
+      // Step 3: Run the pipeline
       const telemetry = {
-        selectionCaptured,
+        selectionCaptured: true,
         geminiCalls: 0
       };
 
-      // Classify the clipboard content before pipeline execution
       const detection = classifyClipboardContent(input);
-      // Display name map matching the CLASSIFY list from the task spec
-      const typeDisplayMap = {
-        url: "URL",
-        email: "Email",
-        code: "Code",
-        prompt: "Prompt",
-        plainText: "Plain Text",
-        linkedin: "LinkedIn Post",
-        twitter: "X/Twitter Post",
-      };
-      const displayType = typeDisplayMap[detection.type] || detection.type;
-      console.log(`[Artifact] Type: ${displayType}`);
-
-      console.log(JSON.stringify({ mode: mode || "preserve", inputLength: input.length }));
-      // Log artifact type and mode before pipeline execution
-      const modeDisplay = mode ? mode.charAt(0).toUpperCase() + mode.slice(1) : "Preserve";
-      console.log(`[Usage]\nArtifact: ${displayType}\nMode: ${modeDisplay}`);
       await runPipeline(mode || "preserve", input, detection.type, telemetry);
       return { ok: true };
     } catch (e) {
@@ -551,13 +454,11 @@ function registerPipelineHandler() {
         inputLength: 0,
       });
       deferAnalyticsEvent({
-        mode: mode || "preserve",
-        artifactType: "text",
+        mode,
         success: false,
-        failure: "handler_error",
-        retryCount: 0,
-        copiedToClipboard: false,
-        inputLength: 0,
+        prompt_length_before: 0,
+        prompt_length_after: 0,
+        duration_ms: 0
       });
       sendResponse("An unexpected error occurred. Please try again.");
       flushPendingState();
@@ -567,24 +468,154 @@ function registerPipelineHandler() {
     }
   });
 
-  // Track last position to skip duplicate updates
-  let lastDragPosition = { x: -Infinity, y: -Infinity };
+  ipcMain.handle("orb:generatePrompt", async (event, { data }) => {
+    console.log("[Orb] orb:generatePrompt received", data.name || data.type || "text");
+    const { generatePromptAngles } = await import("./artifactAnalyzer.js");
+    return await generatePromptAngles(data);
+  });
+
+  ipcMain.handle("orb:showPromptWindow", async (event, data) => {
+    console.log("[Orb] orb:showPromptWindow received, sending prompt to output window.");
+    if (!outputModalWindow || outputModalWindow.isDestroyed()) {
+      outputModalWindow = createOutputModalWindow();
+    }
+
+    // Increment artifactCount
+    let count = store.get("artifactCount") || 0;
+    count += 1;
+    store.set("artifactCount", count);
+
+    const personalizationSeen = store.get("personalizationSeen") || false;
+    let triggerPersonalization = false;
+    if (count >= 5 && !personalizationSeen) {
+      store.set("personalizationSeen", true);
+      triggerPersonalization = true;
+    }
+
+    // data shape: { prompt, title, artifactType, _artifactContext }
+    const payload = {
+      prompt: data.prompt || "",
+      title: data.title || "Artifact",
+      artifactType: data.artifactType || "unknown",
+      _artifactContext: data._artifactContext || null
+    };
+
+    outputModalWindow.webContents.once("did-finish-load", () => {
+      outputModalWindow.webContents.send("output:setData", payload);
+    });
+
+    if (!outputModalWindow.webContents.isLoading()) {
+      outputModalWindow.webContents.send("output:setData", payload);
+    }
+
+    outputModalWindow.show();
+    outputModalWindow.focus();
+
+    return { ok: true, triggerPersonalization };
+  });
+
+  // Expert upgrade: post-generation expansion into production-ready prompt
+  ipcMain.handle("orb:upgradeToExpert", async (event, { prompt, artifactContext }) => {
+    console.log("[Orb] orb:upgradeToExpert requested");
+    try {
+      const result = await upgradeToExpertPrompt(prompt, artifactContext);
+      return result;
+    } catch (err) {
+      console.error("[Orb] Expert upgrade error:", err);
+      return { prompt, ok: false, error: err.message };
+    }
+  });
+
+  // Output analytics: track copy / regenerate / expert upgrade events
+  ipcMain.on("orb:outputAnalytics", (_event, analyticsEvent) => {
+    const logs = store.get("telemetryLogs") || [];
+    logs.push({
+      event: "output_interaction",
+      artifact_type: analyticsEvent.artifact_type || "unknown",
+      copy_clicked: !!analyticsEvent.copy_clicked,
+      expert_upgrade_clicked: !!analyticsEvent.expert_upgrade_clicked,
+      regenerated: !!analyticsEvent.regenerated,
+      duration_ms: analyticsEvent.duration_ms || 0,
+      timestamp: new Date().toISOString()
+    });
+    const capped = logs.length > 500 ? logs.slice(logs.length - 500) : logs;
+    store.set("telemetryLogs", capped);
+    console.log(`[Usage] Output: type=${analyticsEvent.artifact_type} copy=${analyticsEvent.copy_clicked} expert=${analyticsEvent.expert_upgrade_clicked} regen=${analyticsEvent.regenerated} ${analyticsEvent.duration_ms}ms`);
+  });
+
+  ipcMain.on("output:close", () => {
+    if (outputModalWindow && !outputModalWindow.isDestroyed()) {
+      outputModalWindow.hide();
+    }
+  });
+
+  ipcMain.on("output:copy", (event, text) => {
+    clipboard.writeText(text);
+  });
+
+  ipcMain.handle("orb:copyToClipboard", (event, text) => {
+    clipboard.writeText(text);
+    return { ok: true };
+  });
+
+  ipcMain.handle("orb:resize", (event, { width, height }) => {
+    if (orbWindow) {
+      orbWindow.setSize(width, height);
+    }
+    return { ok: true };
+  });
+
+  ipcMain.handle("orb:setFocusable", (event, focusable) => {
+    if (orbWindow) {
+      orbWindow.setFocusable(focusable);
+      if (focusable) {
+        orbWindow.focus();
+      }
+    }
+    return { ok: true };
+  });
+
+  ipcMain.on("orb:set-ignore-mouse", (event, ignore) => {
+    if (orbWindow && !orbWindow.isDestroyed()) {
+      orbWindow.setIgnoreMouseEvents(ignore, { forward: true });
+    }
+  });
+
+  // Cache display list — refresh when display configuration changes
+  let cachedDisplays = screen.getAllDisplays();
+  screen.on("display-added", () => { cachedDisplays = screen.getAllDisplays(); });
+  screen.on("display-removed", () => { cachedDisplays = screen.getAllDisplays(); });
+  screen.on("display-metrics-changed", () => { cachedDisplays = screen.getAllDisplays(); });
 
   // Handle moving the orb window (fire-and-forget, no response needed)
   ipcMain.on("orb:move", (_e, { x, y }) => {
     if (!orbWindow) return;
-    // Get screen bounds to prevent the orb from leaving the visible area
-    const { workArea } = screen.getPrimaryDisplay();
     const { width, height } = orbWindow.getBounds();
-    const clampedX = Math.max(workArea.x, Math.min(x, workArea.x + workArea.width - width));
-    const clampedY = Math.max(workArea.y, Math.min(y, workArea.y + workArea.height - height));
-    const roundedX = Math.round(clampedX);
-    const roundedY = Math.round(clampedY);
-    // Skip duplicate positions
-    if (roundedX === lastDragPosition.x && roundedY === lastDragPosition.y) return;
-    lastDragPosition = { x: roundedX, y: roundedY };
-    orbWindow.setPosition(roundedX, roundedY);
-    console.log(`[DRAG] setPosition ${roundedX},${roundedY}`);
+    // Determine which display the coordinates belong to; fall back to primary
+    const targetDisplay = cachedDisplays.find(d =>
+        x >= d.bounds.x - width && x <= d.bounds.x + d.bounds.width &&
+        y >= d.bounds.y - height && y <= d.bounds.y + d.bounds.height
+    ) || screen.getPrimaryDisplay();
+    const { bounds } = targetDisplay;
+    
+    // The Orb center is located at offset (110, 50) relative to the window's top-left corner.
+    const orbOffsetX = 110;
+    const orbOffsetY = 50;
+    
+    // Clamp the Orb center coordinates to stay within the display bounds.
+    const minOrbX = bounds.x;
+    const maxOrbX = bounds.x + bounds.width;
+    const minOrbY = bounds.y;
+    const maxOrbY = bounds.y + bounds.height;
+    
+    const targetOrbX = Math.max(minOrbX, Math.min(x + orbOffsetX, maxOrbX));
+    const targetOrbY = Math.max(minOrbY, Math.min(y + orbOffsetY, maxOrbY));
+    
+    // Convert target Orb center coordinates back to window top-left corner coordinates.
+    const newX = Math.round(targetOrbX - orbOffsetX);
+    const newY = Math.round(targetOrbY - orbOffsetY);
+    
+    orbWindow.setPosition(newX, newY);
   });
 
   // Persist position only on drag end
@@ -592,8 +623,6 @@ function registerPipelineHandler() {
     if (!orbWindow) return;
     const [x, y] = orbWindow.getPosition();
     store.set("orbPosition", { x, y });
-    console.log(`[DRAG] position persisted x=${x} y=${y}`);
-    lastDragPosition = { x: -Infinity, y: -Infinity };
   });
   // Provide current orb position to renderer (used for relative drags)
   ipcMain.handle("orb:getPosition", async () => {
@@ -602,18 +631,60 @@ function registerPipelineHandler() {
     return { x, y };
   });
 
-  // Reset orb position to defaults (clears stored position and moves orb near cursor)
+  // Reset orb position to defaults (clears stored position and moves orb to right-side middle)
   ipcMain.handle("orb:resetPosition", async () => {
     console.log("[Orb] Resetting position to default");
     // Clear stored position
     store.set("orbPosition", { x: null, y: null });
-    // If orb window exists, reposition it near the current cursor location
+    // If orb window exists, reposition it to right-side middle of primary display
     if (orbWindow) {
-      const cursor = screen.getCursorScreenPoint();
-      // Use same offset logic as showOrb for default placement
-      orbWindow.setPosition(Math.round(cursor.x + 10), Math.round(cursor.y - 60));
+      const { workArea } = screen.getPrimaryDisplay();
+      const { width: orbW, height: orbH } = orbWindow.getBounds();
+      // Right edge of work area (leaves a small 4px margin)
+      const defaultX = Math.round(workArea.x + workArea.width - orbW - 4);
+      // Vertically centered in the work area
+      const defaultY = Math.round(workArea.y + (workArea.height - orbH) / 2);
+      orbWindow.setPosition(defaultX, defaultY);
     }
     return { ok: true };
+  });
+
+  // Handle right-click context menu (Undo, Dashboard, Quit)
+  ipcMain.on("orb:contextmenu", (event) => {
+    const lastRef = store.get("lastRefinement");
+    const hasUndo = lastRef && lastRef.before;
+    const menu = Menu.buildFromTemplate([
+      {
+        label: "Undo Last Refinement",
+        accelerator: "Ctrl+Alt+Z",
+        enabled: !!hasUndo,
+        click: () => {
+          undoLastRefinement();
+        }
+      },
+      { type: "separator" },
+      {
+        label: "Open Dashboard",
+        click: () => {
+          const wins = BrowserWindow.getAllWindows();
+          const settingsWin = wins.find(w => w.getTitle() === "Refinzi — Dashboard" || (w.getURL() && w.getURL().includes("settings/index.html")));
+          if (settingsWin) {
+            settingsWin.show();
+            settingsWin.focus();
+          } else {
+            createSettingsWindow().show();
+          }
+        }
+      },
+      { type: "separator" },
+      {
+        label: "Quit",
+        click: () => {
+          app.quit();
+        }
+      }
+    ]);
+    menu.popup({ window: BrowserWindow.fromWebContents(event.sender) });
   });
 }
 
@@ -647,12 +718,18 @@ export function createOrbWindow() {
   orbWindow.loadFile(indexPath);
 
   orbWindow.webContents.on("console-message", (_event, level, message) => {
-    console.log(`[Refinezy][Orb][console][${level}] ${message}`);
+    console.log(`[Refinzi][Orb][console][${level}] ${message}`);
   });
 
   orbWindow.on("closed", () => {
     orbWindow = null;
+    isOrbRunning = false;
   });
+
+  // ── CLICK-THROUGH FIX ──
+  // By default, the window ignores mouse events for the OS (clicks pass through)
+  // but forwards them to the renderer (so mouseenter/mousemove still work).
+  orbWindow.setIgnoreMouseEvents(true, { forward: true });
 
   return orbWindow;
 }
@@ -661,15 +738,26 @@ export function showOrb(x, y) {
   if (!orbWindow) {
     registerPipelineHandler();
     createOrbWindow();
+    // NOTE: No orb:set-ignore-mouse IPC needed.
+    // The window stays in setIgnoreMouseEvents(true, { forward: true }) permanently.
+    // CSS pointer-events: none on body + pointer-events: auto on .orb handles interactivity.
+    // Toggling setIgnoreMouseEvents causes Electron to re-evaluate hit regions,
+    // which fires synthetic mouseleave events — causing the "chase" loop.
   }
-  // Determine position: use saved position if available, otherwise use provided coordinates
+  // Determine position: use saved position if available, otherwise default to
+  // the right-side middle of the primary display (parallel to the system tray
+  // "show hidden icons" chevron) so the ORB is immediately discoverable.
   const saved = store.get("orbPosition");
   if (saved && saved.x != null && saved.y != null) {
     orbWindow.setPosition(Math.round(saved.x), Math.round(saved.y));
   } else {
-    // Position orb above and to the right of the cursor
-    // 120px height: top of window sits ~60px above cursor so toast (at 40px) stays above, long previews fit
-    orbWindow.setPosition(Math.round(x + 10), Math.round(y - 60));
+    const { workArea } = screen.getPrimaryDisplay();
+    const { width: orbW, height: orbH } = orbWindow.getBounds();
+    // Right edge of work area with a small 4px margin from the edge
+    const defaultX = Math.round(workArea.x + workArea.width - orbW - 4);
+    // Vertically centered in the work area
+    const defaultY = Math.round(workArea.y + (workArea.height - orbH) / 2);
+    orbWindow.setPosition(defaultX, defaultY);
   }
   orbWindow.showInactive();
 }
@@ -677,5 +765,30 @@ export function showOrb(x, y) {
 export function hideOrb() {
   if (orbWindow) {
     orbWindow.hide();
+  }
+}
+
+export async function undoLastRefinement() {
+  const lastRef = store.get("lastRefinement");
+  if (!lastRef || !lastRef.before) {
+    console.log("[Undo] No last refinement available.");
+    notifyError("Cannot Undo", "No previous refinement found to revert.", 2500);
+    return;
+  }
+
+  const isEditable = await checkActiveElementIsEditable();
+  if (!isEditable) {
+    console.log("[Undo] Active element is not editable.");
+    notifyError("Cannot Undo", "Please click into a text field to undo your refinement.", 2500);
+    return;
+  }
+
+  try {
+    await replaceActivePrompt(lastRef.before);
+    store.set("lastRefinement", {});
+    notifySuccess("↩ Refinement Undone", 2000);
+  } catch (err) {
+    console.error("[Undo] Reversion failed:", err);
+    notifyError("Undo Failed", "Could not restore the previous prompt.", 2500);
   }
 }

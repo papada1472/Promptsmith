@@ -1,6 +1,6 @@
 # Refactor Notes
 
-> Working document for the Refinezy codebase. Documents hardcoded references, duplication, UI/business-logic mixing, and provider abstraction boundaries.
+> Working document for the Refinzi codebase. Documents hardcoded references, duplication, UI/business-logic mixing, and provider abstraction boundaries.
 > This file is **not code** — it is a design-review reference for the next refactor pass.
 
 ---
@@ -268,7 +268,7 @@ Schema-only keys with no read/write path.
 
 | Location | Name |
 |---|---|
-| `package.json`, `main.js`, `tray.js`, `README.md` | Refinezy |
+| `package.json`, `main.js`, `tray.js`, `README.md` | Refinzi |
 | `src/renderer/settings/index.html` (title, hero, footer) | Refinzi |
 
 ---
@@ -286,7 +286,7 @@ Schema-only keys with no read/write path.
 | 7 | Merge `recordSuccessfulRefinement` + `appendRefinementLog` | Low | Reduces disk I/O |
 | 8 | Extract `refineSelectedText` into named phases | Medium | Makes pipeline testable and extensible |
 | 9 | Move AI construction out of IPC/main.js into shared factory | Medium | Proper separation of concerns |
-| 10 | Resolve brand name (Refinezy vs Refinzi) | Low | One source of truth |
+| 10 | Resolve brand name (Refinzi vs Refinzi) | Low | One source of truth |
 
 ---
 

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
+    <title>Refinzi — Prompt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="window-wrapper">
+        <div class="window-container">
+
+            <!-- Header: draggable title bar -->
+            <div class="header">
+                <div class="title-bar">
+                    <span class="window-icon">🪄</span>
+                    <span class="window-title" id="window-title">Prompt</span>
+                    <button class="close-btn" id="close-btn" title="Close">✕</button>
+                </div>
+            </div>
+
+            <!-- Prompt editor: full editable textarea -->
+            <div class="prompt-body">
+                <textarea
+                    id="prompt-editor"
+                    spellcheck="false"
+                    placeholder="Generating your prompt..."
+                ></textarea>
+            </div>
+
+            <!-- Divider -->
+            <div class="action-divider"></div>
+
+            <!-- Action bar: 3 stacked buttons -->
+            <div class="action-bar">
+
+                <!-- Primary: Copy Prompt -->
+                <button class="btn btn-copy" id="copy-btn">
+                    <span class="btn-icon">📋</span>
+                    <span class="btn-label" id="copy-label">Copy Prompt</span>
+                </button>
+
+                <!-- Secondary: Regenerate -->
+                <button class="btn btn-regenerate" id="regenerate-btn">
+                    <span class="btn-icon" id="regen-icon">↻</span>
+                    <span class="btn-label" id="regen-label">Regenerate</span>
+                </button>
+
+                <!-- Tertiary: Make Production Ready -->
+                <button class="btn btn-expert" id="expert-btn">
+                    <span class="btn-icon" id="expert-icon">🧠</span>
+                    <span class="btn-label" id="expert-label">Make Production Ready</span>
+                </button>
+
+            </div>
+
+            <!-- Inline copy confirmation toast -->
+            <div class="toast hidden" id="copy-toast">✓ Copied to clipboard</div>
+
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

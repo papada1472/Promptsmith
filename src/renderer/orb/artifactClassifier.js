@@ -13,39 +13,56 @@
  * or `null` if the payload cannot be classified.
  */
 export function classifyArtifact(dataTransfer) {
-    // Helper regex for URL detection
     const urlPattern = /^(https?:\/\/)/i;
+
+    // Helper to identify URL subtype
+    function getUrlType(url) {
+        const trimmed = url.trim();
+        if (/youtube\.com|youtu\.be/i.test(trimmed)) {
+            return "youtube";
+        }
+        if (/instagram\.com/i.test(trimmed)) {
+            return "instagram";
+        }
+        return "url";
+    }
 
     // 1️⃣ Check for a URI list – browsers use this for dragged links.
     const uriList = dataTransfer.getData("text/uri-list");
     if (uriList) {
         const trimmed = uriList.trim();
         if (urlPattern.test(trimmed)) {
-            return { type: "url" };
+            return { type: getUrlType(trimmed) };
         }
     }
 
-    // 2️⃣ If files are present, inspect the first file (multiple files are not
-    //    required for this micro‑task).
+    // 2️⃣ If files are present, inspect the first file
     if (dataTransfer.files && dataTransfer.files.length > 0) {
         const file = dataTransfer.files[0];
         const name = file.name.toLowerCase();
         const mime = (file.type || "").toLowerCase();
 
-        // PDF detection – extension or MIME type
-        if (name.endsWith('.pdf') || mime === 'application/pdf') {
-            return { type: "pdf" };
+        // CSV detection
+        if (name.endsWith('.csv') || mime === 'text/csv') {
+            return { type: "csv" };
         }
 
-        // Image detection – extensions or image/* MIME type
+        // DOCX detection
+        if (name.endsWith('.docx') || mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+            return { type: "docx" };
+        }
+
+        // Image detection
         if (/\.(png|jpe?g|webp)$/i.test(name) || mime.startsWith('image/')) {
             return { type: "image" };
         }
 
-        // Text file detection – plain text MIME type
-        if (mime === 'text/plain') {
-            return { type: "text" };
+        // PDF or Text fallback
+        if (name.endsWith('.pdf') || mime === 'application/pdf') {
+            return { type: "pdf" };
         }
+
+        return { type: "text" };
     }
 
     // 3️⃣ Plain text payload (e.g., from clipboard or dragged text)
@@ -53,12 +70,10 @@ export function classifyArtifact(dataTransfer) {
     if (plainText) {
         const trimmed = plainText.trim();
         if (urlPattern.test(trimmed)) {
-            return { type: "url" };
+            return { type: getUrlType(trimmed) };
         }
-        // Anything else is treated as generic text.
         return { type: "text" };
     }
 
-    // No recognizable artifact.
     return null;
 }

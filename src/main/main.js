@@ -1,9 +1,9 @@
-import { app, globalShortcut } from "electron";
+import { app, globalShortcut, session } from "electron";
 import { createTray } from "./tray.js";
 import { ensureAppUserModelId, notifyError, notifySuccess, notifyWarning } from "./notifications.js";
 import { store } from "./store.js";
 import { applyLaunchOnStartup } from "./startup.js";
-import { createRewardWindow, createSettingsWindow, positionRewardWindowNearTray } from "./windows.js";
+import { createSettingsWindow } from "./windows.js";
 import { registerIpcHandlers } from "./ipc.js";
 import { registerHotkey, unregisterAllHotkeys } from "./shortcuts.js";
 import { refineSelectedText } from "./refineController.js";
@@ -13,7 +13,6 @@ import path from "path";
 import { SYSTEM_PROMPT, REFINE_TIMEOUT_MS } from "./constants.js";
 
 let settingsWindow = null;
-let rewardWindow = null;
 let trayApi = null;
 let isRefining = false;
 
@@ -23,23 +22,6 @@ function openSettings() {
   settingsWindow.focus();
 }
 
-function toggleReward() {
-  if (!rewardWindow) rewardWindow = createRewardWindow();
-  if (!trayApi?.tray) {
-    rewardWindow.show();
-    return;
-  }
-
-  if (rewardWindow.isVisible()) {
-    rewardWindow.hide();
-  } else {
-    const trayBounds = trayApi.tray.getBounds();
-    positionRewardWindowNearTray(rewardWindow, trayBounds);
-    rewardWindow.show();
-    rewardWindow.focus();
-    rewardWindow.webContents.send("reward:refresh");
-  }
-}
 
 async function onHotkey() {
   if (isRefining) return;
@@ -48,27 +30,24 @@ async function onHotkey() {
     await refineSelectedText({ notifySuccess, notifyError, notifyWarning });
   } finally {
     isRefining = false;
-    if (rewardWindow && rewardWindow.isVisible()) {
-      rewardWindow.webContents.send("reward:refresh");
-    }
   }
 }
 
 function registerShortcutFromStore() {
   const accelerator = store.get("hotkey");
-  console.log("[Refinezy][Main] Loaded hotkey from store", accelerator);
+  console.log("[Refinzi][Main] Loaded hotkey from store", accelerator);
   try {
-    console.log("[Refinezy][Main] Registering hotkey:", accelerator);
+    console.log("[Refinzi][Main] Registering hotkey:", accelerator);
     registerHotkey(accelerator, onHotkey);
     let isReg = false;
     try {
       isReg = Boolean(globalShortcut.isRegistered && globalShortcut.isRegistered(accelerator));
     } catch (e) {
-      console.warn("[Refinezy][Main] globalShortcut.isRegistered check failed", e?.message || e);
+      console.warn("[Refinzi][Main] globalShortcut.isRegistered check failed", e?.message || e);
     }
-    console.log("[Refinezy][Main] Registration result:", isReg ? "registered" : "not registered", accelerator);
+    console.log("[Refinzi][Main] Registration result:", isReg ? "registered" : "not registered", accelerator);
   } catch (e) {
-    console.error("[Refinezy][Main] Hotkey registration failed:", e?.message || e);
+    console.error("[Refinzi][Main] Hotkey registration failed:", e?.message || e);
     throw e;
   }
 }
@@ -79,7 +58,7 @@ function onDebugPing() {
 }
 
 function onDebugShowNotification() {
-  notifySuccess("Refinezy Debug OK");
+  notifySuccess("Refinzi Debug OK");
 }
 
 async function onDebugTestGemini() {
@@ -118,39 +97,42 @@ app.on("window-all-closed", () => {
 });
 
 app.on("before-quit", () => {
-  console.log("[Refinezy][Main] before-quit event triggered");
+  console.log("[Refinzi][Main] before-quit event triggered");
   unregisterAllHotkeys();
 });
 
 app.on("will-quit", () => {
-  console.log("[Refinezy][Main] will-quit event triggered, app is exiting");
+  console.log("[Refinzi][Main] will-quit event triggered, app is exiting");
 });
 
 async function initializeApp() {
   try {
-    console.log("[Refinezy][Main] Electron app ready, initializing...");
+    console.log("[Refinzi][Main] Electron app ready, initializing...");
     // Ensure Electron cache is in a writable location (userData folder)
     const cachePath = path.join(app.getPath("userData"), "cache");
     app.setPath("cache", cachePath);
-    console.log("[Refinezy][Main] Cache directory set to", cachePath);
+    console.log("[Refinzi][Main] Cache directory set to", cachePath);
+
+    // Harden security by denying all permission requests
+    session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+      callback(false);
+    });
+
     ensureAppUserModelId();
 
     applyLaunchOnStartup(store.get("launchOnStartup"));
 
     settingsWindow = createSettingsWindow();
-    rewardWindow = createRewardWindow();
 
     const onQuitHandler = () => {
-      console.log("[Refinezy][Main] Quit requested from tray");
+      console.log("[Refinzi][Main] Quit requested from tray");
       settingsWindow?.destroy();
-      rewardWindow?.destroy();
-      console.log("[Refinezy][Main] Windows destroyed, calling app.quit()");
+      console.log("[Refinzi][Main] Windows destroyed, calling app.quit()");
       app.quit();
     };
 
     trayApi = createTray({
       onOpenSettings: openSettings,
-      onToggleReward: toggleReward,
       onQuit: onQuitHandler,
       getHotkey: () => store.get("hotkey"),
       onDebugTriggerRefinement: onHotkey,
@@ -172,23 +154,74 @@ async function initializeApp() {
       notifyError(e?.message || "Failed to register hotkey");
     }
 
+    // ── ORB STARTUP ──
+    try {
+      // Dynamically import Orb and Electron screen module
+      const { showOrb, getOrbWindow, undoLastRefinement } = await import("./orbWindow.js");
+      const { screen } = await import("electron");
+      
+      // Register global Undo hotkey
+      try {
+        globalShortcut.register("Ctrl+Alt+Z", () => {
+          console.log("[Hotkey] Undo triggered via Ctrl+Alt+Z");
+          undoLastRefinement();
+        });
+        console.log("[Hotkey] Registered Ctrl+Alt+Z for Undo");
+      } catch (err) {
+        console.warn("[Hotkey] Failed to register Ctrl+Alt+Z for Undo:", err.message);
+      }
+
+      const cursor = screen.getCursorScreenPoint();
+      console.log(`[Refinzi][Main] Orb: cursor at x=${cursor.x} y=${cursor.y}`);
+      // Show Orb near the current mouse position
+      showOrb(cursor.x, cursor.y);
+      // Diagnostic: verify Orb state after showOrb()
+      const orbWin = getOrbWindow();
+      if (orbWin) {
+        const pos = orbWin.getPosition();
+        const size = orbWin.getSize();
+        console.log(`[Refinzi][Main] ✅ Orb BrowserWindow created: pos=[${pos}] size=[${size}] visible=${orbWin.isVisible()} focused=${orbWin.isFocused()}`);
+      } else {
+        console.warn("[Refinzi][Main] ⚠️ Orb: getOrbWindow() returned null after showOrb()");
+      }
+    } catch (orbErr) {
+      console.error("[Refinzi][Main] ❌ Orb startup failed:", orbErr?.message || orbErr);
+      console.error("[Refinzi][Main] ❌ Orb stack:", orbErr?.stack || "(no stack)");
+      // Continue without Orb – app remains functional
+    }
+
     // Start hidden (tray-first).
     settingsWindow.hide();
-    rewardWindow.hide();
   } catch (err) {
-    console.error("[Refinezy][Main] Initialization failed", err);
+    console.error("[Refinzi][Main] Initialization failed", err);
     notifyError("Application failed to start");
     app.quit();
   }
 }
 
-app.whenReady().then(initializeApp).catch((err) => {
-  console.error("[Refinezy][Main] whenReady failed", err);
-  notifyError("Application failed to start");
+// Enforce single instance BEFORE app is ready — second instance gets killed immediately
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  console.log("[Refinzi][Main] Another instance already running. Quitting.");
   app.quit();
-});
+} else {
+  // Focus existing window when second instance attempts to launch
+  app.on("second-instance", () => {
+    console.log("[Refinzi][Main] Second instance detected, focusing existing window.");
+    if (settingsWindow) {
+      if (settingsWindow.isMinimized()) settingsWindow.restore();
+      settingsWindow.focus();
+    }
+  });
 
-app.on("quit", () => {
-  console.log("[Refinezy][Main] quit event fired, app is terminating");
-});
+  app.whenReady().then(initializeApp).catch((err) => {
+    console.error("[Refinzi][Main] whenReady failed", err);
+    notifyError("Application failed to start");
+    app.quit();
+  });
+
+  app.on("quit", () => {
+    console.log("[Refinzi][Main] quit event fired, app is terminating");
+  });
+}
 

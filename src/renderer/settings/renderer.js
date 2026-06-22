@@ -30,23 +30,23 @@ const providerHint = document.getElementById("providerHint");
 const progressRefinements = document.getElementById("progressRefinements");
 const progressRewritesAvoided = document.getElementById("progressRewritesAvoided");
 const progressTimeSaved = document.getElementById("progressTimeSaved");
+const progressStreak = document.getElementById("progressStreak");
 
 // Advanced settings
 const advancedHeader = document.getElementById("advancedHeader");
 const advancedContent = document.getElementById("advancedContent");
 const launchToggle = document.getElementById("launchToggle");
+const saveHistoryToggle = document.getElementById("saveHistoryToggle");
 const hotkeyInput = document.getElementById("hotkeyInput");
 
 // Progress buttons
-const previewBtn = document.getElementById("previewBtn");
-const downloadBtn = document.getElementById("downloadBtn");
 const shareBtn = document.getElementById("shareBtn");
 
 // Share card
 const shareCard = document.getElementById("shareCard");
 const shareCardClose = document.getElementById("shareCardClose");
 const shareRefinements = document.getElementById("shareRefinements");
-const shareTime = document.getElementById("shareTime");
+const shareTimeSaved = document.getElementById("shareTimeSaved");
 const shareRetries = document.getElementById("shareRetries");
 const shareStreak = document.getElementById("shareStreak");
 const shareCardContent = document.getElementById("shareCardContent");
@@ -65,13 +65,51 @@ const milestoneClose = document.getElementById("milestoneClose");
 // Footer stats
 const footerStats = document.getElementById("footerStats");
 
+// History
+const logsContainer = document.getElementById("logsContainer");
+const clearLogsBtn = document.getElementById("clearLogsBtn");
+
 // Onboarding
 const onboardingModal = document.getElementById("onboardingModal");
 const onboardingModalClose = document.getElementById("onboardingModalClose");
 const onboardingModalGotIt = document.getElementById("onboardingModalGotIt");
 
+// ── History ──
+async function loadHistory() {
+  if (!logsContainer) return;
+  try {
+    const result = await window.refinzi.logs.get();
+    const logs = result.logs || [];
+    if (logs.length === 0) {
+      logsContainer.innerHTML = "<p>No history yet.</p>";
+      return;
+    }
+    logsContainer.innerHTML = logs.map(log => `
+      <div style="border-bottom: 1px solid var(--border-color, #ccc); padding: 8px 0;">
+        <small style="color: gray;">${new Date(log.timestamp || Date.now()).toLocaleString()}</small>
+        <div style="margin-top: 4px;"><strong>Input:</strong> ${(log.input || "").substring(0, 100)}...</div>
+        <div style="margin-top: 4px;"><strong>Output:</strong> ${(log.output || "").substring(0, 100)}...</div>
+      </div>
+    `).join("");
+  } catch (e) {
+    console.error("[CommandCenter] loadHistory failed", e);
+    logsContainer.innerHTML = "<p>Error loading history.</p>";
+  }
+}
+
+async function clearHistory() {
+  try {
+    await window.refinzi.logs.clear();
+    await loadHistory();
+    showNotification("success", "History cleared.");
+  } catch (e) {
+    console.error("[CommandCenter] clearHistory failed", e);
+    showNotification("error", "Failed to clear history.");
+  }
+}
+
 // Theme
-const themeKey = "refinezy:theme";
+const themeKey = "refinzi:theme";
 
 // ── State ──
 let currentStats = null;
@@ -98,99 +136,110 @@ function applySavedTheme() {
 
 // ── Premium Toast Notification ──
 function showNotification(type, message) {
-  window.refinezy.app.showToast({ type, message }).catch(() => { });
+  window.refinzi.app.showToast({ type, message }).catch(() => { });
 }
 
 // ── Populate share card ──
 function populateShareCard(s) {
   if (shareRefinements) shareRefinements.textContent = String(s.refinementsMade ?? 0);
   const totalSeconds = s.timeSavedSeconds || 0;
-  if (shareTime) {
-    shareTime.textContent = totalSeconds >= 60 ? Math.round(totalSeconds / 60) + "m" : totalSeconds + "s";
-  }
+  const timeStr = totalSeconds >= 60 ? Math.round(totalSeconds / 60) + "m" : totalSeconds + "s";
+  if (shareTimeSaved) shareTimeSaved.textContent = timeStr;
   if (shareRetries) shareRetries.textContent = String(Math.round((s.retriesAvoided ?? 0) * 10) / 10);
   if (shareStreak) shareStreak.textContent = String(s.currentStreak ?? 0);
 }
 
 // ── PNG download ──
-function downloadPng() {
+function buildStatsCanvas() {
   const canvas = document.createElement("canvas");
   const scale = 2;
-  canvas.width = 320 * scale;
-  canvas.height = 200 * scale;
+  canvas.width = 560 * scale;
+  canvas.height = 280 * scale;
   const ctx = canvas.getContext("2d");
 
-  // Background
+  // Background — premium indigo-to-teal gradient
   const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-  grad.addColorStop(0, "#6D5EF9");
-  grad.addColorStop(1, "#00D4FF");
+  grad.addColorStop(0, "#1e1b4b");
+  grad.addColorStop(0.5, "#1e3a5f");
+  grad.addColorStop(1, "#0f2f3f");
   ctx.fillStyle = grad;
   ctx.beginPath();
-  ctx.roundRect(0, 0, canvas.width, canvas.height, 24 * scale);
+  ctx.roundRect(0, 0, canvas.width, canvas.height, 28 * scale);
   ctx.fill();
 
-  // Content
-  ctx.fillStyle = "white";
-  ctx.font = `bold ${24 * scale}px "Segoe UI", system-ui, sans-serif`;
-  ctx.textAlign = "center";
-  ctx.fillText("Refinezy Stats", canvas.width / 2, 56 * scale);
+  // Subtle dot pattern overlay
+  ctx.fillStyle = "rgba(129,140,248,0.04)";
+  for (let x = 20; x < canvas.width; x += 30 * scale) {
+    for (let y = 20; y < canvas.height; y += 30 * scale) {
+      ctx.beginPath();
+      ctx.arc(x, y, 2 * scale, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
 
-  ctx.font = `${14 * scale}px "Segoe UI", system-ui, sans-serif`;
-  ctx.fillStyle = "rgba(255,255,255,0.8)";
-  const texts = [
-    `Texts Enhanced: ${shareRefinements?.textContent || '0'}`,
-    `Time Saved: ${shareTime?.textContent || '0s'}`,
-    `Retries Prevented: ${shareRetries?.textContent || '0'}`,
-    `Day Streak: ${shareStreak?.textContent || '0'}`
+  // Header label
+  ctx.fillStyle = "rgba(129,140,248,0.7)";
+  ctx.font = `700 ${9 * scale}px 'Segoe UI', system-ui, sans-serif`;
+  ctx.textAlign = "left";
+  ctx.letterSpacing = `${1.5 * scale}px`;
+  ctx.fillText("REFINZI · MY STATS", 28 * scale, 40 * scale);
+
+  // 2x2 stat grid
+  const stats = [
+    { label: "Refinements",      val: shareRefinements?.textContent || "0" },
+    { label: "Time Saved",       val: shareTimeSaved?.textContent    || "0m" },
+    { label: "Retries Prevented", val: shareRetries?.textContent    || "0" },
+    { label: "Day Streak",       val: shareStreak?.textContent      || "0" }
   ];
-  texts.forEach((t, i) => {
-    ctx.fillText(t, canvas.width / 2, 96 * scale + i * 26 * scale);
+
+  const colW = canvas.width / 2;
+  const rowH = (canvas.height - 80 * scale) / 2;
+
+  stats.forEach((s, i) => {
+    const col = i % 2;
+    const row = Math.floor(i / 2);
+    const cx = col * colW + 28 * scale;
+    const cy = 70 * scale + row * rowH;
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = `800 ${28 * scale}px 'Segoe UI', system-ui, sans-serif`;
+    ctx.textAlign = "left";
+    ctx.fillText(s.val, cx, cy + 28 * scale);
+
+    ctx.fillStyle = "rgba(255,255,255,0.35)";
+    ctx.font = `600 ${9 * scale}px 'Segoe UI', system-ui, sans-serif`;
+    ctx.fillText(s.label.toUpperCase(), cx, cy + 46 * scale);
   });
 
+  // Brand watermark
+  ctx.fillStyle = "rgba(255,255,255,0.20)";
+  ctx.font = `700 ${10 * scale}px 'Segoe UI', system-ui, sans-serif`;
+  ctx.textAlign = "right";
+  ctx.fillText("refinzi.app", canvas.width - 28 * scale, canvas.height - 20 * scale);
+
+  return canvas;
+}
+
+function downloadPng() {
+  const canvas = buildStatsCanvas();
   const link = document.createElement("a");
-  link.download = "refinezy-stats.png";
+  link.download = "refinzi-stats.png";
   link.href = canvas.toDataURL("image/png");
   link.click();
 }
 
 // ── Copy image to clipboard ──
 function copyImage() {
-  const canvas = document.createElement("canvas");
-  const scale = 2;
-  canvas.width = 320 * scale;
-  canvas.height = 200 * scale;
-  const ctx = canvas.getContext("2d");
-
-  const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-  grad.addColorStop(0, "#6D5EF9");
-  grad.addColorStop(1, "#00D4FF");
-  ctx.fillStyle = grad;
-  ctx.beginPath();
-  ctx.roundRect(0, 0, canvas.width, canvas.height, 24 * scale);
-  ctx.fill();
-
-  ctx.fillStyle = "white";
-  ctx.font = `bold ${24 * scale}px "Segoe UI", system-ui, sans-serif`;
-  ctx.textAlign = "center";
-  ctx.fillText("Refinezy Stats", canvas.width / 2, 56 * scale);
-
-  ctx.font = `${14 * scale}px "Segoe UI", system-ui, sans-serif`;
-  ctx.fillStyle = "rgba(255,255,255,0.8)";
-  const texts = [
-    `Texts Enhanced: ${shareRefinements?.textContent || '0'}`,
-    `Time Saved: ${shareTime?.textContent || '0s'}`,
-    `Retries Prevented: ${shareRetries?.textContent || '0'}`,
-    `Day Streak: ${shareStreak?.textContent || '0'}`
-  ];
-  texts.forEach((t, i) => {
-    ctx.fillText(t, canvas.width / 2, 96 * scale + i * 26 * scale);
-  });
-
+  const canvas = buildStatsCanvas();
   canvas.toBlob((blob) => {
     if (blob) {
       navigator.clipboard.write([
         new ClipboardItem({ "image/png": blob })
-      ]).catch(() => { });
+      ]).then(() => {
+        showNotification("success", "Stats image copied to clipboard!");
+      }).catch(() => {
+        showNotification("error", "Could not copy to clipboard.");
+      });
     }
   });
 }
@@ -198,7 +247,7 @@ function copyImage() {
 // ── Share to X ──
 function shareToX() {
   const text = encodeURIComponent(
-    `I've enhanced ${shareRefinements?.textContent || '0'} texts with Refinezy! 🚀\n\nTime saved: ${shareTime?.textContent || '0s'}\nRetries prevented: ${shareRetries?.textContent || '0'}\nDay streak: ${shareStreak?.textContent || '0'}`
+    `I've enhanced ${shareRefinements?.textContent || '0'} texts with Refinzi! 🚀\n\nTime saved: ${shareTimeSaved?.textContent || '0m'}\nRetries prevented: ${shareRetries?.textContent || '0'}\nDay streak: ${shareStreak?.textContent || '0'} days\n\nAI text refinement, right in your workflow.`
   );
   window.open(`https://x.com/intent/tweet?text=${text}`, "_blank");
 }
@@ -206,9 +255,9 @@ function shareToX() {
 // ── Share to LinkedIn ──
 function shareToLinkedIn() {
   const text = encodeURIComponent(
-    `I've enhanced ${shareRefinements?.textContent || '0'} texts using Refinezy — a lightweight desktop utility that turns rough instructions into polished AI prompts. Time saved: ${shareTime?.textContent || '0s'}, Retries prevented: ${shareRetries?.textContent || '0'}.`
+    `I've enhanced ${shareRefinements?.textContent || '0'} texts using Refinzi — a lightweight desktop utility that refines your writing with AI, right in your workflow. Time saved: ${shareTimeSaved?.textContent || '0m'}, Retries prevented: ${shareRetries?.textContent || '0'}. Try it — your data stays on your device.`
   );
-  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=https://refinezy.app&summary=${text}`, "_blank");
+  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=https://refinzi.app&summary=${text}`, "_blank");
 }
 
 // ── Connection test simulation ──
@@ -229,7 +278,7 @@ async function testConnection() {
 
   try {
     // Attempt to verify the key via the backend
-    const result = await window.refinezy.settings.verifyApiKey(key);
+    const result = await window.refinzi.settings.verifyApiKey(key);
     if (result?.ok) {
       connectionIndicator.className = "connection-indicator success";
       connectionText.textContent = "Connected successfully";
@@ -267,27 +316,55 @@ function toggleApiKeyVisibility() {
 async function handleProviderChange() {
   if (!providerSelect || !modelSelect) return;
   const provider = providerSelect.value;
+  const settings = await window.refinzi.settings.get();
 
   // Clear and populate model options based on provider
   modelSelect.innerHTML = "";
+  let models = [];
+  let apiKey = "";
+
   if (provider === "gemini") {
-    const models = [
+    models = [
       { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash" },
       { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro" },
       { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash" },
       { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro" }
     ];
-    models.forEach(m => {
-      const opt = document.createElement("option");
-      opt.value = m.value;
-      opt.textContent = m.label;
-      modelSelect.appendChild(opt);
-    });
+    apiKey = settings.geminiApiKey || "";
+  } else if (provider === "openrouter") {
+    models = [
+      { value: "google/gemini-2.0-flash-exp:free", label: "FREE: Gemini 2.0 Flash" },
+      { value: "meta-llama/llama-3.3-70b-instruct:free", label: "FREE: Llama 3.3 70B" },
+      { value: "mistralai/pixtral-12b:free", label: "FREE: Pixtral 12B" },
+      { value: "openai/gpt-4o-mini", label: "GPT-4o Mini" },
+      { value: "anthropic/claude-3.5-sonnet", label: "Claude 3.5 Sonnet" }
+    ];
+    apiKey = settings.openRouterApiKey || "";
   }
 
-  // Save provider selection
+  models.forEach(m => {
+    const opt = document.createElement("option");
+    opt.value = m.value;
+    opt.textContent = m.label;
+    modelSelect.appendChild(opt);
+  });
+
+  // Update API key field
+  if (apiKeyInput) apiKeyInput.value = apiKey;
+
+  // Set default model for the provider
+  const defaultModel = provider === "gemini" ? "gemini-2.5-flash" : "google/gemini-2.0-flash-exp:free";
+  modelSelect.value = defaultModel;
+
+  // Save provider and default model selection
   try {
-    await window.refinezy.settings.set({ activeProvider: provider });
+    await window.refinzi.settings.set({ 
+      activeProvider: provider,
+      activeModel: defaultModel
+    });
+    
+    // Refresh UI status
+    refresh();
   } catch (e) {
     console.warn("[CommandCenter] Could not save provider", e);
   }
@@ -297,8 +374,7 @@ async function handleModelChange() {
   if (!modelSelect) return;
   const model = modelSelect.value;
   try {
-    await window.refinezy.settings.set({ activeModel: model });
-    if (modelBadge) modelBadge.textContent = model;
+    await window.refinzi.settings.set({ activeModel: model });
   } catch (e) {
     console.warn("[CommandCenter] Could not save model", e);
   }
@@ -326,8 +402,8 @@ function hideShareCard() {
 // ── Load data ──
 async function refresh() {
   try {
-    const s = await window.refinezy.reward.get();
-    const settings = await window.refinezy.settings.get();
+    const s = await window.refinzi.reward.get();
+    const settings = await window.refinzi.settings.get();
     currentStats = s;
 
     const count = s.refinementsMade ?? 0;
@@ -358,12 +434,15 @@ async function refresh() {
     if (heroRefinements) heroRefinements.textContent = String(count);
     if (heroRewritesAvoided) heroRewritesAvoided.textContent = String(rewritesAvoided);
 
-    // API key field
-    if (apiKeyInput) apiKeyInput.value = settings.geminiApiKey || "";
-
-    // Model select
-    if (modelSelect) {
-      modelSelect.value = settings.activeModel || "gemini-2.5-flash";
+    // Progress section
+    if (progressRefinements) progressRefinements.textContent = String(count);
+    if (progressTimeSaved) {
+      const minutes = Math.floor(totalSeconds / 60);
+      progressTimeSaved.textContent = `${minutes} ${minutes === 1 ? 'Minute' : 'Minutes'}`;
+    }
+    if (progressStreak) {
+      const streak = s.currentStreak ?? 0;
+      progressStreak.textContent = `${streak}-Day`;
     }
 
     // Provider select
@@ -371,18 +450,48 @@ async function refresh() {
       providerSelect.value = settings.activeProvider || "gemini";
     }
 
-    // Progress section
-    if (progressRefinements) progressRefinements.textContent = String(count);
-    if (progressRewritesAvoided) progressRewritesAvoided.textContent = String(rewritesAvoided);
-    if (progressTimeSaved) {
-      progressTimeSaved.textContent = totalSeconds >= 60
-        ? Math.round(totalSeconds / 60) + "m"
-        : totalSeconds + "s";
+    // API key field - Load the key for the active provider
+    if (apiKeyInput) {
+      const activeProvider = providerSelect?.value || settings.activeProvider || "gemini";
+      apiKeyInput.value = (activeProvider === "openrouter" ? settings.openRouterApiKey : settings.geminiApiKey) || "";
+    }
+
+    // Model select
+    if (modelSelect) {
+      // Dynamic model population based on current provider
+      const provider = providerSelect?.value || settings.activeProvider || "gemini";
+      modelSelect.innerHTML = "";
+      let models = [];
+      if (provider === "gemini") {
+        models = [
+          { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash" },
+          { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro" },
+          { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash" },
+          { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro" }
+        ];
+      } else if (provider === "openrouter") {
+        models = [
+          { value: "openai/gpt-4o-mini", label: "GPT-4o Mini" },
+          { value: "openai/gpt-4o", label: "GPT-4o" },
+          { value: "anthropic/claude-3.5-sonnet", label: "Claude 3.5 Sonnet" },
+          { value: "anthropic/claude-3-haiku", label: "Haiku" },
+          { value: "google/gemini-flash-1.5", label: "Gemini Flash 1.5 (via OR)" }
+        ];
+      }
+      models.forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m.value;
+        opt.textContent = m.label;
+        modelSelect.appendChild(opt);
+      });
+      modelSelect.value = settings.activeModel || (provider === "gemini" ? "gemini-2.5-flash" : "openai/gpt-4o-mini");
     }
 
     // Connection status reset
     if (connectionIndicator) {
-      if (settings.geminiApiKey) {
+      const activeProvider = providerSelect?.value || settings.activeProvider || "gemini";
+      const hasKey = activeProvider === "openrouter" ? settings.openRouterApiKey : settings.geminiApiKey;
+      if (hasKey) {
         connectionIndicator.className = "connection-indicator success";
         if (connectionText) connectionText.textContent = "Key saved, ready to test";
       } else {
@@ -393,7 +502,15 @@ async function refresh() {
 
     // Settings fields
     if (launchToggle) launchToggle.checked = Boolean(settings.launchOnStartup);
+    if (saveHistoryToggle) saveHistoryToggle.checked = Boolean(settings.saveHistoryLocally);
     if (hotkeyInput) hotkeyInput.value = settings.hotkey || "Ctrl+Alt+Space";
+
+    // Hero shortcut badge
+    const heroShortcut = document.getElementById("heroShortcut");
+    if (heroShortcut) {
+      const displayHotkey = (settings.hotkey || "Ctrl+Alt+Space").replaceAll("+", " + ");
+      heroShortcut.textContent = displayHotkey;
+    }
 
     // Share card content
     populateShareCard(s);
@@ -423,10 +540,11 @@ async function refresh() {
 async function saveApiKey() {
   if (!apiKeyInput) return;
   const key = apiKeyInput.value.trim();
+  const provider = providerSelect?.value || "gemini";
   try {
-    const res = await window.refinezy.settings.setApiKey(key);
+    const res = await window.refinzi.settings.setApiKey(key, provider);
     if (res?.ok) {
-      showNotification("success", "API key saved successfully.");
+      showNotification("success", `${provider === "openrouter" ? "OpenRouter" : "Gemini"} API key saved successfully.`);
 
       // Update connection status
       if (connectionIndicator) {
@@ -445,7 +563,7 @@ async function saveApiKey() {
 async function saveLaunch() {
   if (!launchToggle) return;
   try {
-    await window.refinezy.settings.setLaunchOnStartup(launchToggle.checked);
+    await window.refinzi.settings.setLaunchOnStartup(launchToggle.checked);
     showNotification("success", `Launch on startup ${launchToggle.checked ? "enabled" : "disabled"}.`);
   } catch (e) {
     console.error("[CommandCenter] saveLaunch failed", e);
@@ -457,7 +575,7 @@ async function saveHotkey() {
   if (!hotkeyInput) return;
   const hk = hotkeyInput.value.trim() || "Ctrl+Alt+Space";
   try {
-    const res = await window.refinezy.settings.setHotkey(hk);
+    const res = await window.refinzi.settings.setHotkey(hk);
     if (res?.ok) {
       showNotification("success", `Hotkey updated to ${hk}`);
       await refresh();
@@ -488,6 +606,13 @@ if (toggleApiKeyBtn) toggleApiKeyBtn.addEventListener("click", toggleApiKeyVisib
 if (saveKeyBtn) saveKeyBtn.addEventListener("click", saveApiKey);
 if (testConnectionBtn) testConnectionBtn.addEventListener("click", testConnection);
 if (launchToggle) launchToggle.addEventListener("change", saveLaunch);
+if (saveHistoryToggle) {
+  saveHistoryToggle.addEventListener("change", async () => {
+    await window.refinzi.settings.set({ saveHistoryLocally: saveHistoryToggle.checked });
+    showNotification("success", `History ${saveHistoryToggle.checked ? "enabled" : "disabled"}.`);
+    await loadHistory();
+  });
+}
 if (hotkeyInput) hotkeyInput.addEventListener("change", saveHotkey);
 
 // Advanced settings collapse
@@ -502,8 +627,6 @@ if (advancedHeader) {
 }
 
 // Progress section buttons
-if (previewBtn) previewBtn.addEventListener("click", showShareCard);
-if (downloadBtn) downloadBtn.addEventListener("click", downloadPng);
 if (shareBtn) shareBtn.addEventListener("click", showShareCard);
 
 // Share card close
@@ -519,7 +642,7 @@ if (shareLinkedInBtn) shareLinkedInBtn.addEventListener("click", shareToLinkedIn
 if (milestoneClose) {
   milestoneClose.addEventListener("click", () => {
     if (milestoneCard) milestoneCard.classList.add("hidden");
-    window.refinezy.reward.dismissShareCard();
+    window.refinzi.reward.dismissShareCard();
   });
 }
 if (milestoneShare) {
@@ -527,6 +650,9 @@ if (milestoneShare) {
     showShareCard();
   });
 }
+
+// History clear
+if (clearLogsBtn) clearLogsBtn.addEventListener("click", clearHistory);
 
 // Onboarding modal wiring
 function closeOnboardingModal() {
@@ -540,11 +666,17 @@ if (onboardingModal) {
   });
 }
 
-// ── Listen for command center refresh ──
-window.refinezy.command.onRefresh(() => {
-  refresh().catch(() => { });
-});
+
 
 // ── Initial load ──
 refresh().catch(() => { });
+loadHistory().catch(() => { });
 applySavedTheme();
+
+// Listen for updates from the main process when refinements happen
+if (window.refinzi && window.refinzi.reward && window.refinzi.reward.onRefresh) {
+  window.refinzi.reward.onRefresh(() => {
+    console.log("[Refinzi][Settings] Refreshing stats due to reward:refresh");
+    refresh().catch(() => { });
+  });
+}

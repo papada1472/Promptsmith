@@ -1,7 +1,7 @@
 {
-  "name": "refinezy",
-  "productName": "Refinezy",
-  "version": "1.0.0",
+  "name": "refinzi",
+  "productName": "Refinzi",
+  "version": "0.1.0-beta.2",
   "description": "Lightweight Windows tray utility to refine selected text into expert AI instructions.",
   "main": "src/main/main.js",
   "type": "module",
@@ -19,7 +19,9 @@
     "@google/genai": "^2.7.0",
     "@google/generative-ai": "^0.24.1",
     "@nut-tree-fork/nut-js": "^4.2.6",
-    "electron-store": "^9.0.0"
+    "ai": "^6.0.204",
+    "dotenv": "^17.4.2",
+    "electron-store": "^11.0.2"
   },
   "devDependencies": {
     "electron": "^32.2.1",
@@ -28,8 +30,8 @@
     "png-to-ico": "^3.0.1"
   },
   "build": {
-    "appId": "com.refinezy.app",
-    "productName": "Refinezy",
+    "appId": "com.refinzi.app",
+    "productName": "Refinzi",
     "asar": true,
     "directories": {
       "output": "dist"
@@ -49,9 +51,10 @@
       "oneClick": true,
       "perMachine": false,
       "allowToChangeInstallationDirectory": false,
-      "createDesktopShortcut": false,
+      "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Refinezy"
+      "shortcutName": "Refinzi",
+      "artifactName": "Refinzi-Setup-v${version}.exe"
     }
   },
   "allowScripts": {

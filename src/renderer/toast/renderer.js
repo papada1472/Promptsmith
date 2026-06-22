@@ -4,27 +4,13 @@ let activeToastOpts = null;
 
 function createToast(opts) {
   const el = document.createElement("div");
-  el.className = "toast";
-
-  const icon = document.createElement("span");
-  icon.className = "toast-icon";
-  icon.textContent = opts.icon || (opts.type === "error" ? "⚠" : opts.type === "processing" ? "✨" : "✓");
-  el.appendChild(icon);
-
-  const body = document.createElement("div");
-  body.className = "toast-body";
-
-  const title = document.createElement("div");
-  title.className = "toast-title";
-  title.textContent = opts.title || "";
-  body.appendChild(title);
+  el.className = "toast " + (opts.type || "success");
 
   const msg = document.createElement("div");
   msg.className = "toast-message";
   msg.textContent = opts.message || "";
-  body.appendChild(msg);
+  el.appendChild(msg);
 
-  el.appendChild(body);
   return el;
 }
 
@@ -77,4 +63,4 @@ function renderNewToast(opts) {
 }
 
 // ── Listen for IPC ──
-window.refinezy.toast.onShow((opts) => show(opts));
+window.refinzi.toast.onShow((opts) => show(opts));

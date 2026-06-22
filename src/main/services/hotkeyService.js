@@ -20,7 +20,7 @@ export class HotkeyService {
       refreshTrayFn();
       return { ok: true };
     } catch (err) {
-      console.error("[Refinezy][HotkeyService] Hotkey registration failed", err);
+      console.error("[Refinzi][HotkeyService] Hotkey registration failed", err);
       return { ok: false, error: err?.message || "Failed to register hotkey" };
     }
   }

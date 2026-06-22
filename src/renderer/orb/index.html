@@ -1,21 +1,74 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-    <div class="orb-container">
-        <div class="orb">
-            <span class="sparkle">✨</span>
-            <span class="brain">🧠</span>
+    <div class="orb-window-container">
+        <!-- Floating Circular Orb element -->
+        <div class="orb-container">
+            <div class="orb" id="orbBtn">
+                <div class="orb-visual">
+                    <span class="sparkle">✨</span>
+                    <span class="brain">🧠</span>
+                </div>
+            </div>
+            <!-- Invisible hit extension: 60×60px catchable area (2× the 28px visual orb) -->
+            <div class="orb-hit" id="orbHit"></div>
+        </div>
+
+        <!-- Dynamic Status/Control Bubble below the Orb -->
+        <div class="status-bubble" id="statusBubble">
+            <!-- Ready view (suggestion rotation) -->
+            <div class="card-ready" id="ready-card">
+                <span id="rotate-placeholder">🧠 Refinzi • Drop anything.</span>
+            </div>
+
+            <!-- Processing view -->
+            <div class="card-processing hidden" id="processing-card">
+                <span class="pulse">✨</span>
+            </div>
+
+            <!-- Error/Retry view -->
+            <div class="card-error hidden" id="error-card">
+                <span id="error-text">Couldn't understand.</span>
+                <button class="retry-btn" id="retry-btn">Retry</button>
+            </div>
+        </div>
+
+        <!-- Float Personalization Toast -->
+        <div class="toast-personalization hidden" id="personalization-toast">
+            🚀 Getting Better
+        </div>
+
+        <!-- Mini Onboarding Card -->
+        <div class="onboarding-card hidden" id="onboarding-card">
+            <div class="onboarding-header">Refinzi</div>
+            <div class="onboarding-body">
+                <div class="onboarding-item">
+                    <span class="onboarding-bullet">✨</span>
+                    <span class="onboarding-text"><strong>Click</strong><br>Improve Prompt</span>
+                </div>
+                <div class="onboarding-item">
+                    <span class="onboarding-bullet">🧠</span>
+                    <span class="onboarding-text"><strong>Hold</strong><br>Create Expert Prompt</span>
+                </div>
+                <div class="onboarding-item">
+                    <span class="onboarding-bullet">📍</span>
+                    <span class="onboarding-text">Drag anywhere</span>
+                </div>
+                <div class="onboarding-item">
+                    <span class="onboarding-bullet">⌨</span>
+                    <span class="onboarding-text">Ctrl + Alt + Space</span>
+                </div>
+            </div>
+            <button class="onboarding-btn" id="onboarding-got-it">Got It</button>
         </div>
     </div>
-    <!-- Container for Gemini response text -->
-    <div class="orb-response" hidden></div>
+
     <script type="module" src="renderer.js"></script>
 </body>
-
 </html>

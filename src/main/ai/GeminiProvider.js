@@ -6,10 +6,11 @@ export class GeminiProvider extends AIProvider {
 
   constructor(opts) {
     super(opts);
-    console.log("[Refinezy][GeminiProvider] Initializing with API key (length:", this.apiKey?.length, ")");
-    console.log("[Refinezy][GeminiProvider] Creating GoogleGenAI client...");
+    this.model = opts?.model || GeminiProvider.MODEL;
+    console.log("[Refinzi][GeminiProvider] Initializing with API key (length:", this.apiKey?.length, ")");
+    console.log("[Refinzi][GeminiProvider] Creating GoogleGenAI client...");
     this.client = new GoogleGenAI({ apiKey: this.apiKey });
-    console.log("[Refinezy][GeminiProvider] Client created, modelName set to:", GeminiProvider.MODEL);
+    console.log("[Refinzi][GeminiProvider] Client created, model set to:", this.model);
   }
 
   static getModelName() {
@@ -17,38 +18,60 @@ export class GeminiProvider extends AIProvider {
   }
 
   async refine(text, opts = {}) {
-    console.log("[Refinezy][GeminiProvider] refine() called, text length:", text?.length || 0);
+    console.log("[Refinzi][GeminiProvider] refine() called, text length:", text?.length || 0);
 
     if (!this.apiKey) {
       const err = new Error("Missing Gemini API key");
       err.code = "MISSING_API_KEY";
-      console.error("[Refinezy][GeminiProvider] ERROR - MISSING_API_KEY:", err.message);
+      console.error("[Refinzi][GeminiProvider] ERROR - MISSING_API_KEY:", err.message);
       throw err;
     }
     if (!text || !text.trim()) {
       const err = new Error("No text to refine");
       err.code = "EMPTY_INPUT";
-      console.error("[Refinezy][GeminiProvider] ERROR - EMPTY_INPUT:", err.message);
+      console.error("[Refinzi][GeminiProvider] ERROR - EMPTY_INPUT:", err.message);
       throw err;
     }
 
-    console.log("[Refinezy][GeminiProvider] Model:", GeminiProvider.MODEL);
+    console.log("[Refinzi][GeminiProvider] Model:", this.model);
 
     try {
-      console.log("[Refinezy][GeminiProvider] Calling client.models.generateContent...");
+      console.log("[Refinzi][GeminiProvider] Calling client.models.generateContent...");
+      
+      let contents = text;
+      if (opts.media) {
+        contents = [
+          {
+            inlineData: {
+              mimeType: opts.media.mimeType,
+              data: opts.media.data
+            }
+          },
+          text
+        ];
+      }
+
+      const config = {
+        systemInstruction: this.systemPrompt
+      };
+      if (opts.responseMimeType) {
+        config.responseMimeType = opts.responseMimeType;
+      }
+
       const response = await this.client.models.generateContent({
-        model: GeminiProvider.MODEL,
-        contents: `${this.systemPrompt}\n\nInstruction:\n${text}`
+        model: this.model,
+        contents: contents,
+        config: config
       });
       const responseText = response?.text || "";
-      console.log("[Refinezy][GeminiProvider] Response received, length:", responseText.length);
+      console.log("[Refinzi][GeminiProvider] Response received, length:", responseText.length);
       if (!responseText) {
         const err = new Error("Empty response from Gemini");
         err.code = "EMPTY_OUTPUT";
-        console.error("[Refinezy][GeminiProvider] ERROR - EMPTY_OUTPUT:", err.message);
+        console.error("[Refinzi][GeminiProvider] ERROR - EMPTY_OUTPUT:", err.message);
         throw err;
       }
-      console.log("[Refinezy][GeminiProvider] Returning refined text successfully");
+      console.log("[Refinzi][GeminiProvider] Returning refined text successfully");
       return responseText;
     } catch (e) {
       const fullError = JSON.stringify({
@@ -56,7 +79,7 @@ export class GeminiProvider extends AIProvider {
         code: e?.code,
         stack: e?.stack
       });
-      console.error("[Refinezy][GeminiProvider] FULL ERROR RESPONSE:", fullError);
+      console.error("[Refinzi][GeminiProvider] FULL ERROR RESPONSE:", fullError);
       throw e;
     }
   }

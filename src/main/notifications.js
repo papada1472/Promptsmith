@@ -6,7 +6,7 @@ let toastWindow = null;
 export function ensureAppUserModelId() {
   try {
     // Required for Windows notifications + taskbar identity.
-    app.setAppUserModelId("com.refinezy.app");
+    app.setAppUserModelId("com.refinzi.app");
   } catch {
     // ignore
   }
@@ -18,7 +18,7 @@ export function ensureAppUserModelId() {
  * The toast window is created lazily. In the original implementation the
  * window was created and `showToast` was called immediately. This caused a
  * race condition: the `toast:trigger` IPC message could be sent before the
- * renderer had executed `window.refinezy.toast.onShow(cb)`, meaning the first
+ * renderer had executed `window.refinzi.toast.onShow(cb)`, meaning the first
  * processing toast (the "floating orb") was never displayed.
  *
  * To fix the race we wait for the window to emit `ready-to-show` – which

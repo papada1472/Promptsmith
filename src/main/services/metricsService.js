@@ -67,13 +67,79 @@ export class MetricsService {
   }
 
   /**
-   * Appends a refinement log entry, capped at 500.
+   * Appends a refinement log entry to historyLogs, capped at 500.
+   * Respects the saveHistoryLocally privacy toggle.
    */
   appendLog({ input, output, timestamp }) {
-    const existing = store.get("refinementLogs") || [];
+    if (!store.get("saveHistoryLocally")) {
+      return; // Privacy: user has not opted in to local history
+    }
+    const existing = store.get("historyLogs") || [];
     const next = [...existing, { input, output, timestamp }];
     const capped = next.length > 500 ? next.slice(next.length - 500) : next;
-    store.set("refinementLogs", capped);
+    store.set("historyLogs", capped);
+  }
+
+  /**
+   * Retrieves history logs with pagination.
+   * Returns { logs: [], hasMore: boolean }
+   */
+  getLogs({ offset = 0, limit = 50 } = {}) {
+    const all = store.get("historyLogs") || [];
+    // Return newest-first: slice from end
+    const reversed = [...all].reverse();
+    const page = reversed.slice(offset, offset + limit);
+    return { logs: page, hasMore: offset + limit < reversed.length };
+  }
+
+  /**
+   * Deletes a single history log entry by its index in the stored array.
+   */
+  deleteLog(index) {
+    const existing = store.get("historyLogs") || [];
+    if (index < 0 || index >= existing.length) return;
+    existing.splice(index, 1);
+    store.set("historyLogs", existing);
+  }
+
+  /**
+   * Clears all history logs.
+   */
+  clearLogs() {
+    store.set("historyLogs", []);
+  }
+
+  /**
+   * Appends a telemetry event to telemetryLogs, capped at 500.
+   */
+  appendTelemetry(event) {
+    const logs = store.get("telemetryLogs") || [];
+    logs.push(event);
+    const capped = logs.length > 500 ? logs.slice(logs.length - 500) : logs;
+    store.set("telemetryLogs", capped);
+  }
+
+  /**
+   * Retrieves all telemetry logs.
+   */
+  getTelemetryLogs() {
+    return store.get("telemetryLogs") || [];
+  }
+
+  /**
+   * Clears all telemetry logs.
+   */
+  clearTelemetryLogs() {
+    store.set("telemetryLogs", []);
+  }
+
+  /**
+   * Logs a telemetry event.
+   * @param {string} eventName
+   * @param {Object} payload
+   */
+  logEvent(eventName, payload) {
+    console.log(`[MetricsService] Telemetry Event: ${eventName}`, JSON.stringify(payload));
   }
 
   #isoDay(date = new Date()) {

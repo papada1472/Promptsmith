@@ -1,6 +1,6 @@
 # Current Architecture Audit: AI Request Pipeline
 
-This document provides a comprehensive technical audit of the complete end-to-end AI request pipeline in Refinezy. It traces the operational flow of a single refinement action, lists every file participating in the pipeline, and identifies all hardcoded Google Gemini dependencies that must be decoupled to support a provider-agnostic architecture.
+This document provides a comprehensive technical audit of the complete end-to-end AI request pipeline in Refinzi. It traces the operational flow of a single refinement action, lists every file participating in the pipeline, and identifies all hardcoded Google Gemini dependencies that must be decoupled to support a provider-agnostic architecture.
 
 ---
 
@@ -35,7 +35,7 @@ The refinement pipeline transitions through six distinct phases: from the user's
 
 ### Phase 2: Selection Capture
 * **State Preservation (`src/main/refineController.js`):** The orchestrator reads and caches the current OS clipboard contents using `readClipboardText()` from `src/main/clipboardFlow.js` to ensure the user's clipboard can be restored if the request fails.
-* **Ambient Feedback (`src/main/notifications.js`):** To preserve flow, Refinezy displays a persistent "processing" toast: `notifyWarning("Improving your workflow", "Your prompts stay on your device.", true)` which creates the `toastWindow` if it is not already initialized, rendering the toast at the top-center of the primary display.
+* **Ambient Feedback (`src/main/notifications.js`):** To preserve flow, Refinzi displays a persistent "processing" toast: `notifyWarning("Improving your workflow", "Your prompts stay on your device.", true)` which creates the `toastWindow` if it is not already initialized, rendering the toast at the top-center of the primary display.
 * **Input Capture & Retries (`src/main/clipboardFlow.js`):**
   1. `refineSelectedText` calls `autoCopySelectedText()`.
   2. `autoCopySelectedText` initiates an iterative loop (up to 3 attempts, spaced with 300 ms delays).
@@ -128,7 +128,7 @@ The following files compose the complete refinement pipeline:
 11. **`src/main/notifications.js`**
     * Serves as a main-process interface that dispatches configurations to the toast window.
 12. **`src/preload/sharedPreload.js`**
-    * The context-bridge script that exposes safe IPC channels to the three renderers under `window.refinezy`.
+    * The context-bridge script that exposes safe IPC channels to the three renderers under `window.refinzi`.
 13. **`src/renderer/settings/renderer.js`**
     * Houses frontend handlers for saving keys, toggles, and model selections.
 14. **`src/renderer/settings/index.html`**
@@ -154,7 +154,7 @@ To introduce a fully provider-agnostic, modular, and extensible architecture, se
 
 ### 4. Broken Model/Provider Persistency Sync (`src/main/store.js` & `src/renderer/settings/renderer.js`)
 * **Coupling Point:**
-  * The frontend settings page contains model and provider selectors. When changed, `renderer.js` attempts to invoke `window.refinezy.settings.set(...)`.
+  * The frontend settings page contains model and provider selectors. When changed, `renderer.js` attempts to invoke `window.refinzi.settings.set(...)`.
   * However, `set` does not exist in `sharedPreload.js`. This results in a silent caught `TypeError`, preventing selections from ever being saved.
   * In addition, `store.js` does **not** include `activeProvider` or `activeModel` in its schema.
   * To obtain the active model, `store.js`'s `getSettingsSnapshot()` hardcodes:

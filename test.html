@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gateway Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; line-height: 1.5; background: #1e1e1e; color: #d4d4d4; }
+        .section { margin-bottom: 20px; border: 1px solid #333; padding: 10px; border-radius: 4px; }
+        .label { font-weight: bold; color: #569cd6; }
+        pre { background: #000; padding: 10px; overflow: auto; white-space: pre-wrap; word-wrap: break-word; }
+        .error { color: #f44747; }
+    </style>
+</head>
+<body>
+    <h1>Gateway POST Test</h1>
+    
+    <div class="section">
+        <div class="label">HTTP Status:</div>
+        <div id="status">-</div>
+    </div>
+
+    <div class="section">
+        <div class="label">Raw Response Body:</div>
+        <pre id="raw">-</pre>
+    </div>
+
+    <div class="section">
+        <div class="label">Parsed JSON:</div>
+        <pre id="json">-</pre>
+    </div>
+
+    <script>
+        async function runTest() {
+            const url = 'https://refinzi-gateway-3an9h21cc-papada1472-2736s-projects.vercel.app/api/v1/refine';
+            const payload = {
+                text: "hello world",
+                systemPrompt: "Improve the text"
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                document.getElementById('status').textContent = `${response.status} ${response.statusText}`;
+                
+                const text = await response.text();
+                document.getElementById('raw').textContent = text;
+
+                try {
+                    const json = JSON.parse(text);
+                    document.getElementById('json').textContent = JSON.stringify(json, null, 2);
+                } catch (e) {
+                    document.getElementById('json').textContent = 'Failed to parse JSON: ' + e.message;
+                    document.getElementById('json').classList.add('error');
+                }
+
+            } catch (error) {
+                document.getElementById('status').textContent = 'Network Error';
+                document.getElementById('raw').textContent = error.toString();
+                document.getElementById('json').textContent = 'N/A';
+            }
+        }
+
+        runTest();
+    </script>
+</body>
+</html>

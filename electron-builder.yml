@@ -1,0 +1,25 @@
+appId: "com.refinzi.app"
+productName: "Refinzi"
+asar: true
+directories:
+  output: "dist"
+files:
+  - "src/**/*"
+  - "assets/**/*"
+  - "package.json"
+win:
+  icon: "assets/icons/app.ico"
+  target:
+    - target: "nsis"
+      arch:
+        - "x64"
+  certificateSubjectName: ""
+  sign: false
+nsis:
+  oneClick: true
+  perMachine: false
+  allowToChangeInstallationDirectory: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: "Refinzi"
+  artifactName: "Refinzi-Setup-v${version}.exe"

@@ -24,7 +24,7 @@ export function createSettingsWindow() {
     maximizable: true,
     minimizable: true,
     show: false,
-    title: "Refinezy",
+    title: "Refinzi",
     icon: getIconPath(),
     autoHideMenuBar: true,
     webPreferences: {
@@ -37,7 +37,7 @@ export function createSettingsWindow() {
   win.removeMenu();
 
   win.webContents.on("console-message", (_event, level, message) => {
-    console.log(`[Refinezy][SettingsWindow][console][${level}] ${message}`);
+    console.log(`[Refinzi][SettingsWindow][console][${level}] ${message}`);
   });
 
   console.log("[DEBUG] SETTINGS HTML:", rendererPath("settings", "index.html"));
@@ -51,21 +51,20 @@ export function createSettingsWindow() {
   return win;
 }
 
-export function createRewardWindow() {
-  console.log("[DEBUG] createRewardWindow()");
+export function createOutputModalWindow() {
+  console.log("[DEBUG] createOutputModalWindow()");
   const win = new BrowserWindow({
-    width: 320,
-    height: 400,
+    width: 640,
+    height: 700,
     resizable: false,
     maximizable: false,
     minimizable: false,
     show: false,
     frame: false,
-    icon: getIconPath(),
     transparent: true,
-    alwaysOnTop: true,
-    skipTaskbar: true,
-    hasShadow: true,
+    icon: getIconPath(),
+    alwaysOnTop: false,
+    skipTaskbar: false,
     autoHideMenuBar: true,
     webPreferences: {
       preload: preloadPath("sharedPreload.js"),
@@ -76,46 +75,13 @@ export function createRewardWindow() {
 
   win.removeMenu();
 
-  console.log("[DEBUG] REWARD HTML:", rendererPath("reward", "index.html"));
-  win.loadFile(rendererPath("reward", "index.html"));
-
-  win.on("blur", () => {
-    if (win.isVisible()) win.hide();
+  win.on("close", (e) => {
+    e.preventDefault();
+    win.hide();
   });
 
-  return win;
-}
-
-export function createToastWindow() {
-  console.log("[DEBUG] createToastWindow()");
-  const win = new BrowserWindow({
-    width: 360,
-    height: 74,
-    resizable: false,
-    maximizable: false,
-    minimizable: false,
-    show: false,
-    frame: false,
-    icon: getIconPath(),
-    transparent: true,
-    alwaysOnTop: true,
-    skipTaskbar: true,
-    hasShadow: true,
-    focusable: false,
-    autoHideMenuBar: true,
-    webPreferences: {
-      preload: preloadPath("sharedPreload.js"),
-      contextIsolation: true,
-      nodeIntegration: false
-    }
-  });
-
-  win.removeMenu();
-
-  win.setIgnoreMouseEvents(true, { forward: true });
-
-  console.log("[DEBUG] TOAST HTML:", rendererPath("toast", "index.html"));
-  win.loadFile(rendererPath("toast", "index.html"));
+  console.log("[DEBUG] OUTPUT MODAL HTML:", rendererPath("output", "index.html"));
+  win.loadFile(rendererPath("output", "index.html"));
 
   return win;
 }
@@ -144,24 +110,55 @@ export function showToast(window, opts) {
       }
     }
   } catch (err) {
-    console.warn("[Refinezy][Windows] Failed to show toast:", err.message);
+    console.warn("[Refinzi][Windows] Failed to show toast:", err.message);
   }
 }
 
-export function positionRewardWindowNearTray(rewardWindow, trayBounds) {
-  const display = screen.getDisplayNearestPoint({ x: trayBounds.x, y: trayBounds.y });
-  const { width: screenW, height: screenH } = display.workAreaSize;
-  const [winW, winH] = rewardWindow.getSize();
+/**
+ * Toast window factory
+ * Creates a minimal frameless BrowserWindow that will host toast UI.
+ * The window is hidden initially; callers (notifications.js) will
+ * position it via `showToast` before making it visible.
+ */
+export function createToastWindow() {
+  console.log("[DEBUG] createToastWindow()");
+  const win = new BrowserWindow({
+    width: 320,
+    height: 80,
+    show: false,
+    frame: false,
+    transparent: true,
+    alwaysOnTop: true,
+    skipTaskbar: true,
+    resizable: false,
+    movable: false,
+    focusable: false,
+    webPreferences: {
+      preload: preloadPath("sharedPreload.js"),
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
+  });
 
-  // Default: bottom-right on the current display.
-  let x = display.workArea.x + screenW - winW - 10;
-  let y = display.workArea.y + screenH - winH - 10;
+  // Load a tiny HTML that forwards toast data via IPC.
+  // Expected location: src/renderer/orb/toast/index.html
+  win.loadFile(rendererPath("toast", "index.html"));
+  win.removeMenu();
+  return win;
+}
 
-  // If we have tray bounds, try to anchor above it.
-  if (trayBounds && Number.isFinite(trayBounds.x)) {
-    x = Math.max(display.workArea.x + 10, Math.min(trayBounds.x - winW + trayBounds.width, display.workArea.x + screenW - winW - 10));
-    y = Math.max(display.workArea.y + 10, trayBounds.y - winH - 10);
+/**
+ * Broadcasts a reward:refresh event to all open BrowserWindows.
+ * The unified dashboard renderer listens for this to update stats.
+ */
+export function refreshRewardDashboard() {
+  for (const win of BrowserWindow.getAllWindows()) {
+    try {
+      if (!win.isDestroyed()) {
+        win.webContents.send("reward:refresh");
+      }
+    } catch (_) {
+      // Window may have been destroyed between check and send
+    }
   }
-
-  rewardWindow.setPosition(Math.round(x), Math.round(y), false);
 }

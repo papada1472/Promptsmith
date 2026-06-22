@@ -1,4 +1,4 @@
-export const APP_NAME = "Refinezy";
+export const APP_NAME = "Refinzi";
 
 export const DEFAULT_HOTKEY = "Alt+Shift+F";
 
@@ -23,6 +23,11 @@ Never:
 * expose your reasoning,
 * mention prompt engineering,
 * make the text sound artificially AI-generated.
+
+Guidelines:
+
+* Smart Skip (REF-OE-012): If prompt quality is already high (e.g. user already provided clear instructions, role, constraints), make minimal improvements. Avoid rewriting for the sake of rewriting. Only optimize by 5% to 10% when appropriate.
+* Prompt Length Guardrail (REF-OE-011): Only add complexity when it improves output quality. Do not inflate prompt length unnecessarily. A simple request should remain simple (e.g. 'Translate this to Hindi' should NOT become 'You are a world-class translation expert...').
 
 Return only the improved version of the selected text.`;
 
