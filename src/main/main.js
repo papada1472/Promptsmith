@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { app, globalShortcut, session } from "electron";
 import { createTray } from "./tray.js";
 import { ensureAppUserModelId, notifyError, notifySuccess, notifyWarning } from "./notifications.js";
@@ -10,16 +11,25 @@ import { refineSelectedText } from "./refineController.js";
 import { GeminiProvider } from "./ai/GeminiProvider.js";
 import { clipboard } from "electron";
 import path from "path";
+import fs from "fs";
 import { SYSTEM_PROMPT, REFINE_TIMEOUT_MS } from "./constants.js";
 
 let settingsWindow = null;
 let trayApi = null;
 let isRefining = false;
 
-function openSettings() {
+function openSettings(options = {}) {
   if (!settingsWindow) settingsWindow = createSettingsWindow();
   settingsWindow.show();
   settingsWindow.focus();
+  if (options.focusApiKey) {
+    // Wait slightly for DOM focus transition
+    setTimeout(() => {
+      if (settingsWindow && !settingsWindow.isDestroyed()) {
+        settingsWindow.webContents.send("settings:focusApiKey");
+      }
+    }, 150);
+  }
 }
 
 
@@ -97,6 +107,7 @@ app.on("window-all-closed", () => {
 });
 
 app.on("before-quit", () => {
+  app.isQuitting = true;
   console.log("[Refinzi][Main] before-quit event triggered");
   unregisterAllHotkeys();
 });
@@ -190,8 +201,24 @@ async function initializeApp() {
       // Continue without Orb – app remains functional
     }
 
-    // Start hidden (tray-first).
-    settingsWindow.hide();
+    // Check if it's a fresh install
+    let isFreshInstall = false;
+    if (!store.get("installedAt")) {
+      isFreshInstall = true;
+      store.set("installedAt", Date.now());
+      // The renderer turns this into a one-time, in-app welcome. Do not use a
+      // native notification here: first launch should feel quiet and deliberate.
+      store.set("premiumWelcomePending", true);
+      console.log("[Refinzi][Main] Fresh installation detected. Setting installedAt timestamp.");
+    }
+
+    // Start hidden (tray-first) unless it's a fresh install
+    if (isFreshInstall) {
+      console.log("[Refinzi][Main] Opening settings dashboard on fresh install.");
+      openSettings();
+    } else {
+      settingsWindow.hide();
+    }
   } catch (err) {
     console.error("[Refinzi][Main] Initialization failed", err);
     notifyError("Application failed to start");
@@ -223,5 +250,31 @@ if (!gotTheLock) {
   app.on("quit", () => {
     console.log("[Refinzi][Main] quit event fired, app is terminating");
   });
+}
+
+// ── Global Crash Logging Guards ──
+process.on("uncaughtException", (err) => {
+  logCrash(err, "UncaughtException");
+});
+
+process.on("unhandledRejection", (err) => {
+  logCrash(err, "UnhandledRejection");
+});
+
+function logCrash(err, type) {
+  try {
+    const logPath = path.join(app.getPath("userData"), "crash_reports.log");
+    const timestamp = new Date().toISOString();
+    const errorDetails = {
+      timestamp,
+      type,
+      message: err?.message || String(err),
+      stack: err?.stack ? err.stack.split("\n").map(l => l.trim()).filter(l => !l.includes("node_modules")) : []
+    };
+    fs.appendFileSync(logPath, JSON.stringify(errorDetails) + "\n", "utf8");
+    console.error(`[Refinzi][Crash] Saved ${type} to crash_reports.log`);
+  } catch (e) {
+    console.error("Failed to write crash report:", e);
+  }
 }
 

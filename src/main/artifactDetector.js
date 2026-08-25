@@ -51,67 +51,65 @@ function classifyCode(text) {
   const lines = trimmed.split("\n");
   const lineCount = lines.length;
 
-  // Short text is unlikely to be code
-  if (lineCount < 2) return { type: "code", confidence: 0 };
+  // Short text under 10 chars is unlikely to be code
+  if (trimmed.length < 10) return { type: "code", confidence: 0 };
 
-  // Count code signals
   let signals = 0;
-  let totalChecks = 0;
 
-  // Code keywords (common across JS/TS/Python/Go/Rust/etc.)
+  // Code keywords (common across JS/TS/Python/Go/Rust/SQL/etc.)
   const codeKeywords = [
     "function", "const ", "let ", "var ", "import ", "export ",
     "class ", "def ", "return ", "if (", "else ", "for (", "while (",
     "switch ", "throw ", "try ", "catch ", "async ", "await ",
     "=>", "===", "!=", "!==", "||", "&&",
+    "select ", "select *", "insert into", "update ", "delete from", "where ", "order by", "group by"
   ];
-  const keywordHits = codeKeywords.filter(kw => trimmed.includes(kw)).length;
-  signals += Math.min(keywordHits / 3, 1.0); // 3+ keywords = full signal
-  totalChecks++;
+  
+  const lowerText = trimmed.toLowerCase();
+  const keywordHits = codeKeywords.filter(kw => lowerText.includes(kw)).length;
+  signals += Math.min(keywordHits / 2, 1.0); // 2+ keywords = full signal (1.0)
 
-  // Line-ending semicolons (JS/TS/C/C++/Java/Rust)
+  // Line-ending semicolons
   const semicolonLines = lines.filter(l => l.trim().endsWith(";")).length;
   if (lineCount > 0) {
     const semiRatio = semicolonLines / lineCount;
-    if (semiRatio > 0.3) signals += Math.min(semiRatio, 1.0);
-    totalChecks++;
+    if (semiRatio > 0.3) {
+      signals += Math.min(semiRatio, 0.8);
+    }
   }
 
-  // Brace density (blocks)
+  // Brace density
   const openBraces = (trimmed.match(/{/g) || []).length;
   const closeBraces = (trimmed.match(/}/g) || []).length;
   if (openBraces > 0 && closeBraces > 0 && openBraces === closeBraces) {
-    signals += Math.min(openBraces / 3, 1.0);
-    totalChecks++;
+    signals += Math.min(openBraces / 3, 0.5);
   }
 
-  // Indentation (tabs or 2/4 spaces before code lines)
+  // Indentation
   const indentedLines = lines.filter(l => /^(\t|  |    )/.test(l)).length;
   if (lineCount > 0) {
     const indentRatio = indentedLines / lineCount;
-    if (indentRatio > 0.3) signals += Math.min(indentRatio, 1.0);
-    totalChecks++;
+    if (indentRatio > 0.3) {
+      signals += Math.min(indentRatio, 0.5);
+    }
   }
 
-  // Multi-line string literals (template literals, triple quotes)
+  // Multi-line string literals or code fences
   if (/```/.test(trimmed) || trimmed.includes("`") || /"""/.test(trimmed) || /'''/.test(trimmed)) {
     signals += 0.5;
-    totalChecks++;
   }
 
   // JSON or XML fences
   if (/^<[\w]+>/.test(trimmed) && /<\/[\w]+>$/.test(trimmed)) {
     signals += 0.8;
-    totalChecks++;
   }
+
   try {
     JSON.parse(trimmed);
-    signals += 0.8;
-    totalChecks++;
-  } catch (_) { /* not JSON */ }
+    signals += 0.9;
+  } catch (_) {}
 
-  const confidence = totalChecks > 0 ? signals / totalChecks : 0;
-  return { type: "code", confidence: Math.min(confidence, 1.0) };
+  return { type: "code", confidence: Math.min(signals, 1.0) };
 }
 
 function classifyPrompt(text) {
@@ -201,68 +199,57 @@ function classifyLinkedIn(text) {
   if (!trimmed) return { type: "linkedin", confidence: 0 };
 
   let signals = 0;
-  let totalChecks = 0;
 
   // LinkedIn profile/post URLs
   if (/linkedin\.com\//i.test(trimmed)) {
     signals += 0.9;
-    totalChecks++;
   }
 
   // "I'm excited to share / announce" patterns (common LinkedIn opener)
   if (/\bI'?m (excited|happy|thrilled|proud)\b/i.test(trimmed) &&
       /\b(share|announce|to share|to announce)\b/i.test(trimmed)) {
     signals += 0.8;
-    totalChecks++;
   }
 
   // Hiring/recruitment signals
   if (/\b#hiring\b/i.test(trimmed) || /\b(we are|we're) (hiring|looking for)\b/i.test(trimmed)) {
     signals += 0.8;
-    totalChecks++;
   }
 
   // Professional profile header patterns
   if (/\b\d+\+? years\b/i.test(trimmed) &&
       /\b(experience|expert|specialist|professional|engineer|developer|manager|director|founder|CEO|CTO)\b/i.test(trimmed)) {
     signals += 0.7;
-    totalChecks++;
   }
 
   // Milestone announcements
   if (/\b(celebrat|milestone|anniversary|grateful|thankful)\b/i.test(trimmed) &&
       /\b(reach|accomplish|achieve|complete|cross)\b/i.test(trimmed)) {
     signals += 0.7;
-    totalChecks++;
   }
 
   // "like" / "comment" / "repost" / "connect" engagement language
   if (/like|comment|repost|connect|follow/i.test(trimmed)) {
     signals += 0.3;
-    totalChecks++;
   }
 
   // Professional "X • Y" or "X at Y" header pattern (looking for bullets in bio)
   if (/•/.test(trimmed) && /@/.test(trimmed)) {
     signals += 0.4;
-    totalChecks++;
   }
 
   // Hashtags with professional/topic focus (not casual)
   const hashtags = trimmed.match(/#\w+/g) || [];
   if (hashtags.length >= 2) {
     signals += Math.min(hashtags.length / 5, 0.6);
-    totalChecks++;
   }
 
   // Length: LinkedIn posts tend to be moderate length (100-2000 chars)
   if (trimmed.length > 100 && trimmed.length < 3000) {
     signals += 0.1;
-    totalChecks++;
   }
 
-  const confidence = totalChecks > 0 ? signals / totalChecks : 0;
-  return { type: "linkedin", confidence: Math.min(confidence, 1.0) };
+  return { type: "linkedin", confidence: Math.min(signals, 1.0) };
 }
 
 function classifyTwitter(text) {
@@ -270,12 +257,10 @@ function classifyTwitter(text) {
   if (!trimmed) return { type: "twitter", confidence: 0 };
 
   let signals = 0;
-  let totalChecks = 0;
 
   // x.com or twitter.com URLs
   if (/\b(x\.com|twitter\.com)\//i.test(trimmed)) {
     signals += 0.9;
-    totalChecks++;
   }
 
   // @username with hashtag patterns (social post style)
@@ -283,52 +268,43 @@ function classifyTwitter(text) {
   const hashtags = (trimmed.match(/#\w+/g) || []).length;
   if (mentions >= 1 && hashtags >= 1) {
     signals += 0.6;
-    totalChecks++;
   }
   if (mentions >= 1) {
     signals += Math.min(mentions / 3, 0.3);
-    totalChecks++;
   }
 
   // RT / Retweet patterns
   if (/^RT\s+@/i.test(trimmed) || /retweet/i.test(trimmed)) {
     signals += 0.8;
-    totalChecks++;
   }
 
   // Thread patterns (🧵, 1/n, "1/")
   if (/[🧵]/.test(trimmed) || /^\d+\/\d+/m.test(trimmed)) {
     signals += 0.8;
-    totalChecks++;
   }
 
   // Short, constrained format (tweet character limit vibe)
   const lines = trimmed.split("\n").filter(l => l.trim());
   if (lines.length === 1 && trimmed.length <= 280) {
     signals += 0.5;
-    totalChecks++;
   }
 
   // "via @" attribution
   if (/via\s+@\w+/i.test(trimmed)) {
     signals += 0.6;
-    totalChecks++;
   }
 
   // Engagement/viral patterns
   if (/\b(likes?|retweets?|comments?|shares?|replies?|quote tweet)\b/i.test(trimmed)) {
     signals += 0.5;
-    totalChecks++;
   }
 
   // Culture/casual signals versus professional (anti-LinkedIn)
   if (/\b(lmao|lol|fr|ngl|imo|smh|tbh|afk|pov|fomo)\b/i.test(trimmed)) {
     signals += 0.4;
-    totalChecks++;
   }
 
-  const confidence = totalChecks > 0 ? signals / totalChecks : 0;
-  return { type: "twitter", confidence: Math.min(confidence, 1.0) };
+  return { type: "twitter", confidence: Math.min(signals, 1.0) };
 }
 
 // ── Main classifier ──────────────────────────────────────────────────
@@ -359,9 +335,9 @@ export function classifyClipboardContent(text) {
     classifyUrl,
     classifyEmail,
     classifyCode,
-    classifyPrompt,
     classifyLinkedIn,
     classifyTwitter,
+    classifyPrompt,
   ];
 
   for (const classifier of classifiers) {

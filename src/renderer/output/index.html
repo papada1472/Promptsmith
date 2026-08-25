@@ -1,62 +1,144 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
-    <title>Refinzi — Prompt</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:;">
+    <title>Refinzi — Blueprint</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="window-wrapper">
-        <div class="window-container">
+        <div class="window-container" role="dialog" aria-modal="true" aria-label="Refinzi Blueprint Modal">
 
             <!-- Header: draggable title bar -->
             <div class="header">
                 <div class="title-bar">
-                    <span class="window-icon">🪄</span>
-                    <span class="window-title" id="window-title">Prompt</span>
-                    <button class="close-btn" id="close-btn" title="Close">✕</button>
+                    <span class="window-icon" aria-hidden="true">🪄</span>
+                    <span class="window-title" id="window-title">Blueprint</span>
+                    <span class="header-shortcut-badge" title="Press Esc to dismiss">Esc to close</span>
+                    <button class="close-btn" id="close-btn" title="Close (Esc)" aria-label="Close modal">✕</button>
                 </div>
             </div>
 
-            <!-- Prompt editor: full editable textarea -->
-            <div class="prompt-body">
+            <!-- Prompt editor: hidden textarea + structured sections container -->
+            <div class="prompt-body" id="prompt-body-wrapper">
                 <textarea
                     id="prompt-editor"
                     spellcheck="false"
                     placeholder="Generating your prompt..."
+                    style="display: none;"
+                    aria-label="Raw prompt text"
                 ></textarea>
+
+                <div class="sections-container" id="sections-container">
+                    <div class="blueprint-section" data-section="structure">
+                        <div class="section-header">
+                            <div class="section-badge">
+                                <span class="section-dot dot-cyan"></span>
+                                <span class="section-title">Structure & Layout</span>
+                            </div>
+                            <button class="section-copy-btn" title="Copy Section" data-target="section-structure">Copy</button>
+                        </div>
+                        <div class="section-content" id="section-structure">Loading...</div>
+                    </div>
+                    <div class="blueprint-section" data-section="components">
+                        <div class="section-header">
+                            <div class="section-badge">
+                                <span class="section-dot dot-purple"></span>
+                                <span class="section-title">Component Assets</span>
+                            </div>
+                            <button class="section-copy-btn" title="Copy Section" data-target="section-components">Copy</button>
+                        </div>
+                        <div class="section-content" id="section-components">Loading...</div>
+                    </div>
+                    <div class="blueprint-section" data-section="copy">
+                        <div class="section-header">
+                            <div class="section-badge">
+                                <span class="section-dot dot-pink"></span>
+                                <span class="section-title">Creative Copy & Hooks</span>
+                            </div>
+                            <button class="section-copy-btn" title="Copy Section" data-target="section-copy">Copy</button>
+                        </div>
+                        <div class="section-content" id="section-copy">Loading...</div>
+                    </div>
+                    <div class="blueprint-section" data-section="interactions">
+                        <div class="section-header">
+                            <div class="section-badge">
+                                <span class="section-dot dot-amber"></span>
+                                <span class="section-title">Motion & Interactions</span>
+                            </div>
+                            <button class="section-copy-btn" title="Copy Section" data-target="section-interactions">Copy</button>
+                        </div>
+                        <div class="section-content" id="section-interactions">Loading...</div>
+                    </div>
+                    <div class="blueprint-section" data-section="promptpack">
+                        <div class="section-header">
+                            <div class="section-badge">
+                                <span class="section-dot dot-gold"></span>
+                                <span class="section-title">Implementation Prompt Pack</span>
+                            </div>
+                            <button class="section-copy-btn" title="Copy Section" data-target="section-promptpack">Copy</button>
+                        </div>
+                        <div class="section-content section-code" id="section-promptpack">Loading...</div>
+                    </div>
+                    <div class="blueprint-section" data-section="checklist">
+                        <div class="section-header">
+                            <div class="section-badge">
+                                <span class="section-dot dot-emerald"></span>
+                                <span class="section-title">Implementation Checklist</span>
+                            </div>
+                            <button class="section-copy-btn" title="Copy Section" data-target="section-checklist">Copy</button>
+                        </div>
+                        <div class="section-content" id="section-checklist">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BYOK Wall overlay -->
+            <div class="byok-wall hidden" id="byok-wall" role="alertdialog" aria-labelledby="byok-header">
+                <div class="byok-wall-content">
+                    <div class="byok-icon">⚡</div>
+                    <div class="byok-header" id="byok-header">Beta Limit Reached</div>
+                    <div class="byok-sub">You've unlocked full capabilities. Plug in your personal API key for unlimited ultra-fast generations. Keys stay encrypted on your device.</div>
+                    <div class="byok-actions">
+                        <button class="btn btn-copy" id="wall-add-key-btn">Add API Key</button>
+                        <button class="btn btn-regenerate" id="wall-later-btn">Later</button>
+                    </div>
+                </div>
             </div>
 
             <!-- Divider -->
-            <div class="action-divider"></div>
+            <div class="action-divider" id="action-divider"></div>
 
-            <!-- Action bar: 3 stacked buttons -->
-            <div class="action-bar">
+            <!-- Action bar: primary and secondary action buttons -->
+            <div class="action-bar" id="action-bar">
 
-                <!-- Primary: Copy Prompt -->
-                <button class="btn btn-copy" id="copy-btn">
-                    <span class="btn-icon">📋</span>
-                    <span class="btn-label" id="copy-label">Copy Prompt</span>
+                <!-- Primary: Copy All -->
+                <button class="btn btn-copy" id="copy-btn" title="Copy full blueprint (Ctrl+Enter)">
+                    <span class="btn-icon">⚡</span>
+                    <span class="btn-label" id="copy-label">Copy Full Blueprint</span>
+                    <span class="btn-kbd">Ctrl+Enter</span>
                 </button>
 
-                <!-- Secondary: Regenerate -->
-                <button class="btn btn-regenerate" id="regenerate-btn">
-                    <span class="btn-icon" id="regen-icon">↻</span>
-                    <span class="btn-label" id="regen-label">Regenerate</span>
-                </button>
+                <div class="action-row">
+                    <!-- Secondary: Rebuild -->
+                    <button class="btn btn-regenerate" id="regenerate-btn" title="Rebuild blueprint">
+                        <span class="btn-icon" id="regen-icon">↻</span>
+                        <span class="btn-label" id="regen-label">Rebuild</span>
+                    </button>
 
-                <!-- Tertiary: Make Production Ready -->
-                <button class="btn btn-expert" id="expert-btn">
-                    <span class="btn-icon" id="expert-icon">🧠</span>
-                    <span class="btn-label" id="expert-label">Make Production Ready</span>
-                </button>
+                    <!-- Tertiary: Expert (hidden by default) -->
+                    <button class="btn btn-expert" id="expert-btn" style="display: none;" title="Make production ready">
+                        <span class="btn-icon" id="expert-icon">🧠</span>
+                        <span class="btn-label" id="expert-label">Make Production Ready</span>
+                    </button>
+                </div>
 
             </div>
 
             <!-- Inline copy confirmation toast -->
-            <div class="toast hidden" id="copy-toast">✓ Copied to clipboard</div>
+            <div class="toast hidden" id="copy-toast" role="status" aria-live="polite">✓ Copied to clipboard</div>
 
         </div>
     </div>

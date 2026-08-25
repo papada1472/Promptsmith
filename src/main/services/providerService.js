@@ -1,5 +1,7 @@
 import { ProviderManager } from "../ai/ProviderManager.js";
 import { GeminiProvider } from "../ai/GeminiProvider.js";
+import { OpenRouterProvider } from "../ai/OpenRouterProvider.js";
+import { ByokVault } from "../ai/ByokVault.js";
 import { SYSTEM_PROMPT, REFINE_TIMEOUT_MS } from "../constants.js";
 import { store } from "../store.js";
 
@@ -7,17 +9,29 @@ export class ProviderService {
   /**
    * Verifies if the provided API key is valid for the current active provider.
    * @param {string} key 
+   * @param {string} [targetProvider]
    * @returns {Promise<{ok: boolean, error?: string}>}
    */
-  async verifyApiKey(key) {
+  async verifyApiKey(key, targetProvider) {
     try {
-      if (!key) return { ok: false, error: "No API key provided" };
+      const providerId = targetProvider || store.get("activeProvider") || "gemini";
+      let actualKey = key ? String(key).trim() : "";
       
-      const providerId = store.get("activeProvider") || "gemini";
-      const model = store.get("activeModel") || (providerId === "openrouter" ? "openai/gpt-4o-mini" : "gemini-2.5-flash");
+      if (actualKey.startsWith("••••") || !actualKey) {
+        const storedEnc = store.get(providerId === "openrouter" ? "openRouterApiKey" : "geminiApiKey") || "";
+        actualKey = ByokVault.decrypt(storedEnc) || (providerId === "gemini" ? (process.env.GEMINI_API_KEY || process.env.GEMINI_KEY || "") : (process.env.OPENROUTER_API_KEY || ""));
+      }
       
-      const provider = ProviderManager.createProvider(providerId, {
-        apiKey: key,
+      const isGateway = !actualKey && (providerId === "gemini" || providerId === "gateway");
+      if (!actualKey && !isGateway) {
+        return { ok: false, error: "No API key provided" };
+      }
+      
+      const targetProviderId = isGateway ? "gateway" : providerId;
+      const model = store.get("activeModel") || (targetProviderId === "openrouter" ? OpenRouterProvider.DEFAULT_MODEL : targetProviderId === "gateway" ? "gateway-default" : "gemini-2.5-flash");
+      
+      const provider = ProviderManager.createProvider(targetProviderId, {
+        apiKey: targetProviderId === "gateway" ? undefined : actualKey,
         model,
         systemPrompt: SYSTEM_PROMPT,
         timeoutMs: REFINE_TIMEOUT_MS

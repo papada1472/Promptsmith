@@ -61,11 +61,11 @@ export function notifyError(title, message, duration = 3000) {
   });
 }
 
-export function notifyWarning(title, message, persistent = false) {
+export function notifyWarning(title, message, duration = 3000) {
   displayToast({
     type: "processing",
     title: String(title || "Warning"),
     message: String(message || "Attention required"),
-    persistent
+    duration
   });
 }

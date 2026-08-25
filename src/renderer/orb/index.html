@@ -1,35 +1,65 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:;">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="orb-window-container">
         <!-- Floating Circular Orb element -->
         <div class="orb-container">
             <div class="orb" id="orbBtn">
                 <div class="orb-visual">
-                    <span class="sparkle">✨</span>
-                    <span class="brain">🧠</span>
+                    <span class="sparkle">
+                        <svg class="lightning-svg" viewBox="0 0 24 24" width="13" height="13" fill="none">
+                            <path d="M13 2L3.5 13.5H11.5L10.5 22L20.5 10.5H12.5L13 2Z" fill="url(#lightning-grad)" stroke="rgba(255, 255, 255, 0.45)" stroke-width="0.8" stroke-linejoin="round" />
+                            <defs>
+                                <linearGradient id="lightning-grad" x1="3.5" y1="2" x2="20.5" y2="22" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#FFFDF0" />
+                                    <stop offset="0.25" stop-color="#FFE066" />
+                                    <stop offset="0.65" stop-color="#FFD700" />
+                                    <stop offset="1" stop-color="#FF9500" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </span>
+                    <span class="brain">
+                        <svg class="brain-svg" viewBox="0 0 24 24" width="14" height="14" fill="none">
+                            <path d="M9.5 4C8.12 4 7 5.12 7 6.5C7 6.78 7.05 7.05 7.14 7.3C6.46 7.64 6 8.35 6 9.17C6 9.77 6.25 10.31 6.66 10.7C6.26 11.19 6 11.82 6 12.5C6 13.62 6.74 14.57 7.76 14.88C7.6 15.34 7.5 15.84 7.5 16.36C7.5 17.82 8.68 19 10.14 19C10.74 19 11.29 18.8 11.75 18.45C11.83 18.4 11.91 18.35 12 18.3C12.09 18.35 12.17 18.4 12.25 18.45C12.71 18.8 13.26 19 13.86 19C15.32 19 16.5 17.82 16.5 16.36C16.5 15.84 16.4 15.34 16.24 14.88C17.26 14.57 18 13.62 18 12.5C18 11.82 17.74 11.19 17.34 10.7C17.75 10.31 18 9.77 18 9.17C18 8.35 17.54 7.64 16.86 7.3C16.95 7.05 17 6.78 17 6.5C17 5.12 15.88 4 14.5 4C13.66 4 12.92 4.42 12.47 5.06C12.32 5.02 12.16 5 12 5C11.84 5 11.68 5.02 11.53 5.06C11.08 4.42 10.34 4 9.5 4Z" stroke="url(#brain-grad)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="rgba(255, 215, 0, 0.22)" />
+                            <defs>
+                                <linearGradient id="brain-grad" x1="6" y1="4" x2="18" y2="19" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#FFF3A8" />
+                                    <stop offset="0.5" stop-color="#FFD700" />
+                                    <stop offset="1" stop-color="#FF8C00" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </span>
                 </div>
             </div>
-            <!-- Invisible hit extension: 60×60px catchable area (2× the 28px visual orb) -->
+            <!-- Dynamic hold-to-expert progress ring centered around the orb -->
+            <div class="orb-hold-ring" id="orbHoldRing"></div>
+            <!-- Invisible hit extension: 140×140px catchable area (5× the 28px visual orb) -->
             <div class="orb-hit" id="orbHit"></div>
+            <!-- Dedicated drag handle: appears on hover, exclusively for movement -->
+            <div class="orb-drag-handle" id="orbDragHandle">⊙</div>
         </div>
 
         <!-- Dynamic Status/Control Bubble below the Orb -->
         <div class="status-bubble" id="statusBubble">
             <!-- Ready view (suggestion rotation) -->
             <div class="card-ready" id="ready-card">
-                <span id="rotate-placeholder">🧠 Refinzi • Drop anything.</span>
+                <span id="rotate-placeholder">Drop a Reel or Landing Page.</span>
             </div>
 
             <!-- Processing view -->
             <div class="card-processing hidden" id="processing-card">
-                <span class="pulse">✨</span>
+                <span class="pulse">Improving...</span>
             </div>
 
             <!-- Error/Retry view -->
@@ -44,31 +74,78 @@
             🚀 Getting Better
         </div>
 
-        <!-- Mini Onboarding Card -->
-        <div class="onboarding-card hidden" id="onboarding-card">
-            <div class="onboarding-header">Refinzi</div>
-            <div class="onboarding-body">
-                <div class="onboarding-item">
-                    <span class="onboarding-bullet">✨</span>
-                    <span class="onboarding-text"><strong>Click</strong><br>Improve Prompt</span>
+        <!-- Quick Start Overlay -->
+        <div class="quick-start-overlay hidden" id="quick-start-overlay">
+            <div class="quick-start-content">
+                <div class="quick-start-header">
+                    <span class="quick-start-icon">🚀</span>
+                    <h2>Welcome to Refinzi</h2>
                 </div>
-                <div class="onboarding-item">
-                    <span class="onboarding-bullet">🧠</span>
-                    <span class="onboarding-text"><strong>Hold</strong><br>Create Expert Prompt</span>
+                <div class="quick-start-body">
+                    <div class="quick-start-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <strong>Drag & Drop</strong>
+                            <span>Drop any URL, PDF, or text onto the orb</span>
+                        </div>
+                    </div>
+                    <div class="quick-start-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <strong>Hold to Expert Mode</strong>
+                            <span>Press & hold for AI-powered refinement</span>
+                        </div>
+                    </div>
+                    <div class="quick-start-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <strong>Tap for Quick Action</strong>
+                            <span>Quick tap preserves your selection</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="onboarding-item">
-                    <span class="onboarding-bullet">📍</span>
-                    <span class="onboarding-text">Drag anywhere</span>
-                </div>
-                <div class="onboarding-item">
-                    <span class="onboarding-bullet">⌨</span>
-                    <span class="onboarding-text">Ctrl + Alt + Space</span>
+                <div class="quick-start-actions">
+                    <button class="quick-start-btn-secondary" id="quick-start-skip">Skip</button>
+                    <button class="quick-start-btn" id="quick-start-start">Let's Go</button>
                 </div>
             </div>
-            <button class="onboarding-btn" id="onboarding-got-it">Got It</button>
+        </div>
+
+        <!-- First-Refinement Tooltip -->
+        <div class="first-refinement-tooltip hidden" id="first-refinement-tooltip">
+            <div class="tooltip-arrow"></div>
+            <div class="tooltip-content">
+                <div class="tooltip-icon">💡</div>
+                <div class="tooltip-text">
+                    <strong>Try your first refinement!</strong>
+                    <span>Drag a URL or paste text onto the orb</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Milestone Celebration -->
+        <div class="milestone-celebration hidden" id="milestone-celebration">
+            <div class="milestone-content">
+                <div class="milestone-icon" id="milestone-icon">🎉</div>
+                <div class="milestone-text" id="milestone-text">First Refinement Complete!</div>
+                <div class="milestone-subtext" id="milestone-subtext">You're on your way to becoming a refinement master</div>
+            </div>
+        </div>
+
+        <!-- Mini Onboarding Card (legacy - kept for compatibility) -->
+        <div class="onboarding-card hidden" id="onboarding-card">
+            <div class="onboarding-header">Welcome to Refinzi</div>
+            <div class="onboarding-body">
+                <div class="onboarding-sub" style="margin-bottom: 12px; font-size: 11px; text-align: center;">Turn inspiration into implementation-ready blueprints.</div>
+            </div>
+            <div class="onboarding-actions">
+                <button class="onboarding-btn-secondary" id="onboarding-got-it">Got It</button>
+                <button class="onboarding-btn" id="onboarding-try-it">Try Sample</button>
+            </div>
         </div>
     </div>
 
     <script type="module" src="renderer.js"></script>
 </body>
+
 </html>

@@ -1,5 +1,8 @@
 import path from "path";
 import { app, BrowserWindow, screen } from "electron";
+import { createLogger } from "./logger.js";
+
+const log = createLogger("Windows");
 
 function rendererPath(...segments) {
   return path.join(app.getAppPath(), "src", "renderer", ...segments);
@@ -13,8 +16,19 @@ function getIconPath() {
   return path.join(app.getAppPath(), "assets", "icons", "icon-256.png");
 }
 
+function applyWindowSecurityPolicy(win) {
+  if (!win || !win.webContents) return;
+  win.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
+  win.webContents.on("will-navigate", (e, url) => {
+    if (url !== win.webContents.getURL()) {
+      e.preventDefault();
+      log.warn("Blocked window navigation to external URL:", url);
+    }
+  });
+}
+
 export function createSettingsWindow() {
-  console.log("[DEBUG] createSettingsWindow()");
+  log.debug("createSettingsWindow()");
   const win = new BrowserWindow({
     width: 1180,
     height: 780,
@@ -30,19 +44,24 @@ export function createSettingsWindow() {
     webPreferences: {
       preload: preloadPath("sharedPreload.js"),
       contextIsolation: true,
-      nodeIntegration: false
+      nodeIntegration: false,
+      sandbox: true
     }
   });
 
+  applyWindowSecurityPolicy(win);
   win.removeMenu();
 
   win.webContents.on("console-message", (_event, level, message) => {
-    console.log(`[Refinzi][SettingsWindow][console][${level}] ${message}`);
+    log.debug(`[SettingsWindow][console][${level}] ${message}`);
   });
 
-  console.log("[DEBUG] SETTINGS HTML:", rendererPath("settings", "index.html"));
+  log.debug("SETTINGS HTML:", rendererPath("settings", "index.html"));
   win.loadFile(rendererPath("settings", "index.html"));
   win.on("close", (e) => {
+    if (app.isQuitting) {
+      return;
+    }
     // minimize-to-tray behavior
     e.preventDefault();
     win.hide();
@@ -52,7 +71,7 @@ export function createSettingsWindow() {
 }
 
 export function createOutputModalWindow() {
-  console.log("[DEBUG] createOutputModalWindow()");
+  log.debug("createOutputModalWindow()");
   const win = new BrowserWindow({
     width: 640,
     height: 700,
@@ -69,10 +88,12 @@ export function createOutputModalWindow() {
     webPreferences: {
       preload: preloadPath("sharedPreload.js"),
       contextIsolation: true,
-      nodeIntegration: false
+      nodeIntegration: false,
+      sandbox: true
     }
   });
 
+  applyWindowSecurityPolicy(win);
   win.removeMenu();
 
   win.on("close", (e) => {
@@ -80,7 +101,7 @@ export function createOutputModalWindow() {
     win.hide();
   });
 
-  console.log("[DEBUG] OUTPUT MODAL HTML:", rendererPath("output", "index.html"));
+  log.debug("OUTPUT MODAL HTML:", rendererPath("output", "index.html"));
   win.loadFile(rendererPath("output", "index.html"));
 
   return win;
@@ -110,7 +131,7 @@ export function showToast(window, opts) {
       }
     }
   } catch (err) {
-    console.warn("[Refinzi][Windows] Failed to show toast:", err.message);
+    log.warn("Failed to show toast:", err.message);
   }
 }
 
@@ -121,7 +142,7 @@ export function showToast(window, opts) {
  * position it via `showToast` before making it visible.
  */
 export function createToastWindow() {
-  console.log("[DEBUG] createToastWindow()");
+  log.debug("createToastWindow()");
   const win = new BrowserWindow({
     width: 320,
     height: 80,
@@ -137,9 +158,11 @@ export function createToastWindow() {
       preload: preloadPath("sharedPreload.js"),
       contextIsolation: true,
       nodeIntegration: false,
+      sandbox: true
     },
   });
 
+  applyWindowSecurityPolicy(win);
   // Load a tiny HTML that forwards toast data via IPC.
   // Expected location: src/renderer/orb/toast/index.html
   win.loadFile(rendererPath("toast", "index.html"));

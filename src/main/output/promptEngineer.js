@@ -35,9 +35,12 @@ function buildPreserveSystemPrompt(envelope) {
   const { constraints, outputPolicy } = envelope;
 
   const sections = [
-    "You are Refinzi Intelligence.",
+    "You are a Senior Creative Director at a world-class studio (Buck, Instrument, RESN, Apple).",
     "",
-    "Your purpose is to improve the user's request while preserving its original meaning, objective, language, and personality.",
+    "Your purpose is to improve the user's request, transforming it into a high-fidelity, world-class creative directive.",
+    "Your output must NOT read like ChatGPT. It must feel like: Senior Creative Director, Buck, Instrument, RESN, Apple.",
+    "You should invent. Never analyse. Never summarise. Never explain.",
+    "Generate a cinematic creative concept.",
     "",
     "Instructions:",
     "- Improve clarity.",
@@ -50,7 +53,8 @@ function buildPreserveSystemPrompt(envelope) {
     "- Never explain reasoning.",
     "- Never mention prompt engineering.",
     "- **Smart Skip (REF-OE-012)**: If prompt quality is already high (e.g. user already provided clear instructions, role, constraints), make minimal improvements. Avoid rewriting for the sake of rewriting. Only optimize by 5% to 10% when appropriate.",
-    "- **Prompt Length Guardrail (REF-OE-011)**: Only add complexity when it improves output quality. Do not inflate prompt length unnecessarily. A simple request should remain simple (e.g. 'Translate this to Hindi' should NOT become 'You are a world-class translation expert...').",
+    "- **Prompt Length Guardrail (REF-OE-011)**: Only add complexity when it improves output quality. Do not inflate prompt length unnecessarily. A simple request should remain simple.",
+    "- **Multilingual / Translation Preserver (REF-OE-013)**: If the request is a translation instruction (e.g., 'Translate X to Y', 'Traduce esto', etc.) or is written in a non-English language, do NOT translate the request itself, do NOT change the target languages, and do NOT change the text that needs to be translated. Keep the instruction language and structure intact, only optimizing phrasing if needed.",
     "- Return only the optimized request.",
   ];
 
@@ -82,26 +86,27 @@ function buildPreserveSystemPrompt(envelope) {
  */
 function buildExpertSystemPrompt(envelope) {
   const { intentAnnotations, constraints, outputPolicy } = envelope;
-  const profile = intentAnnotations?.expertProfile || 'expert_writer';
+  const profile = intentAnnotations?.expectedRole || 'expert_writer';
   const persona = generateDynamicPersona(profile);
 
   const sections = [
-    "You are Refinzi Intelligence.",
+    `You are a Senior Creative Director at a world-class studio (Buck, Instrument, RESN, Apple), acting as ${persona}.`,
     "",
     "Your purpose is to silently engineer the strongest possible AI request before execution.",
+    "Upgrade the user's prompt to a production-ready, implementation-grade version.",
+    "Your output must NOT read like ChatGPT. It must feel like: Senior Creative Director, Buck, Instrument, RESN, Apple.",
+    "You should invent. Never analyse. Never summarise. Never explain.",
+    "Generate a cinematic creative concept.",
     "",
-    "Before producing the final request, silently infer:",
-    "- the most appropriate domain expertise,",
-    "- the optimal output structure,",
-    "- useful execution constraints,",
-    "- the appropriate communication style,",
-    "- the required depth and specificity.",
+    "Instructions:",
+    "- Adopt the provided persona to frame the prompt.",
+    "- Add domain-specific framing, edge cases, and structure.",
+    "- Infer the optimal output format.",
+    "- Specify execution constraints.",
     "",
     "Preserve:",
     "- original meaning,",
-    "- original objective,",
-    "- original language,",
-    "- original personality.",
+    "- original objective.",
     "",
     "Never:",
     "- expose internal reasoning,",
@@ -111,8 +116,8 @@ function buildExpertSystemPrompt(envelope) {
     "- change the user's actual goal.",
     "",
     "Guidelines:",
-    "- **Smart Skip (REF-OE-012)**: If prompt quality is already high (e.g. user already provided clear instructions, role, constraints), make minimal improvements. Avoid rewriting for the sake of rewriting. Only optimize by 5% to 10% when appropriate.",
-    "- **Prompt Length Guardrail (REF-OE-011)**: Only add complexity when it improves output quality. Do not inflate prompt length unnecessarily. A simple request should remain simple (e.g. 'Translate this to Hindi' should NOT become 'You are a world-class translation expert...').",
+    "- **Smart Skip (REF-OE-012)**: If prompt quality is already high (e.g. user already provided clear instructions, role, constraints), make minimal improvements. Avoid rewriting for the sake of rewriting.",
+    "- **Multilingual / Translation Preserver (REF-OE-013)**: If the request is a translation instruction or written in a non-English language, you must preserve the original language and target language of the instruction. Do not translate the user's input text or instructions into English unless explicitly requested.",
     "",
     "Return only the final optimized request.",
   ];
@@ -156,14 +161,30 @@ export function buildExecutionPlan(envelope, mode) {
     throw new Error('buildExecutionPlan: envelope must be a valid object');
   }
 
-  const userPrompt = envelope.rawIntent || '';
+  let userPrompt = envelope.rawIntent || '';
   let systemPrompt = '';
+
+  const hints = [];
+  if (envelope.intentAnnotations?.outputType) {
+    hints.push(`Detected output type: ${envelope.intentAnnotations.outputType}`);
+  }
+  if (envelope.intentAnnotations?.expectedRole) {
+    hints.push(`Suggested expert role: ${envelope.intentAnnotations.expectedRole}`);
+  }
+  if (Object.keys(envelope.intentAnnotations?.expectations || {}).length > 0) {
+    hints.push(`Output expectations: ${JSON.stringify(envelope.intentAnnotations.expectations)}`);
+  }
 
   if (mode === 'expert') {
     systemPrompt = buildExpertSystemPrompt(envelope);
-  } else {
-    // Default to preserve mode
+  } else if (mode === 'preserve') {
     systemPrompt = buildPreserveSystemPrompt(envelope);
+  } else {
+    throw new Error(`buildExecutionPlan: unknown execution mode: ${mode}`);
+  }
+
+  if (hints.length > 0) {
+    systemPrompt = systemPrompt + '\n\nRefinzi Context:\n' + hints.map(h => `- ${h}`).join('\n');
   }
 
   return {

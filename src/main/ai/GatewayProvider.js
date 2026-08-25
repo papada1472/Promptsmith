@@ -1,8 +1,11 @@
 import { AIProvider } from "./AIProvider.js";
+import { createLogger } from "../logger.js";
+
+const log = createLogger("GatewayProvider");
 
 const GATEWAY_URL =
   process.env.REFINZI_GATEWAY_URL ||
-  "https://refinzi-gateway.vercel.app/api/v1/refine";
+  "https://refinzi-gateway-papada1472-2736s-projects.vercel.app/api/v1/refine";
 
 /**
  * GatewayProvider implementation of the AIProvider.
@@ -12,11 +15,11 @@ export class GatewayProvider extends AIProvider {
   constructor(opts) {
     super(opts);
     this.model = opts?.model || "gateway-default";
-    console.log("[Refinzi][GatewayProvider] Initializing with Gateway URL:", GATEWAY_URL);
+    log.debug("Initializing with Gateway URL:", GATEWAY_URL);
   }
 
   async refine(text, opts = {}) {
-    console.log("[Refinzi][GatewayProvider] refine() called, text length:", text?.length || 0);
+    log.debug("refine() called, text length:", text?.length || 0);
 
     if (!text || !text.trim()) {
       const err = new Error("No text to refine");
@@ -44,12 +47,17 @@ export class GatewayProvider extends AIProvider {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Note: VERCEL_OIDC_TOKEN usage may be added here if required by the gateway
+          ...(process.env.AI_GATEWAY_API_KEY && {
+            "x-api-key": process.env.AI_GATEWAY_API_KEY,
+            "Authorization": `Bearer ${process.env.AI_GATEWAY_API_KEY}`
+          })
         },
         body: JSON.stringify({
           text: text,
           systemPrompt: this.systemPrompt,
-          model: this.model
+          model: this.model,
+          apiKey: this.apiKey || process.env.AI_GATEWAY_API_KEY || process.env.GEMINI_API_KEY || process.env.OPENROUTER_API_KEY || "",
+          ...(opts.responseMimeType && { responseMimeType: opts.responseMimeType })
         }),
         signal: controller.signal
       });
@@ -74,12 +82,12 @@ export class GatewayProvider extends AIProvider {
       return responseText;
     } catch (e) {
       if (e.name === 'AbortError') {
-        console.error("[Refinzi][GatewayProvider] Gateway request timed out");
+        log.error("Gateway request timed out");
         const err = new Error("Gateway request timed out");
-        err.code = "gateway_timeout";
+        err.code = "TIMEOUT";
         throw err;
       } else {
-        console.error("[Refinzi][GatewayProvider] Error during refine:", e);
+        log.error("Error during refine:", e);
         throw e;
       }
     } finally {
@@ -89,3 +97,4 @@ export class GatewayProvider extends AIProvider {
     }
   }
 }
+

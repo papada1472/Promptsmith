@@ -20,13 +20,6 @@
 
 function deepFreeze(obj) {
   if (obj === null || typeof obj !== 'object') return obj;
-  const propNames = Object.getOwnPropertyNames(obj);
-  for (const name of propNames) {
-    const value = obj[name];
-    if (value && typeof value === 'object') {
-      deepFreeze(value);
-    }
-  }
   return Object.freeze(obj);
 }
 
@@ -365,6 +358,8 @@ export function optimizeEnvelope(envelope) {
     },
     intentAnnotations,
     constraints: envelope.constraints ? [...envelope.constraints] : [],
+    inputConstraints: envelope.inputConstraints ? [...envelope.inputConstraints] : [],
+    outputConstraints: envelope.outputConstraints ? [...envelope.outputConstraints] : [],
     outputPolicy: envelope.outputPolicy ? { ...envelope.outputPolicy } : {},
     metadata: envelope.metadata ? { ...envelope.metadata } : {},
     extensions,

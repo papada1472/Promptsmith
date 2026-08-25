@@ -50,7 +50,7 @@ import { isValid, freeze } from './envelope.js';
  *   // envelope.rawIntent === 'Help me write a YC application'
  *   // envelope.structuredHints.detectedOutput === 'YC Application'
  */
-function buildEnvelope({ input, metadata = {} }) {
+function buildEnvelope({ input, mode = 'context', metadata = {} }) {
   // ── Stage 1: Extract ──────────────────────────────────────────────────
   const extractResult = extract(input, metadata);
 
@@ -58,9 +58,6 @@ function buildEnvelope({ input, metadata = {} }) {
   const structureResult = structure(extractResult);
 
   // ── Stage 3: Policy ────────────────────────────────────────────────────
-  // Default to 'context' mode for v0. 'expert' mode will be exposed
-  // once the adapter layer is built.
-  const mode = 'context';
   const policyResult = policy(mode, { structuredHints: structureResult.structuredHints });
 
   // ── Stage 4: Assemble ─────────────────────────────────────────────────

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Refinzi — Ambient AI Desktop Utility</title>
+  <meta name="description" content="Improve and add context to any text without leaving the app you are using. Highlight. Refine. Continue.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Minimal Sticky Navigation Header -->
+  <header class="header">
+    <div class="container header-container">
+      <a href="#" class="logo" aria-label="Refinzi Home">
+        <span class="logo-sparkle">✨</span> Refinzi
+      </a>
+
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation Menu">
+        ☰
+      </button>
+
+      <nav class="nav" id="navMenu">
+        <ul class="nav-links">
+          <li><a href="#philosophy" class="nav-link">Philosophy</a></li>
+          <li><a href="#workflow" class="nav-link">Workflow</a></li>
+          <li><a href="#features" class="nav-link">Features</a></li>
+          <li><a href="#download" class="nav-link">Download</a></li>
+        </ul>
+        <a href="#download" class="btn btn-primary">Get Refinzi</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Section 1: Hero -->
+    <section class="hero fade-in-up">
+      <div class="container text-container">
+        <span class="hero-tag">Ambient AI Utility</span>
+        <h1 class="hero-title">Your thoughts, refined with AI.</h1>
+        <p class="hero-description">
+          Add context to any text directly inside ChatGPT, Claude, Gmail, or Notion without switching apps or copying prompts.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#download" class="btn btn-primary btn-large">
+            <span>Download for Windows</span>
+          </a>
+          <a href="#workflow" class="btn btn-secondary btn-large">
+            <span>See how it works</span>
+          </a>
+        </div>
+        <p class="platform-note">v0.1.0-beta • Lightweight Windows Tray Utility</p>
+      </div>
+
+      <!-- Single High-Quality Focal Image Visual -->
+      <div class="container">
+        <div class="hero-visual-frame">
+          <img src="assets/hero-visual.png" alt="Refinzi ambient interface floating orb preview" class="hero-visual-img" width="1140" height="640">
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Core Philosophy -->
+    <section class="statement-section fade-in-up" id="philosophy">
+      <div class="container text-container">
+        <p class="statement-text">
+          People do not want another AI app. <span>People want less interruption.</span> Refinzi eliminates copy-pasting and prompt writing so you stay in flow.
+        </p>
+      </div>
+    </section>
+
+    <!-- Section 3: Interactive Workflow Showcase -->
+    <section class="orb-demo-section fade-in-up" id="workflow">
+      <div class="container text-container">
+        <span class="section-label">Effortless Workflow</span>
+        <h2 class="section-title">Highlight. Refine. Continue.</h2>
+        <p class="section-sub">
+          Highlight text anywhere. Tap the floating sparkle orb to inject context instantly, or hold to structure an expert prompt.
+        </p>
+      </div>
+
+      <div class="container">
+        <div class="orb-playground">
+          <div class="mock-text-area">
+            "Draft an email to the engineering team summarizing our launch targets for Q3 and request..."
+            <mark class="highlighted-phrase">summarizing our launch targets</mark>
+          </div>
+
+          <!-- Interactive Sparkle Orb Element -->
+          <div class="sparkle-orb-widget" id="sparkleOrb" role="button" tabindex="0" aria-label="Interactive Refinzi Orb Preview">
+            <div class="orb-icon"></div>
+            <span class="orb-status-text" id="orbStatus">✨ Tap or hold sparkle</span>
+          </div>
+
+          <p class="demo-instruction" id="orbPromptPreview">
+            Click once to add context • Hold 0.5s to generate expert prompt
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Features Grid -->
+    <section class="features-section fade-in-up" id="features">
+      <div class="container text-container text-center">
+        <span class="section-label">Design Principles</span>
+        <h2 class="section-title">Built for deep focus.</h2>
+        <p class="section-sub">
+          Refinzi sits quietly in your system tray until you need it.
+        </p>
+      </div>
+
+      <div class="container">
+        <div class="features-grid">
+          <div class="feature-item">
+            <span class="feature-num">01</span>
+            <h3 class="feature-heading">Zero Context Switching</h3>
+            <p class="feature-desc">
+              Never leave your active window. Refinzi refines text directly inside your writing space.
+            </p>
+          </div>
+
+          <div class="feature-item">
+            <span class="feature-num">02</span>
+            <h3 class="feature-heading">Ambient Intelligence</h3>
+            <p class="feature-desc">
+              No chat prompts to format or token limits to calculate. AI disappears into your workflow.
+            </p>
+          </div>
+
+          <div class="feature-item">
+            <span class="feature-num">03</span>
+            <h3 class="feature-heading">Your Choice of AI</h3>
+            <p class="feature-desc">
+              Seamlessly bring your own API key for Gemini, OpenRouter, Claude, or local models.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Experience Comparison -->
+    <section class="comparison-section fade-in-up">
+      <div class="container text-container text-center">
+        <h2 class="section-title">A calm alternative.</h2>
+      </div>
+
+      <div class="container">
+        <div class="comparison-grid">
+          <div class="comparison-col old">
+            <h3 class="comparison-title">Traditional AI Workflows</h3>
+            <ul class="comparison-list">
+              <li>✕ Open browser tab and log into chatbot</li>
+              <li>✕ Copy-paste text back and forth</li>
+              <li>✕ Spend 2 minutes writing prompt instructions</li>
+              <li>✕ Lose focus and break deep work flow</li>
+            </ul>
+          </div>
+
+          <div class="comparison-col new">
+            <h3 class="comparison-title">The Refinzi Layer</h3>
+            <ul class="comparison-list">
+              <li>✓ Highlight text in any application</li>
+              <li>✓ Tap the floating sparkle</li>
+              <li>✓ AI refines intent directly in place</li>
+              <li>✓ Continue working uninterrupted</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 6: Download CTA -->
+    <section class="cta-section fade-in-up" id="download">
+      <div class="container text-container">
+        <h2 class="cta-title">Stay in flow.</h2>
+        <p class="cta-sub">
+          Experience zero-interruption text refinement on Windows. Free during beta.
+        </p>
+
+        <div>
+          <a href="#" class="btn btn-primary btn-large">
+            <span>Download Refinzi for Windows</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Clean Minimal Footer -->
+  <footer class="footer">
+    <div class="container footer-container">
+      <div class="footer-brand">
+        <span>✨ Refinzi © 2026</span>
+      </div>
+
+      <ul class="footer-links">
+        <li><a href="#philosophy">Philosophy</a></li>
+        <li><a href="#workflow">Workflow</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#download">Download</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

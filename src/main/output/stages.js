@@ -32,10 +32,10 @@ function detectLanguage(text) {
 
   // Check for common Hinglish patterns: English words + Hindi words in Latin script
   const hinglishMarkers = [
-    /(?:hai|ho|hain|hoon|hona|karo|karna|karte|karta|karti|kar|raha|rahi|rahe|rahi|tha|the|thi|the|thhe|thhi)\b/i,
-    /(?:nahi|nhi|mat|kyun|kyo|kaise|kya|kaun|kahan|kab|jitna|itna|utna|kitna)\b/i,
-    /(?:mera|meri|mere|tera|teri|tere|apna|apni|apne|hum|tum|aap|log|sab)\b/i,
-    /(?:chahta|chahti|chahte|chahiye|lagta|lagti|lagte|hoga|hog|hogi|honge)\b/i,
+    /\b(?:hai|ho|hain|hoon|hona|karo|karna|karte|karta|karti|kar|raha|rahi|rahe|rahi|tha|the|thi|the|thhe|thhi)\b/i,
+    /\b(?:nahi|nhi|mat|kyun|kyo|kaise|kya|kaun|kahan|kab|jitna|itna|utna|kitna)\b/i,
+    /\b(?:mera|meri|mere|tera|teri|tere|apna|apni|apne|hum|tum|aap|log|sab)\b/i,
+    /\b(?:chahta|chahti|chahte|chahiye|lagta|lagti|lagte|hoga|hog|hogi|honge)\b/i,
   ];
 
   const hasHinglishMarkers = hinglishMarkers.some((re) => re.test(text));

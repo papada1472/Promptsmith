@@ -13,7 +13,9 @@ const themeLightBtn = document.getElementById("themeLightBtn");
 
 // Hero
 const heroRefinements = document.getElementById("heroRefinements");
-const heroRewritesAvoided = document.getElementById("heroRewritesAvoided");
+const heroReels = document.getElementById("heroReels");
+const heroLandingPages = document.getElementById("heroLandingPages");
+const heroPromptsImproved = document.getElementById("heroPromptsImproved");
 
 // API Provider
 const apiKeyInput = document.getElementById("apiKey");
@@ -21,20 +23,15 @@ const saveKeyBtn = document.getElementById("saveKeyBtn");
 const testConnectionBtn = document.getElementById("testConnectionBtn");
 const providerSelect = document.getElementById("providerSelect");
 const modelSelect = document.getElementById("modelSelect");
+const customModelWrapper = document.getElementById("customModelWrapper");
+const customModelInput = document.getElementById("customModelInput");
 const toggleApiKeyBtn = document.getElementById("toggleApiKey");
 const connectionIndicator = document.getElementById("connectionIndicator");
 const connectionText = document.getElementById("connectionText");
+const connectionStatus = document.getElementById("connectionStatus");
 const providerHint = document.getElementById("providerHint");
 
-// Progress section
-const progressRefinements = document.getElementById("progressRefinements");
-const progressRewritesAvoided = document.getElementById("progressRewritesAvoided");
-const progressTimeSaved = document.getElementById("progressTimeSaved");
-const progressStreak = document.getElementById("progressStreak");
-
 // Advanced settings
-const advancedHeader = document.getElementById("advancedHeader");
-const advancedContent = document.getElementById("advancedContent");
 const launchToggle = document.getElementById("launchToggle");
 const saveHistoryToggle = document.getElementById("saveHistoryToggle");
 const hotkeyInput = document.getElementById("hotkeyInput");
@@ -46,9 +43,9 @@ const shareBtn = document.getElementById("shareBtn");
 const shareCard = document.getElementById("shareCard");
 const shareCardClose = document.getElementById("shareCardClose");
 const shareRefinements = document.getElementById("shareRefinements");
-const shareTimeSaved = document.getElementById("shareTimeSaved");
-const shareRetries = document.getElementById("shareRetries");
-const shareStreak = document.getElementById("shareStreak");
+const shareReels = document.getElementById("shareReels");
+const shareLandingPages = document.getElementById("shareLandingPages");
+const sharePromptsImproved = document.getElementById("sharePromptsImproved");
 const shareCardContent = document.getElementById("shareCardContent");
 const downloadPngBtn = document.getElementById("downloadPngBtn");
 const copyImageBtn = document.getElementById("copyImageBtn");
@@ -68,39 +65,165 @@ const footerStats = document.getElementById("footerStats");
 // History
 const logsContainer = document.getElementById("logsContainer");
 const clearLogsBtn = document.getElementById("clearLogsBtn");
+const loadMoreContainer = document.getElementById("loadMoreContainer");
+const loadMoreBtn = document.getElementById("loadMoreBtn");
 
 // Onboarding
 const onboardingModal = document.getElementById("onboardingModal");
 const onboardingModalClose = document.getElementById("onboardingModalClose");
 const onboardingModalGotIt = document.getElementById("onboardingModalGotIt");
+const feedbackModal = document.getElementById("feedbackModal");
+const feedbackForm = document.getElementById("feedbackForm");
+const feedbackModalClose = document.getElementById("feedbackModalClose");
+const feedbackCancel = document.getElementById("feedbackCancel");
+const feedbackCategory = document.getElementById("feedbackCategory");
+const feedbackDescription = document.getElementById("feedbackDescription");
+const feedbackContact = document.getElementById("feedbackContact");
+
+// First-launch Premium introduction (kept inside the dashboard by design).
+const premiumWelcome = document.getElementById("premiumWelcome");
+const premiumWelcomeDismiss = document.getElementById("premiumWelcomeDismiss");
+let premiumWelcomeScheduled = false;
+
+function dismissPremiumWelcome() {
+  if (premiumWelcome) premiumWelcome.classList.add("hidden");
+  window.refinzi.settings.set({ premiumWelcomePending: false }).catch(() => { });
+}
+
+function showPremiumWelcomeIfNeeded(settings) {
+  if (!settings.premiumWelcomePending || !premiumWelcome || premiumWelcomeScheduled) return;
+  premiumWelcomeScheduled = true;
+  window.setTimeout(() => premiumWelcome.classList.remove("hidden"), 650);
+}
+
+if (premiumWelcomeDismiss) premiumWelcomeDismiss.addEventListener("click", dismissPremiumWelcome);
 
 // ── History ──
-async function loadHistory() {
+// ── History Pagination & State ──
+let loadedLogs = [];
+let currentOffset = 0;
+const pageLimit = 10;
+
+function escapeHtml(str) {
+  if (!str) return "";
+  return str
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&apos;");
+}
+
+async function loadHistory(append = false, showLoading = true) {
   if (!logsContainer) return;
   try {
-    const result = await window.refinzi.logs.get();
+    if (!append) {
+      loadedLogs = [];
+      currentOffset = 0;
+      if (showLoading) {
+        logsContainer.innerHTML = `
+          <div class="loading-history-state">
+            <div class="skeleton-item"></div>
+            <div class="skeleton-item"></div>
+            <div class="skeleton-item"></div>
+          </div>
+        `;
+      }
+    }
+
+    const result = await window.refinzi.logs.get({ offset: currentOffset, limit: pageLimit });
     const logs = result.logs || [];
-    if (logs.length === 0) {
-      logsContainer.innerHTML = "<p>No history yet.</p>";
+
+    if (!append) {
+      logsContainer.innerHTML = "";
+    }
+
+    loadedLogs = loadedLogs.concat(logs);
+    currentOffset += logs.length;
+
+    if (loadedLogs.length === 0) {
+      logsContainer.innerHTML = `
+        <div class="empty-history-state">
+          <span class="empty-history-icon">✨</span>
+          <strong>${saveHistoryToggle?.checked ? "Your first blueprint starts here" : "Keep your best work close"}</strong>
+          <span class="empty-history-text">${saveHistoryToggle?.checked ? "Use one of the starter prompts above, then your result will appear here." : "Turn on local history to save refinements privately on this device."}</span>
+          <button type="button" class="btn-secondary empty-history-action" id="historyEmptyAction">${saveHistoryToggle?.checked ? "Copy a starter prompt" : "Enable local history"}</button>
+        </div>
+      `;
+      document.getElementById("historyEmptyAction")?.addEventListener("click", async () => {
+        if (!saveHistoryToggle?.checked) {
+          saveHistoryToggle.checked = true;
+          await window.refinzi.settings.set({ saveHistoryLocally: true });
+          showNotification("success", "Local history is on. Your next refinement will be saved here.");
+          loadHistory(false, false);
+        } else {
+          document.querySelector(".starter-prompt")?.click();
+        }
+      });
+      if (loadMoreContainer) loadMoreContainer.classList.add("hidden");
       return;
     }
-    logsContainer.innerHTML = logs.map(log => `
-      <div style="border-bottom: 1px solid var(--border-color, #ccc); padding: 8px 0;">
-        <small style="color: gray;">${new Date(log.timestamp || Date.now()).toLocaleString()}</small>
-        <div style="margin-top: 4px;"><strong>Input:</strong> ${(log.input || "").substring(0, 100)}...</div>
-        <div style="margin-top: 4px;"><strong>Output:</strong> ${(log.output || "").substring(0, 100)}...</div>
+
+    const newLogsHtml = logs.map(log => `
+      <div class="log-item" data-index="${log.originalIndex}">
+        <div class="log-header">
+          <span class="log-time">${new Date(log.timestamp || Date.now()).toLocaleString()}</span>
+          <div class="log-actions">
+            <button class="log-action-btn copy-btn" title="Copy output" aria-label="Copy output">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+            <button class="log-action-btn delete-btn" title="Delete entry" aria-label="Delete entry">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2-2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="log-body">
+          <div class="log-field">
+            <span class="log-label">Input</span>
+            <div class="log-text">${escapeHtml(log.input)}</div>
+          </div>
+          <div class="log-field">
+            <span class="log-label">Output</span>
+            <div class="log-text">${escapeHtml(log.output)}</div>
+          </div>
+        </div>
       </div>
     `).join("");
+
+    logsContainer.insertAdjacentHTML("beforeend", newLogsHtml);
+
+    if (result.hasMore) {
+      if (loadMoreContainer) loadMoreContainer.classList.remove("hidden");
+    } else {
+      if (loadMoreContainer) loadMoreContainer.classList.add("hidden");
+    }
   } catch (e) {
     console.error("[CommandCenter] loadHistory failed", e);
-    logsContainer.innerHTML = "<p>Error loading history.</p>";
+    logsContainer.innerHTML = `
+      <div class="error-history-state">
+        <span class="error-icon">⚠️</span>
+        <span class="error-text">Failed to load history logs. Please try again.</span>
+      </div>
+    `;
+    if (loadMoreContainer) loadMoreContainer.classList.add("hidden");
   }
 }
 
 async function clearHistory() {
+  if (!confirm("Are you sure you want to clear your local refinement history? This action cannot be undone.")) {
+    return;
+  }
   try {
     await window.refinzi.logs.clear();
-    await loadHistory();
+    await loadHistory(false);
     showNotification("success", "History cleared.");
   } catch (e) {
     console.error("[CommandCenter] clearHistory failed", e);
@@ -141,12 +264,10 @@ function showNotification(type, message) {
 
 // ── Populate share card ──
 function populateShareCard(s) {
-  if (shareRefinements) shareRefinements.textContent = String(s.refinementsMade ?? 0);
-  const totalSeconds = s.timeSavedSeconds || 0;
-  const timeStr = totalSeconds >= 60 ? Math.round(totalSeconds / 60) + "m" : totalSeconds + "s";
-  if (shareTimeSaved) shareTimeSaved.textContent = timeStr;
-  if (shareRetries) shareRetries.textContent = String(Math.round((s.retriesAvoided ?? 0) * 10) / 10);
-  if (shareStreak) shareStreak.textContent = String(s.currentStreak ?? 0);
+  if (shareRefinements) shareRefinements.textContent = String(s.blueprintsGenerated ?? 0);
+  if (shareReels) shareReels.textContent = String(s.reelsReverseEngineered ?? 0);
+  if (shareLandingPages) shareLandingPages.textContent = String(s.landingPagesReverseEngineered ?? 0);
+  if (sharePromptsImproved) sharePromptsImproved.textContent = String(s.promptsImproved ?? 0);
 }
 
 // ── PNG download ──
@@ -186,10 +307,10 @@ function buildStatsCanvas() {
 
   // 2x2 stat grid
   const stats = [
-    { label: "Refinements",      val: shareRefinements?.textContent || "0" },
-    { label: "Time Saved",       val: shareTimeSaved?.textContent    || "0m" },
-    { label: "Retries Prevented", val: shareRetries?.textContent    || "0" },
-    { label: "Day Streak",       val: shareStreak?.textContent      || "0" }
+    { label: "Blueprints", val: shareRefinements?.textContent || "0" },
+    { label: "Reels", val: shareReels?.textContent || "0" },
+    { label: "Landing Pages", val: shareLandingPages?.textContent || "0" },
+    { label: "Prompts Improved", val: sharePromptsImproved?.textContent || "0" }
   ];
 
   const colW = canvas.width / 2;
@@ -247,7 +368,7 @@ function copyImage() {
 // ── Share to X ──
 function shareToX() {
   const text = encodeURIComponent(
-    `I've enhanced ${shareRefinements?.textContent || '0'} texts with Refinzi! 🚀\n\nTime saved: ${shareTimeSaved?.textContent || '0m'}\nRetries prevented: ${shareRetries?.textContent || '0'}\nDay streak: ${shareStreak?.textContent || '0'} days\n\nAI text refinement, right in your workflow.`
+    `I've generated ${shareRefinements?.textContent || '0'} blueprints (Reels: ${shareReels?.textContent || '0'}, Landing Pages: ${shareLandingPages?.textContent || '0'}) with Refinzi! 🚀\n\nPrompts improved: ${sharePromptsImproved?.textContent || '0'}\n\nReverse engineer viral content instantly.`
   );
   window.open(`https://x.com/intent/tweet?text=${text}`, "_blank");
 }
@@ -255,7 +376,7 @@ function shareToX() {
 // ── Share to LinkedIn ──
 function shareToLinkedIn() {
   const text = encodeURIComponent(
-    `I've enhanced ${shareRefinements?.textContent || '0'} texts using Refinzi — a lightweight desktop utility that refines your writing with AI, right in your workflow. Time saved: ${shareTimeSaved?.textContent || '0m'}, Retries prevented: ${shareRetries?.textContent || '0'}. Try it — your data stays on your device.`
+    `I've generated ${shareRefinements?.textContent || '0'} blueprints using Refinzi (Reels: ${shareReels?.textContent || '0'}, Landing Pages: ${shareLandingPages?.textContent || '0'}). Prompts improved: ${sharePromptsImproved?.textContent || '0'}. Try it out at refinzi.app — your data stays on your device.`
   );
   window.open(`https://www.linkedin.com/sharing/share-offsite/?url=https://refinzi.app&summary=${text}`, "_blank");
 }
@@ -265,34 +386,50 @@ async function testConnection() {
   if (!testConnectionBtn || !connectionIndicator || !connectionText) return;
 
   const key = apiKeyInput ? apiKeyInput.value.trim() : "";
+  const provider = providerSelect?.value || "gemini";
 
-  if (!key) {
+  if (!key && provider !== "gemini" && provider !== "gateway") {
+    if (connectionStatus) connectionStatus.className = "connection-status status-error";
     connectionIndicator.className = "connection-indicator error";
     connectionText.textContent = "No API key provided";
     return;
   }
 
   // Show testing state
+  testConnectionBtn.disabled = true;
+  const originalBtnText = testConnectionBtn.textContent;
+  testConnectionBtn.textContent = "Testing...";
+
+  if (connectionStatus) connectionStatus.className = "connection-status status-testing";
   connectionIndicator.className = "connection-indicator testing";
   connectionText.textContent = "Testing connection...";
 
   try {
-    // Attempt to verify the key via the backend
-    const result = await window.refinzi.settings.verifyApiKey(key);
+    const result = await window.refinzi.settings.verifyApiKey(key, provider);
     if (result?.ok) {
+      if (connectionStatus) connectionStatus.className = "connection-status status-success";
       connectionIndicator.className = "connection-indicator success";
-      connectionText.textContent = "Connected successfully";
+      if (!key && (provider === "gemini" || provider === "gateway")) {
+        connectionText.textContent = "Gateway Connected";
+      } else {
+        connectionText.textContent = "Connected successfully";
+      }
       showNotification("success", "Connection successful!");
     } else {
+      if (connectionStatus) connectionStatus.className = "connection-status status-error";
       connectionIndicator.className = "connection-indicator error";
       connectionText.textContent = result?.error || "Connection failed";
       showNotification("error", result?.error || "Connection failed");
     }
   } catch (e) {
     console.error("[CommandCenter] testConnection failed", e);
+    if (connectionStatus) connectionStatus.className = "connection-status status-error";
     connectionIndicator.className = "connection-indicator error";
     connectionText.textContent = "Connection failed";
-    showNotification("error", "Connection failed");
+    showNotification("error", "Failed to test connection.");
+  } finally {
+    testConnectionBtn.disabled = false;
+    testConnectionBtn.textContent = originalBtnText;
   }
 }
 
@@ -303,7 +440,6 @@ function toggleApiKeyVisibility() {
   apiKeyInput.type = isPassword ? "text" : "password";
   toggleApiKeyBtn.setAttribute("aria-pressed", isPassword);
 
-  // Toggle icons
   const eyeIcon = toggleApiKeyBtn.querySelector(".icon-eye");
   const eyeOffIcon = toggleApiKeyBtn.querySelector(".icon-eye-off");
   if (eyeIcon && eyeOffIcon) {
@@ -318,7 +454,6 @@ async function handleProviderChange() {
   const provider = providerSelect.value;
   const settings = await window.refinzi.settings.get();
 
-  // Clear and populate model options based on provider
   modelSelect.innerHTML = "";
   let models = [];
   let apiKey = "";
@@ -327,19 +462,30 @@ async function handleProviderChange() {
     models = [
       { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash" },
       { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro" },
+      { value: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
       { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash" },
-      { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro" }
+      { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro" },
+      { value: "custom", label: "Custom Model..." }
     ];
     apiKey = settings.geminiApiKey || "";
   } else if (provider === "openrouter") {
     models = [
       { value: "google/gemini-2.0-flash-exp:free", label: "FREE: Gemini 2.0 Flash" },
       { value: "meta-llama/llama-3.3-70b-instruct:free", label: "FREE: Llama 3.3 70B" },
-      { value: "mistralai/pixtral-12b:free", label: "FREE: Pixtral 12B" },
+      { value: "deepseek/deepseek-r1:free", label: "FREE: DeepSeek R1" },
+      { value: "qwen/qwen-2.5-coder-32b-instruct:free", label: "FREE: Qwen 2.5 Coder 32B" },
+      { value: "google/gemma-2-9b-it:free", label: "FREE: Gemma 2 9B" },
       { value: "openai/gpt-4o-mini", label: "GPT-4o Mini" },
-      { value: "anthropic/claude-3.5-sonnet", label: "Claude 3.5 Sonnet" }
+      { value: "openai/gpt-4o", label: "GPT-4o" },
+      { value: "anthropic/claude-3.5-sonnet", label: "Claude 3.5 Sonnet" },
+      { value: "custom", label: "Custom Model..." }
     ];
     apiKey = settings.openRouterApiKey || "";
+  } else if (provider === "gateway") {
+    models = [
+      { value: "gateway-default", label: "Refinzi Free Gateway (Multi-Model)" }
+    ];
+    apiKey = "";
   }
 
   models.forEach(m => {
@@ -349,47 +495,59 @@ async function handleProviderChange() {
     modelSelect.appendChild(opt);
   });
 
-  // Update API key field
   if (apiKeyInput) apiKeyInput.value = apiKey;
 
-  // Set default model for the provider
-  const defaultModel = provider === "gemini" ? "gemini-2.5-flash" : "google/gemini-2.0-flash-exp:free";
+  const defaultModel = provider === "gemini" ? "gemini-2.5-flash" : provider === "gateway" ? "gateway-default" : "google/gemini-2.0-flash-exp:free";
   modelSelect.value = defaultModel;
 
-  // Save provider and default model selection
+  if (customModelWrapper) {
+    customModelWrapper.classList.add("hidden");
+    customModelWrapper.style.display = "none";
+  }
+
   try {
-    await window.refinzi.settings.set({ 
+    await window.refinzi.settings.set({
       activeProvider: provider,
       activeModel: defaultModel
     });
-    
-    // Refresh UI status
-    refresh();
+    if (modelBadge) modelBadge.textContent = defaultModel;
   } catch (e) {
-    console.warn("[CommandCenter] Could not save provider", e);
+    console.warn("[CommandCenter] Could not save provider settings", e);
   }
+  refresh();
 }
 
 async function handleModelChange() {
   if (!modelSelect) return;
   const model = modelSelect.value;
-  try {
-    await window.refinzi.settings.set({ activeModel: model });
-  } catch (e) {
-    console.warn("[CommandCenter] Could not save model", e);
+
+  if (model === "custom") {
+    if (customModelWrapper) {
+      customModelWrapper.classList.remove("hidden");
+      customModelWrapper.style.display = "flex";
+      setTimeout(() => customModelInput?.focus(), 60);
+    }
+    const customValue = customModelInput?.value?.trim() || "";
+    try {
+      await window.refinzi.settings.set({ activeModel: customValue });
+      if (modelBadge) modelBadge.textContent = customValue || "custom";
+    } catch (e) {
+      console.warn("[CommandCenter] Could not save model", e);
+    }
+  } else {
+    if (customModelWrapper) {
+      customModelWrapper.classList.add("hidden");
+      customModelWrapper.style.display = "none";
+    }
+    try {
+      await window.refinzi.settings.set({ activeModel: model });
+      if (modelBadge) modelBadge.textContent = model;
+    } catch (e) {
+      console.warn("[CommandCenter] Could not save model", e);
+    }
   }
 }
 
-// ── Advanced Settings Collapse ──
-function toggleAdvanced() {
-  if (!advancedHeader || !advancedContent) return;
-  const isExpanded = advancedHeader.getAttribute("aria-expanded") === "true";
-  const newState = !isExpanded;
-  advancedHeader.setAttribute("aria-expanded", newState);
-  advancedContent.hidden = !newState;
-}
-
-// ── Share card visibility ──
 function showShareCard() {
   if (currentStats) populateShareCard(currentStats);
   if (shareCard) shareCard.classList.remove("hidden");
@@ -405,17 +563,21 @@ async function refresh() {
     const s = await window.refinzi.reward.get();
     const settings = await window.refinzi.settings.get();
     currentStats = s;
-
-    const count = s.refinementsMade ?? 0;
-    const totalSeconds = s.timeSavedSeconds || 0;
-    const rewritesAvoided = count * 2;
+    showPremiumWelcomeIfNeeded(settings);
 
     // Header - Status chip
     if (apiStatus) {
       const statusChip = document.getElementById("statusChip");
       const statusDot = document.getElementById("statusDot");
-      if (settings.geminiApiKey) {
+      const activeProvider = settings.activeProvider || "gemini";
+      const hasKey = activeProvider === "openrouter" ? settings.openRouterApiKey : settings.geminiApiKey;
+
+      if (hasKey) {
         apiStatus.textContent = "Connected";
+        if (statusChip) statusChip.className = "status-chip connected";
+        if (statusDot) statusDot.className = "status-dot connected";
+      } else if (activeProvider === "gemini" || activeProvider === "gateway") {
+        apiStatus.textContent = "Gateway Active";
         if (statusChip) statusChip.className = "status-chip connected";
         if (statusDot) statusDot.className = "status-dot connected";
       } else {
@@ -431,26 +593,17 @@ async function refresh() {
     }
 
     // Hero stats
-    if (heroRefinements) heroRefinements.textContent = String(count);
-    if (heroRewritesAvoided) heroRewritesAvoided.textContent = String(rewritesAvoided);
-
-    // Progress section
-    if (progressRefinements) progressRefinements.textContent = String(count);
-    if (progressTimeSaved) {
-      const minutes = Math.floor(totalSeconds / 60);
-      progressTimeSaved.textContent = `${minutes} ${minutes === 1 ? 'Minute' : 'Minutes'}`;
-    }
-    if (progressStreak) {
-      const streak = s.currentStreak ?? 0;
-      progressStreak.textContent = `${streak}-Day`;
-    }
+    if (heroRefinements) heroRefinements.textContent = String(s.blueprintsGenerated ?? 0);
+    if (heroReels) heroReels.textContent = String(s.reelsReverseEngineered ?? 0);
+    if (heroLandingPages) heroLandingPages.textContent = String(s.landingPagesReverseEngineered ?? 0);
+    if (heroPromptsImproved) heroPromptsImproved.textContent = String(s.promptsImproved ?? 0);
 
     // Provider select
     if (providerSelect) {
       providerSelect.value = settings.activeProvider || "gemini";
     }
 
-    // API key field - Load the key for the active provider
+    // API key field
     if (apiKeyInput) {
       const activeProvider = providerSelect?.value || settings.activeProvider || "gemini";
       apiKeyInput.value = (activeProvider === "openrouter" ? settings.openRouterApiKey : settings.geminiApiKey) || "";
@@ -458,7 +611,6 @@ async function refresh() {
 
     // Model select
     if (modelSelect) {
-      // Dynamic model population based on current provider
       const provider = providerSelect?.value || settings.activeProvider || "gemini";
       modelSelect.innerHTML = "";
       let models = [];
@@ -466,25 +618,55 @@ async function refresh() {
         models = [
           { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash" },
           { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro" },
+          { value: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
           { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash" },
-          { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro" }
+          { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro" },
+          { value: "custom", label: "Custom Model..." }
         ];
       } else if (provider === "openrouter") {
         models = [
+          { value: "google/gemini-2.0-flash-exp:free", label: "FREE: Gemini 2.0 Flash" },
+          { value: "meta-llama/llama-3.3-70b-instruct:free", label: "FREE: Llama 3.3 70B" },
+          { value: "deepseek/deepseek-r1:free", label: "FREE: DeepSeek R1" },
+          { value: "qwen/qwen-2.5-coder-32b-instruct:free", label: "FREE: Qwen 2.5 Coder 32B" },
+          { value: "google/gemma-2-9b-it:free", label: "FREE: Gemma 2 9B" },
           { value: "openai/gpt-4o-mini", label: "GPT-4o Mini" },
           { value: "openai/gpt-4o", label: "GPT-4o" },
           { value: "anthropic/claude-3.5-sonnet", label: "Claude 3.5 Sonnet" },
-          { value: "anthropic/claude-3-haiku", label: "Haiku" },
-          { value: "google/gemini-flash-1.5", label: "Gemini Flash 1.5 (via OR)" }
+          { value: "custom", label: "Custom Model..." }
+        ];
+      } else if (provider === "gateway") {
+        models = [
+          { value: "gateway-default", label: "Refinzi Free Gateway (Multi-Model)" }
         ];
       }
+
       models.forEach(m => {
         const opt = document.createElement("option");
         opt.value = m.value;
         opt.textContent = m.label;
         modelSelect.appendChild(opt);
       });
-      modelSelect.value = settings.activeModel || (provider === "gemini" ? "gemini-2.5-flash" : "openai/gpt-4o-mini");
+
+      const activeModel = settings.activeModel || (provider === "gemini" ? "gemini-2.5-flash" : provider === "gateway" ? "gateway-default" : "google/gemini-2.0-flash-exp:free");
+      const isPredefined = models.some(m => m.value === activeModel && m.value !== "custom");
+
+      if (isPredefined) {
+        modelSelect.value = activeModel;
+        if (customModelWrapper) {
+          customModelWrapper.classList.add("hidden");
+          customModelWrapper.style.display = "none";
+        }
+      } else {
+        modelSelect.value = "custom";
+        if (customModelWrapper) {
+          customModelWrapper.classList.remove("hidden");
+          customModelWrapper.style.display = "flex";
+        }
+        if (customModelInput) {
+          customModelInput.value = activeModel;
+        }
+      }
     }
 
     // Connection status reset
@@ -492,15 +674,19 @@ async function refresh() {
       const activeProvider = providerSelect?.value || settings.activeProvider || "gemini";
       const hasKey = activeProvider === "openrouter" ? settings.openRouterApiKey : settings.geminiApiKey;
       if (hasKey) {
+        if (connectionStatus) connectionStatus.className = "connection-status status-success";
         connectionIndicator.className = "connection-indicator success";
         if (connectionText) connectionText.textContent = "Key saved, ready to test";
+      } else if (activeProvider === "gemini" || activeProvider === "gateway") {
+        if (connectionStatus) connectionStatus.className = "connection-status status-success";
+        connectionIndicator.className = "connection-indicator success";
+        if (connectionText) connectionText.textContent = "Gateway Active (No key needed)";
       } else {
+        if (connectionStatus) connectionStatus.className = "connection-status";
         connectionIndicator.className = "connection-indicator";
         if (connectionText) connectionText.textContent = "Not tested";
       }
     }
-
-    // Settings fields
     if (launchToggle) launchToggle.checked = Boolean(settings.launchOnStartup);
     if (saveHistoryToggle) saveHistoryToggle.checked = Boolean(settings.saveHistoryLocally);
     if (hotkeyInput) hotkeyInput.value = settings.hotkey || "Ctrl+Alt+Space";
@@ -512,19 +698,27 @@ async function refresh() {
       heroShortcut.textContent = displayHotkey;
     }
 
+    // Onboarding modal shortcut
+    const onboardingModalShortcut = document.getElementById("onboardingModalShortcut");
+    if (onboardingModalShortcut) {
+      const parts = (settings.hotkey || "Ctrl+Alt+Space").split("+");
+      onboardingModalShortcut.innerHTML = parts.map(p => `<kbd class="onboarding-kbd">${p.trim()}</kbd>`).join(" + ");
+    }
+
     // Share card content
     populateShareCard(s);
 
     // Footer stats - use dynamic counters
     if (footerStats) {
-      footerStats.textContent = `${count} refinements \u2022 ${rewritesAvoided} rewrites avoided`;
+      footerStats.textContent = `${s.blueprintsGenerated ?? 0} blueprints generated \u2022 ${s.promptsImproved ?? 0} prompts improved`;
     }
 
     // Milestone card
+    const artCount = s.blueprintsGenerated ?? 0;
     if (milestoneCard) {
-      if (count > 0 && count % 10 === 0 && !s.shareCardDismissed) {
-        if (milestoneCount) milestoneCount.textContent = String(count);
-        if (milestoneRewrites) milestoneRewrites.textContent = String(Math.round((s.retriesAvoided ?? 0)));
+      if (artCount > 0 && artCount % 10 === 0 && !s.shareCardDismissed) {
+        if (milestoneCount) milestoneCount.textContent = String(artCount);
+        if (milestoneRewrites) milestoneRewrites.textContent = String(s.promptsImproved ?? 0);
         milestoneCard.classList.remove("hidden");
       } else {
         milestoneCard.classList.add("hidden");
@@ -548,6 +742,7 @@ async function saveApiKey() {
 
       // Update connection status
       if (connectionIndicator) {
+        if (connectionStatus) connectionStatus.className = "connection-status status-success";
         connectionIndicator.className = "connection-indicator success";
         if (connectionText) connectionText.textContent = "Key saved, ready to test";
       }
@@ -574,6 +769,10 @@ async function saveLaunch() {
 async function saveHotkey() {
   if (!hotkeyInput) return;
   const hk = hotkeyInput.value.trim() || "Ctrl+Alt+Space";
+  if (hk === "Press keys..." || hk.endsWith("+...")) {
+    await refresh(); // Revert to stored value
+    return;
+  }
   try {
     const res = await window.refinzi.settings.setHotkey(hk);
     if (res?.ok) {
@@ -582,10 +781,12 @@ async function saveHotkey() {
     } else {
       console.warn("[CommandCenter] hotkey save failed", res?.error);
       showNotification("error", `Hotkey update failed: ${res?.error}`);
+      await refresh(); // Revert
     }
   } catch (e) {
     console.error("[CommandCenter] saveHotkey failed", e);
     showNotification("error", "An error occurred while saving the hotkey.");
+    await refresh(); // Revert
   }
 }
 
@@ -613,15 +814,67 @@ if (saveHistoryToggle) {
     await loadHistory();
   });
 }
-if (hotkeyInput) hotkeyInput.addEventListener("change", saveHotkey);
+if (customModelInput) {
+  customModelInput.addEventListener("input", async () => {
+    const val = customModelInput.value.trim();
+    try {
+      await window.refinzi.settings.set({ activeModel: val });
+      if (modelBadge) modelBadge.textContent = val || "custom";
+    } catch (e) {
+      console.warn("[CommandCenter] Could not save custom model", e);
+    }
+  });
+}
 
-// Advanced settings collapse
-if (advancedHeader) advancedHeader.addEventListener("click", toggleAdvanced);
-if (advancedHeader) {
-  advancedHeader.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      toggleAdvanced();
+if (hotkeyInput) {
+  hotkeyInput.style.caretColor = "transparent"; // Hide text cursor for hotkey recording
+
+  hotkeyInput.addEventListener("focus", () => {
+    hotkeyInput.classList.add("recording");
+    hotkeyInput.value = "Press keys...";
+  });
+
+  hotkeyInput.addEventListener("blur", async () => {
+    hotkeyInput.classList.remove("recording");
+    await saveHotkey();
+  });
+
+  hotkeyInput.addEventListener("keydown", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Cancel / exit recording on plain Escape
+    if (e.key === "Escape" && !e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey) {
+      hotkeyInput.blur();
+      return;
+    }
+
+    const key = e.key;
+    const modifiers = [];
+    if (e.ctrlKey) modifiers.push("Ctrl");
+    if (e.altKey) modifiers.push("Alt");
+    if (e.shiftKey) modifiers.push("Shift");
+    if (e.metaKey) modifiers.push("Meta");
+
+    const isModifierKey = ["Control", "Alt", "Shift", "Meta", "OS"].includes(key);
+
+    if (!isModifierKey) {
+      let keyName = key;
+      if (key === " ") keyName = "Space";
+      else if (keyName.length === 1) keyName = keyName.toUpperCase();
+
+      if (modifiers.length > 0) {
+        hotkeyInput.value = [...modifiers, keyName].join("+");
+      } else {
+        hotkeyInput.value = keyName;
+      }
+      hotkeyInput.blur();
+    } else {
+      if (modifiers.length > 0) {
+        hotkeyInput.value = modifiers.join("+") + "+...";
+      } else {
+        hotkeyInput.value = "Press keys...";
+      }
     }
   });
 }
@@ -654,6 +907,69 @@ if (milestoneShare) {
 // History clear
 if (clearLogsBtn) clearLogsBtn.addEventListener("click", clearHistory);
 
+if (loadMoreBtn) {
+  loadMoreBtn.addEventListener("click", async () => {
+    loadMoreBtn.disabled = true;
+    loadMoreBtn.textContent = "Loading...";
+    try {
+      await loadHistory(true);
+    } finally {
+      loadMoreBtn.disabled = false;
+      loadMoreBtn.textContent = "Load More";
+    }
+  });
+}
+
+if (logsContainer) {
+  logsContainer.addEventListener("click", async (e) => {
+    const copyBtn = e.target.closest(".copy-btn");
+    const deleteBtn = e.target.closest(".delete-btn");
+    const logItem = e.target.closest(".log-item");
+    if (!logItem) return;
+
+    const originalIndex = parseInt(logItem.getAttribute("data-index"), 10);
+
+    if (copyBtn) {
+      const log = loadedLogs.find(l => l.originalIndex === originalIndex);
+      if (log && log.output) {
+        try {
+          await navigator.clipboard.writeText(log.output);
+          showNotification("success", "Output copied to clipboard.");
+
+          // Wire copy success checkmark icon micro-animation
+          const originalSVG = copyBtn.innerHTML;
+          copyBtn.classList.add("copy-success");
+          copyBtn.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          `;
+          setTimeout(() => {
+            copyBtn.classList.remove("copy-success");
+            copyBtn.innerHTML = originalSVG;
+          }, 2000);
+        } catch (err) {
+          console.error("Failed to copy text", err);
+          showNotification("error", "Failed to copy text to clipboard.");
+        }
+      }
+    } else if (deleteBtn) {
+      logItem.classList.add("removing");
+      // Wait for animation to finish (280ms)
+      await new Promise(resolve => setTimeout(resolve, 280));
+      try {
+        await window.refinzi.logs.delete(originalIndex);
+        showNotification("success", "Log entry deleted.");
+        await loadHistory(false, false);
+      } catch (err) {
+        console.error("Failed to delete log", err);
+        showNotification("error", "Failed to delete history item.");
+        logItem.classList.remove("removing");
+      }
+    }
+  });
+}
+
 // Onboarding modal wiring
 function closeOnboardingModal() {
   if (onboardingModal) onboardingModal.classList.add("hidden");
@@ -666,17 +982,102 @@ if (onboardingModal) {
   });
 }
 
+function openFeedbackModal() {
+  if (!feedbackModal) return;
+  feedbackModal.classList.remove("hidden");
+  feedbackDescription?.focus();
+}
+function closeFeedbackModal() {
+  if (feedbackModal) feedbackModal.classList.add("hidden");
+}
+if (feedbackModalClose) feedbackModalClose.addEventListener("click", closeFeedbackModal);
+if (feedbackCancel) feedbackCancel.addEventListener("click", closeFeedbackModal);
+if (feedbackModal) feedbackModal.addEventListener("click", (event) => {
+  if (event.target === feedbackModal) closeFeedbackModal();
+});
+if (feedbackForm) feedbackForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const submitButton = feedbackForm.querySelector('button[type="submit"]');
+  submitButton.disabled = true;
+  try {
+    const result = await window.refinzi.app.submitFeedback({
+      category: feedbackCategory?.value,
+      description: feedbackDescription?.value,
+      contact: feedbackContact?.value
+    });
+    if (!result?.ok) throw new Error(result?.error || "Could not submit feedback.");
+    feedbackForm.reset();
+    closeFeedbackModal();
+    showNotification("success", result.delivery === "sent" ? "Feedback sent—thank you." : "Feedback saved securely on this device.");
+  } catch (error) {
+    showNotification("error", error.message || "Could not submit feedback.");
+  } finally {
+    submitButton.disabled = false;
+  }
+});
 
+document.querySelectorAll(".starter-prompt").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const result = await window.refinzi.app.copyText(button.dataset.prompt || "");
+    if (result?.ok) {
+      showNotification("success", "Starter prompt copied. Paste it anywhere, then refine.");
+      const origText = button.textContent;
+      button.textContent = "✓ Copied";
+      button.style.borderColor = "var(--success)";
+      button.style.color = "var(--success)";
+      setTimeout(() => {
+        button.textContent = origText;
+        button.style.borderColor = "";
+        button.style.color = "";
+      }, 2000);
+    } else {
+      showNotification("error", "Could not copy the starter prompt.");
+    }
+  });
+});
 
 // ── Initial load ──
-refresh().catch(() => { });
-loadHistory().catch(() => { });
+refresh().then(() => loadHistory()).catch(() => { });
 applySavedTheme();
+
+// Copy Diagnostics button listener
+const copyDiagnosticsBtn = document.getElementById("copyDiagnosticsBtn");
+if (copyDiagnosticsBtn) {
+  copyDiagnosticsBtn.addEventListener("click", async () => {
+    try {
+      const res = await window.refinzi.app.copyDiagnostics();
+      if (res && res.ok) {
+        showNotification("success", "Diagnostics copied to clipboard.");
+      } else {
+        showNotification("error", "Failed to copy diagnostics: " + (res?.error || "unknown"));
+      }
+    } catch (err) {
+      showNotification("error", "Error generating diagnostics.");
+    }
+  });
+}
+
+// Report Bug button listener
+const reportBugBtn = document.getElementById("reportBugBtn");
+if (reportBugBtn) {
+  reportBugBtn.addEventListener("click", openFeedbackModal);
+}
 
 // Listen for updates from the main process when refinements happen
 if (window.refinzi && window.refinzi.reward && window.refinzi.reward.onRefresh) {
   window.refinzi.reward.onRefresh(() => {
     console.log("[Refinzi][Settings] Refreshing stats due to reward:refresh");
     refresh().catch(() => { });
+  });
+}
+
+// Listen for deep-link key configuration focus requests
+if (window.refinzi && window.refinzi.settings && window.refinzi.settings.onFocusApiKey) {
+  window.refinzi.settings.onFocusApiKey(() => {
+    const keyInput = document.getElementById("apiKey");
+    if (keyInput) {
+      keyInput.focus();
+      keyInput.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   });
 }

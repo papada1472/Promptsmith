@@ -1,3 +1,7 @@
+import { createLogger } from "../logger.js";
+
+const log = createLogger("IntentCapture");
+
 /**
  * Intent Capture – records raw user intent and routing metadata.
  *
@@ -31,7 +35,7 @@ export function captureIntent({
   };
 
   // Log the capture for observability/debugging.
-  console.log("[Refinzi][Capture]", event);
+  log.debug(event);
 
   return event;
 }

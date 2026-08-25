@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; connect-src https://fonts.googleapis.com;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://fonts.googleapis.com https:;">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Refinzi — Refine text without leaving your workflow. Powered by AI, your data stays on your device.">
   <title>Refinzi — Dashboard</title>
@@ -14,6 +14,17 @@
 
 <body>
   <div class="app">
+
+    <!-- First-launch only: intentionally in-app, never a system notification. -->
+    <aside id="premiumWelcome" class="premium-welcome hidden" aria-live="polite" aria-label="Premium preview">
+      <div class="premium-welcome-mark" aria-hidden="true">✦</div>
+      <div class="premium-welcome-copy">
+        <span class="premium-welcome-eyebrow">PREMIUM PREVIEW</span>
+        <strong>More room for your best work.</strong>
+        <p>Premium is on its way with expanded creative workflows and priority access to advanced models.</p>
+      </div>
+      <button id="premiumWelcomeDismiss" class="premium-welcome-dismiss" type="button" aria-label="Dismiss premium preview">×</button>
+    </aside>
 
     <!-- ============================================================
          1. HEADER
@@ -26,9 +37,10 @@
           </div>
           <span class="app-name">Refinzi</span>
         </div>
-        <span class="badge-free">BETA</span>
+        <span class="badge-free">v0.1.0-beta.3</span>
       </div>
       <div class="header-right">
+        <div class="model-chip" id="modelBadge">gemini-2.5-flash</div>
         <div class="status-chip" id="statusChip">
           <span class="status-dot" id="statusDot"></span>
           <span id="apiStatus">Connected</span>
@@ -67,42 +79,47 @@
          ============================================================ -->
     <section class="command-center">
       <div class="command-header">
-        <h1 class="brand-title">Refinzi</h1>
-        <p class="brand-tagline">An Ambient layer for AI</p>
+        <h1 class="brand-title">Reverse Engineer Viral Content</h1>
+        <p class="brand-tagline">Drop a Reel or Landing Page.</p>
+        <p class="brand-subtext" style="font-size: 0.85rem; opacity: 0.6; margin-top: 8px; font-weight: 500; letter-spacing: 0.5px;">Get the Blueprint. Make Your Own.</p>
       </div>
 
       <div class="features-grid">
         <div class="feature-item">
+          <div class="feature-icon">🎬</div>
+          <div class="feature-text">
+            <h3 class="feature-title">Reel Blueprint</h3>
+            <p class="feature-desc">Reverse engineer viral videos.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">🚀</div>
+          <div class="feature-text">
+            <h3 class="feature-title">Landing Page Blueprint</h3>
+            <p class="feature-desc">Reverse engineer high-converting pages.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
           <div class="feature-icon">✨</div>
           <div class="feature-text">
-            <h3 class="feature-title">Click the Sparkle Orb</h3>
-            <p class="feature-desc">Make your prompt clearer, sharper, and more effective</p>
+            <h3 class="feature-title">Prompt Improve</h3>
+            <p class="feature-desc">Improve prompts before sending.</p>
           </div>
         </div>
+      </div>
 
-        <div class="feature-item">
-          <div class="feature-icon">🧠</div>
-          <div class="feature-text">
-            <h3 class="feature-title">Hold the Gold Orb</h3>
-            <p class="feature-desc">Think deeper, uncover blind spots, and generate stronger ideas</p>
-          </div>
-        </div>
+      <div class="orb-utility-tip">
+        <span class="tip-icon">📍</span>
+        <span class="tip-text">Drag the Orb anywhere to position it perfectly on your screen.</span>
+      </div>
 
-        <div class="feature-item">
-          <div class="feature-icon">📍</div>
-          <div class="feature-text">
-            <h3 class="feature-title">Drag the Orb anywhere</h3>
-            <p class="feature-desc">Position Refinzi exactly where you need it on your screen</p>
-          </div>
-        </div>
-
-        <div class="feature-item">
-          <div class="feature-icon">⌨</div>
-          <div class="feature-text">
-            <h3 class="feature-title" id="heroShortcut">Ctrl + Alt + Space</h3>
-            <p class="feature-desc">Optional power-user shortcut for instant access</p>
-          </div>
-        </div>
+      <div class="starter-prompts" aria-label="Starter prompts">
+        <span class="starter-prompts-label">Try a quick win</span>
+        <button type="button" class="starter-prompt" data-prompt="Reverse engineer this landing page: identify the offer, hierarchy, persuasion triggers, and a reusable page blueprint.">Break down a landing page</button>
+        <button type="button" class="starter-prompt" data-prompt="Turn this viral video hook into three original variants for my niche. Explain why each one earns attention.">Rewrite a viral hook</button>
+        <button type="button" class="starter-prompt" data-prompt="Improve this rough idea into a clear, specific prompt with audience, outcome, constraints, and a strong call to action.">Improve an idea</button>
       </div>
 
       <div class="stats-divider"></div>
@@ -110,19 +127,19 @@
       <div class="stats-bar" id="heroStats">
         <div class="stat-unit">
           <span class="stat-value" id="heroRefinements">0</span>
-          <span class="stat-label">Refinements Made</span>
+          <span class="stat-label">Blueprints Generated</span>
         </div>
         <div class="stat-unit">
-          <span class="stat-value" id="heroRewritesAvoided">0</span>
-          <span class="stat-label">Rewrites Avoided</span>
+          <span class="stat-value" id="heroReels">0</span>
+          <span class="stat-label">Reels Reverse Engineered</span>
         </div>
         <div class="stat-unit">
-          <span class="stat-value" id="progressTimeSaved">0 Minutes</span>
-          <span class="stat-label">Time Saved</span>
+          <span class="stat-value" id="heroLandingPages">0</span>
+          <span class="stat-label">Landing Pages Reverse Engineered</span>
         </div>
         <div class="stat-unit">
-          <span class="stat-value" id="progressStreak">0-Day</span>
-          <span class="stat-label">Thinking Streak</span>
+          <span class="stat-value" id="heroPromptsImproved">0</span>
+          <span class="stat-label">Prompts Improved</span>
         </div>
       </div>
 
@@ -154,19 +171,25 @@
             <div class="provider-row">
               <div class="provider-select-wrapper">
                 <select id="providerSelect" class="provider-select" aria-label="Select AI Provider">
-                  <option value="gemini">Google AI Studio</option>
-                  <option value="openrouter">OpenRouter</option>
-                  <option value="openai" disabled>OpenAI (coming soon)</option>
-                  <option value="anthropic" disabled>Anthropic (coming soon)</option>
+                  <option value="gemini">Google AI Studio (BYOK)</option>
+                  <option value="openrouter">OpenRouter (BYOK)</option>
+                  <option value="gateway">Refinzi Gateway (Free Tier)</option>
                 </select>
               </div>
               <div class="provider-model-wrapper">
-                <select id="modelSelect" class="provider-select" aria-label="Select Model">
+                 <select id="modelSelect" class="provider-select" aria-label="Select Model">
                   <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
                   <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                  <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
                   <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
                   <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
                 </select>
+              </div>
+            </div>
+            <div id="customModelWrapper" class="provider-row hidden" style="margin-top: 12px; display: none;">
+              <div style="flex: 1; min-width: 0;">
+                <input type="text" id="customModelInput" class="input-field"
+                  placeholder="Enter custom model ID (e.g. anthropic/claude-3-opus, deepseek/deepseek-chat)" aria-label="Custom Model ID">
               </div>
             </div>
             <div class="provider-row api-key-row">
@@ -202,82 +225,60 @@
           </div>
         </section>
 
-        <!-- Refinzi Philosophy Card -->
-        <section class="premium-card philosophy-section" aria-label="Refinzi Philosophy" style="margin-top: 24px;">
-          <div class="card-content philosophy-content">
-            <div class="philosophy-header">
-              <span class="philosophy-emoji">🧠</span>
-              <span class="philosophy-brand">Refinzi</span>
-            </div>
-            <div class="philosophy-taglines">
-              <div class="philosophy-tagline">
-                <span class="bullet" aria-hidden="true">✦</span>
-                <span class="tagline-text">Thinking Better</span>
-              </div>
-              <div class="philosophy-tagline">
-                <span class="bullet" aria-hidden="true">✦</span>
-                <span class="tagline-text">Thinking Deeper</span>
-              </div>
-              <div class="philosophy-tagline">
-                <span class="bullet" aria-hidden="true">✦</span>
-                <span class="tagline-text">Thinking Like Experts</span>
-              </div>
-            </div>
-          </div>
-        </section>
+
       </div>
 
-      <!-- RIGHT COLUMN: Advanced Settings -->
+      <!-- RIGHT COLUMN: App Settings (always visible) -->
       <div class="left-col">
         <section class="premium-card advanced-section" aria-labelledby="advancedTitle">
-          <header class="card-header advanced-card-header" id="advancedHeader" role="button" tabindex="0"
-            aria-expanded="false" aria-controls="advancedContent">
-            <div class="advanced-header-text">
-              <h2 id="advancedTitle" class="card-title">⚙️ App Settings</h2>
-              <p class="card-subtitle">Hotkeys and startup preferences.</p>
-            </div>
-            <svg class="advanced-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              aria-hidden="true">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
+          <header class="card-header">
+            <h2 id="advancedTitle" class="card-title">⚙️ App Settings</h2>
+            <p class="card-subtitle">Preferences and power-user options.</p>
           </header>
-          <div class="advanced-content" id="advancedContent" role="region" hidden>
-            <div class="card-content">
-              <div class="advanced-grid">
-                <div class="advanced-item">
-                  <div class="advanced-item-info">
-                    <span class="advanced-item-name">Keyboard Shortcut</span>
-                    <span class="advanced-item-desc">Activate the refinement panel</span>
-                  </div>
-                  <div class="advanced-item-control">
-                    <input type="text" id="hotkeyInput" class="input-field hotkey-input"
-                      placeholder="Ctrl+Alt+Space" aria-label="Hotkey">
-                  </div>
+          <div class="card-content">
+            <div class="advanced-grid">
+              <div class="advanced-item">
+                <div class="advanced-item-info">
+                  <span class="advanced-item-name">Launch on Startup</span>
+                  <span class="advanced-item-desc">Start Refinzi when you log in</span>
                 </div>
-                <div class="advanced-item">
-                  <div class="advanced-item-info">
-                    <span class="advanced-item-name">Launch on Startup</span>
-                    <span class="advanced-item-desc">Start Refinzi when you log in</span>
-                  </div>
-                  <div class="advanced-item-control">
-                    <label class="switch">
-                      <input type="checkbox" id="launchToggle" aria-label="Launch on startup">
-                      <span class="slider"></span>
-                    </label>
-                  </div>
+                <div class="advanced-item-control">
+                  <label class="switch">
+                    <input type="checkbox" id="launchToggle" aria-label="Launch on startup">
+                    <span class="slider"></span>
+                  </label>
                 </div>
-                <div class="advanced-item">
-                  <div class="advanced-item-info">
-                    <span class="advanced-item-name">Save History Locally</span>
-                    <span class="advanced-item-desc">Store refinement input/output on this device. Telemetry metadata is always stored.</span>
-                  </div>
-                  <div class="advanced-item-control">
-                    <label class="switch">
-                      <input type="checkbox" id="saveHistoryToggle" aria-label="Save history locally">
-                      <span class="slider"></span>
-                    </label>
-                  </div>
+              </div>
+              <div class="advanced-item">
+                <div class="advanced-item-info">
+                  <span class="advanced-item-name">Save History Locally</span>
+                  <span class="advanced-item-desc">Store refinement input/output on this device.</span>
+                </div>
+                <div class="advanced-item-control">
+                  <label class="switch">
+                    <input type="checkbox" id="saveHistoryToggle" aria-label="Save history locally">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="advanced-item">
+                <div class="advanced-item-info">
+                  <span class="advanced-item-name">Power-user Shortcut</span>
+                  <span class="advanced-item-desc">Optional keyboard shortcut for instant access</span>
+                </div>
+                <div class="advanced-item-control">
+                  <input type="text" id="hotkeyInput" class="input-field hotkey-input"
+                    placeholder="Ctrl+Alt+Space" aria-label="Hotkey" readonly>
+                </div>
+              </div>
+              <div class="advanced-item">
+                <div class="advanced-item-info">
+                  <span class="advanced-item-name">Report Issue</span>
+                  <span class="advanced-item-desc">Copy anonymized diagnostics pack to clipboard</span>
+                </div>
+                <div class="advanced-item-control" style="display: flex; gap: 8px;">
+                  <button type="button" id="copyDiagnosticsBtn" class="btn-secondary">Copy Diagnostics</button>
+                  <button type="button" id="reportBugBtn" class="btn-secondary">Report Bug</button>
                 </div>
               </div>
             </div>
@@ -288,23 +289,25 @@
     </div><!-- /content-grid -->
 
     <!-- ============================================================
-         HISTORY SECTION
+         HISTORY SECTION (full-width)
          ============================================================ -->
-    <div class="content-grid" style="margin-top: 24px;">
-      <div class="left-col">
-        <section class="premium-card history-section" aria-labelledby="historyTitle">
-          <header class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 id="historyTitle" class="card-title">📜 History</h2>
-            <button type="button" class="btn-secondary" id="clearLogsBtn">Clear History</button>
-          </header>
-          <div class="card-content">
-            <div id="logsContainer" class="logs-container" style="max-height: 300px; overflow-y: auto;">
-              <p>Loading history...</p>
-            </div>
+    <section class="premium-card history-section" aria-labelledby="historyTitle" style="margin-top: 24px;">
+      <header class="card-header history-header">
+        <h2 id="historyTitle" class="card-title">📜 History</h2>
+        <button type="button" class="btn-secondary" id="clearLogsBtn">Clear History</button>
+      </header>
+      <div class="card-content">
+        <div id="logsContainer" class="logs-container">
+          <div class="loading-history-state">
+            <div class="skeleton-item"></div>
+            <div class="skeleton-item"></div>
           </div>
-        </section>
+        </div>
+        <div id="loadMoreContainer" class="load-more-container hidden">
+          <button type="button" class="btn-secondary" id="loadMoreBtn">Load More</button>
+        </div>
       </div>
-    </div>
+    </section>
 
     <!-- ============================================================
          4. FOOTER
@@ -313,7 +316,7 @@
       <div class="footer-content">
         <span class="footer-brand">Refinzi</span>
         <span class="footer-divider" aria-hidden="true">•</span>
-        <span class="footer-stats" id="footerStats">0 refinements • 0 rewrites avoided</span>
+        <span class="footer-stats" id="footerStats">0 blueprints generated • 0 prompts improved</span>
         <span class="footer-divider" aria-hidden="true">•</span>
         <span class="footer-tagline">Local Only · Your data never leaves this device.</span>
       </div>
@@ -339,19 +342,19 @@
           <div class="share-card-stats">
             <div class="share-stat">
               <div class="share-stat-value" id="shareRefinements">0</div>
-              <div class="share-stat-label">Refinements</div>
+              <div class="share-stat-label">Blueprints</div>
             </div>
             <div class="share-stat">
-              <div class="share-stat-value" id="shareTimeSaved">0m</div>
-              <div class="share-stat-label">Time Saved</div>
+              <div class="share-stat-value" id="shareReels">0</div>
+              <div class="share-stat-label">Reels</div>
             </div>
             <div class="share-stat">
-              <div class="share-stat-value" id="shareRetries">0</div>
-              <div class="share-stat-label">Retries Prevented</div>
+              <div class="share-stat-value" id="shareLandingPages">0</div>
+              <div class="share-stat-label">Landing Pages</div>
             </div>
             <div class="share-stat">
-              <div class="share-stat-value" id="shareStreak">0</div>
-              <div class="share-stat-label">Day Streak</div>
+              <div class="share-stat-value" id="sharePromptsImproved">0</div>
+              <div class="share-stat-label">Prompts Improved</div>
             </div>
           </div>
           <div class="share-card-brand">refinzi.app</div>
@@ -399,8 +402,8 @@
     <div class="milestone-content">
       <div class="milestone-emoji">🏆</div>
       <h3 class="milestone-title">Milestone Reached!</h3>
-      <p class="milestone-stat"><span id="milestoneCount">0</span> refinements completed</p>
-      <p class="milestone-stat-sub">≈ <span id="milestoneRewrites">0</span> prompt rewrites avoided.</p>
+      <p class="milestone-stat"><span id="milestoneCount">0</span> blueprints generated</p>
+      <p class="milestone-stat-sub">and <span id="milestoneRewrites">0</span> prompts improved!</p>
       <p class="milestone-encourage">Keep building. You're on a roll. 🔥</p>
       <div class="milestone-btns">
         <button id="milestoneShare" class="milestone-btn milestone-btn-share">Share Progress</button>
@@ -411,24 +414,63 @@
 
   <!-- Onboarding Modal -->
   <div id="onboardingModal" class="onboarding-modal-overlay hidden" role="dialog" aria-modal="true"
-    aria-label="Try your first refinement">
+    aria-label="Meet the Orb">
     <div class="onboarding-modal">
       <div class="onboarding-modal-header">
-        <span class="onboarding-modal-title">Try Your First Refinement</span>
+        <div class="onboarding-brand">
+          <img src="../../../assets/branding/logo-mark.png" alt="Refinzi" width="28" height="28" class="onboarding-logo">
+          <span class="onboarding-modal-title">Meet the Orb</span>
+        </div>
         <button id="onboardingModalClose" class="onboarding-modal-close" aria-label="Close">&times;</button>
       </div>
-      <ol class="onboarding-modal-steps">
-        <li><span class="onboarding-step-num">1</span> Highlight any text.</li>
-        <li><span class="onboarding-step-num">2</span> Press <kbd class="onboarding-kbd">Ctrl</kbd> + <kbd
-            class="onboarding-kbd">Alt</kbd> + <kbd class="onboarding-kbd">Space</kbd>.</li>
-        <li><span class="onboarding-step-num">3</span> Watch Refinzi improve it instantly.</li>
-      </ol>
+      <ul class="onboarding-modal-steps">
+        <li>
+          <span class="onboarding-step-icon">🎬</span>
+          <div class="onboarding-step-text">
+            <strong>1. Drop a Reel</strong>
+            <span class="onboarding-step-desc">Or Landing Page onto the Orb</span>
+          </div>
+        </li>
+        <li>
+          <span class="onboarding-step-icon">🚀</span>
+          <div class="onboarding-step-text">
+            <strong>2. Get the Blueprint</strong>
+            <span class="onboarding-step-desc">To understand why it works</span>
+          </div>
+        </li>
+        <li>
+          <span class="onboarding-step-icon">✨</span>
+          <div class="onboarding-step-text">
+            <strong>3. Make Your Own</strong>
+            <span class="onboarding-step-desc">Recreate viral content instantly</span>
+          </div>
+        </li>
+      </ul>
+      <p class="onboarding-works-with">Works with ChatGPT, Claude, Gemini, Cursor, Lovable, Bolt, v0, Replit.</p>
       <div class="onboarding-modal-actions">
         <button id="onboardingModalGotIt" class="onboarding-modal-btn">Got it, let's go!</button>
       </div>
     </div>
   </div>
 
+  <div id="feedbackModal" class="feedback-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle">
+    <form id="feedbackForm" class="feedback-modal">
+      <div class="feedback-modal-header">
+        <div><span class="premium-welcome-eyebrow">BETA FEEDBACK</span><h2 id="feedbackTitle">Help us fix it</h2></div>
+        <button id="feedbackModalClose" type="button" class="onboarding-modal-close" aria-label="Close">&times;</button>
+      </div>
+      <p>Describe what happened. We attach anonymized app and request diagnostics automatically—never your prompts or history.</p>
+      <label class="feedback-label" for="feedbackCategory">Type</label>
+      <select id="feedbackCategory" class="provider-select"><option value="bug">Something is broken</option><option value="idea">Feature idea</option><option value="other">Other feedback</option></select>
+      <label class="feedback-label" for="feedbackDescription">What happened?</label>
+      <textarea id="feedbackDescription" class="feedback-textarea" required minlength="10" maxlength="5000" placeholder="What were you trying to do, and what did you expect?"></textarea>
+      <label class="feedback-label" for="feedbackContact">Email (optional)</label>
+      <input id="feedbackContact" class="input-field" type="email" maxlength="320" placeholder="Only if you'd like a reply">
+      <div class="feedback-modal-actions"><button id="feedbackCancel" type="button" class="btn-secondary">Cancel</button><button type="submit" class="btn-primary">Send feedback</button></div>
+    </form>
+  </div>
+
+  <script src="./mock.js"></script>
   <script src="./renderer.js"></script>
 </body>
 

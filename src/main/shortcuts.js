@@ -1,4 +1,7 @@
 import { globalShortcut } from "electron";
+import { createLogger } from "./logger.js";
+
+const log = createLogger("Shortcuts");
 
 let registeredAccelerator = null;
 
@@ -11,7 +14,7 @@ export function registerHotkey(accelerator, handler) {
   }
 
   if (normalized === registeredAccelerator) {
-    console.log("[Refinzi][Shortcuts] Hotkey already registered", normalized);
+    log.debug("Hotkey already registered", normalized);
     return;
   }
 
@@ -19,27 +22,27 @@ export function registerHotkey(accelerator, handler) {
   if (previous) {
     try {
       globalShortcut.unregister(previous);
-      console.log("[Refinzi][Shortcuts] Unregistered previous hotkey", previous);
+      log.debug("Unregistered previous hotkey", previous);
     } catch {
       // ignore
     }
   }
 
   const wrappedHandler = () => {
-    console.log("[Refinzi][Shortcuts] Shortcut fired:", normalized);
+    log.debug("Shortcut fired:", normalized);
     try {
       handler();
     } catch (e) {
-      console.error("[Refinzi][Shortcuts] Shortcut handler error:", e?.message || e);
+      log.error("Shortcut handler error:", e?.message || e);
     }
   };
 
   const ok = globalShortcut.register(normalized, wrappedHandler);
   if (!ok) {
-    console.error("[Refinzi][Shortcuts] Failed to register hotkey:", normalized);
+    log.error("Failed to register hotkey:", normalized);
     if (previous) {
       try {
-        console.log("[Refinzi][Shortcuts] Attempting to restore previous hotkey", previous);
+        log.debug("Attempting to restore previous hotkey", previous);
         globalShortcut.register(previous, handler);
       } catch {
         // ignore
@@ -50,7 +53,7 @@ export function registerHotkey(accelerator, handler) {
     throw err;
   }
 
-  console.log("[Refinzi][Shortcuts] Successfully registered hotkey:", normalized);
+  log.debug("Successfully registered hotkey:", normalized);
   registeredAccelerator = normalized;
 }
 
@@ -62,4 +65,5 @@ export function unregisterAllHotkeys() {
   }
   registeredAccelerator = null;
 }
+
 

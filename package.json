@@ -1,7 +1,7 @@
 {
   "name": "refinzi",
   "productName": "Refinzi",
-  "version": "0.1.0-beta.2",
+  "version": "0.1.0-beta.3",
   "description": "Lightweight Windows tray utility to refine selected text into expert AI instructions.",
   "main": "src/main/main.js",
   "type": "module",
@@ -13,7 +13,10 @@
     "dev": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "test-models": "node scripts/test-models.js"
+    "test-models": "node scripts/test-models.js",
+    "test": "vitest run",
+    "test:release": "npm test && node scripts/test-gateway-release.js && npm run pack",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@google/genai": "^2.7.0",
@@ -21,13 +24,16 @@
     "@nut-tree-fork/nut-js": "^4.2.6",
     "ai": "^6.0.204",
     "dotenv": "^17.4.2",
-    "electron-store": "^11.0.2"
+    "electron-store": "^11.0.2",
+    "pdf-parse": "^2.4.5"
   },
   "devDependencies": {
     "electron": "^32.2.1",
     "electron-builder": "^24.13.3",
     "jimp": "^1.6.1",
-    "png-to-ico": "^3.0.1"
+    "jsdom": "^29.1.1",
+    "png-to-ico": "^3.0.1",
+    "vitest": "^3.0.0"
   },
   "build": {
     "appId": "com.refinzi.app",
@@ -43,6 +49,7 @@
     ],
     "win": {
       "icon": "assets/icons/app.ico",
+      "forceCodeSigning": false,
       "target": [
         "nsis"
       ]
