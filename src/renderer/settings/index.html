@@ -16,14 +16,14 @@
   <div class="app">
 
     <!-- First-launch only: intentionally in-app, never a system notification. -->
-    <aside id="premiumWelcome" class="premium-welcome hidden" aria-live="polite" aria-label="Premium preview">
+    <aside id="premiumWelcome" class="premium-welcome hidden" aria-live="polite" aria-label="Refinzi Pro preview">
       <div class="premium-welcome-mark" aria-hidden="true">✦</div>
       <div class="premium-welcome-copy">
-        <span class="premium-welcome-eyebrow">PREMIUM PREVIEW</span>
+        <span class="premium-welcome-eyebrow">REFINZI PRO</span>
         <strong>More room for your best work.</strong>
-        <p>Premium is on its way with expanded creative workflows and priority access to advanced models.</p>
+        <p>Refinzi Pro offers expanded creative workflows, custom IDE formats, and priority access to advanced models.</p>
       </div>
-      <button id="premiumWelcomeDismiss" class="premium-welcome-dismiss" type="button" aria-label="Dismiss premium preview">×</button>
+      <button id="premiumWelcomeDismiss" class="premium-welcome-dismiss" type="button" aria-label="Dismiss preview">×</button>
     </aside>
 
     <!-- ============================================================
@@ -37,7 +37,7 @@
           </div>
           <span class="app-name">Refinzi</span>
         </div>
-        <span class="badge-free">v0.1.0-beta.3</span>
+        <span class="badge-free">Refinzi 2.0</span>
       </div>
       <div class="header-right">
         <div class="model-chip" id="modelBadge">gemini-2.5-flash</div>
@@ -86,40 +86,40 @@
 
       <div class="features-grid">
         <div class="feature-item">
-          <div class="feature-icon">🎬</div>
+          <div class="feature-icon">⚡</div>
           <div class="feature-text">
-            <h3 class="feature-title">Reel Blueprint</h3>
-            <p class="feature-desc">Reverse engineer viral videos.</p>
+            <h3 class="feature-title">Tap: Quick Rebuild</h3>
+            <p class="feature-desc">Single tap or Alt+Shift+F to rebuild prompts in-place.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">🧠</div>
+          <div class="feature-text">
+            <h3 class="feature-title">Hold: 5-Block Blueprint</h3>
+            <p class="feature-desc">Hold Orb for 300ms for deep architecture & Cursor specs.</p>
           </div>
         </div>
 
         <div class="feature-item">
           <div class="feature-icon">🚀</div>
           <div class="feature-text">
-            <h3 class="feature-title">Landing Page Blueprint</h3>
-            <p class="feature-desc">Reverse engineer high-converting pages.</p>
-          </div>
-        </div>
-
-        <div class="feature-item">
-          <div class="feature-icon">✨</div>
-          <div class="feature-text">
-            <h3 class="feature-title">Prompt Improve</h3>
-            <p class="feature-desc">Improve prompts before sending.</p>
+            <h3 class="feature-title">1-Click IDE Export</h3>
+            <p class="feature-desc">Target-ready presets for Cursor, v0, and Claude Artifacts.</p>
           </div>
         </div>
       </div>
 
       <div class="orb-utility-tip">
-        <span class="tip-icon">📍</span>
-        <span class="tip-text">Drag the Orb anywhere to position it perfectly on your screen.</span>
+        <span class="tip-icon">💡</span>
+        <span class="tip-text"><strong>Pro Tip:</strong> Click the Orb for quick in-place rewrite, or press & hold for 300ms to open the 5-block Blueprint modal.</span>
       </div>
 
       <div class="starter-prompts" aria-label="Starter prompts">
         <span class="starter-prompts-label">Try a quick win</span>
-        <button type="button" class="starter-prompt" data-prompt="Reverse engineer this landing page: identify the offer, hierarchy, persuasion triggers, and a reusable page blueprint.">Break down a landing page</button>
-        <button type="button" class="starter-prompt" data-prompt="Turn this viral video hook into three original variants for my niche. Explain why each one earns attention.">Rewrite a viral hook</button>
-        <button type="button" class="starter-prompt" data-prompt="Improve this rough idea into a clear, specific prompt with audience, outcome, constraints, and a strong call to action.">Improve an idea</button>
+        <button type="button" class="starter-prompt" data-type="landing-page" data-prompt="Reverse engineer this landing page: identify the offer, hierarchy, persuasion triggers, and a reusable page blueprint.">⚡ Rebuild Landing Page</button>
+        <button type="button" class="starter-prompt" data-type="reel" data-prompt="Turn this viral video hook into three original variants for my niche. Explain why each one earns attention.">🎬 Rebuild Video Hook</button>
+        <button type="button" class="starter-prompt" data-type="idea" data-prompt="Improve this rough idea into a clear, specific prompt with audience, outcome, constraints, and a strong call to action.">🧠 Rebuild UI Spec</button>
       </div>
 
       <div class="stats-divider"></div>
@@ -139,7 +139,7 @@
         </div>
         <div class="stat-unit">
           <span class="stat-value" id="heroPromptsImproved">0</span>
-          <span class="stat-label">Prompts Improved</span>
+          <span class="stat-label">Prompts Rebuilt</span>
         </div>
       </div>
 
@@ -316,7 +316,7 @@
       <div class="footer-content">
         <span class="footer-brand">Refinzi</span>
         <span class="footer-divider" aria-hidden="true">•</span>
-        <span class="footer-stats" id="footerStats">0 blueprints generated • 0 prompts improved</span>
+        <span class="footer-stats" id="footerStats">0 blueprints generated • 0 prompts rebuilt</span>
         <span class="footer-divider" aria-hidden="true">•</span>
         <span class="footer-tagline">Local Only · Your data never leaves this device.</span>
       </div>
@@ -354,7 +354,7 @@
             </div>
             <div class="share-stat">
               <div class="share-stat-value" id="sharePromptsImproved">0</div>
-              <div class="share-stat-label">Prompts Improved</div>
+              <div class="share-stat-label">Prompts Rebuilt</div>
             </div>
           </div>
           <div class="share-card-brand">refinzi.app</div>
@@ -403,7 +403,7 @@
       <div class="milestone-emoji">🏆</div>
       <h3 class="milestone-title">Milestone Reached!</h3>
       <p class="milestone-stat"><span id="milestoneCount">0</span> blueprints generated</p>
-      <p class="milestone-stat-sub">and <span id="milestoneRewrites">0</span> prompts improved!</p>
+      <p class="milestone-stat-sub">and <span id="milestoneRewrites">0</span> prompts rebuilt!</p>
       <p class="milestone-encourage">Keep building. You're on a roll. 🔥</p>
       <div class="milestone-btns">
         <button id="milestoneShare" class="milestone-btn milestone-btn-share">Share Progress</button>
@@ -456,7 +456,7 @@
   <div id="feedbackModal" class="feedback-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle">
     <form id="feedbackForm" class="feedback-modal">
       <div class="feedback-modal-header">
-        <div><span class="premium-welcome-eyebrow">BETA FEEDBACK</span><h2 id="feedbackTitle">Help us fix it</h2></div>
+        <div><span class="premium-welcome-eyebrow">Product Feedback</span><h2 id="feedbackTitle">Help us improve Refinzi</h2></div>
         <button id="feedbackModalClose" type="button" class="onboarding-modal-close" aria-label="Close">&times;</button>
       </div>
       <p>Describe what happened. We attach anonymized app and request diagnostics automatically—never your prompts or history.</p>

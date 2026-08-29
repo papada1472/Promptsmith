@@ -131,6 +131,51 @@ html, body {
     outline-offset: 2px;
 }
 
+/* ── Target Format Toolbar ── */
+.format-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    background: rgba(10, 10, 18, 0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    -webkit-app-region: no-drag;
+}
+
+.format-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-right: 4px;
+}
+
+.format-pill {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.format-pill:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+.format-pill.is-active {
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.12);
+    border-color: rgba(255, 215, 0, 0.45);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.15);
+}
+
 /* ── Prompt Body & Sections ── */
 .prompt-body {
     flex: 1;

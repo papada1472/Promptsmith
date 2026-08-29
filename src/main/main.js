@@ -212,12 +212,10 @@ async function initializeApp() {
       console.log("[Refinzi][Main] Fresh installation detected. Setting installedAt timestamp.");
     }
 
-    // Start hidden (tray-first) unless it's a fresh install
+    // Start hidden in tray / ambient Orb mode
+    settingsWindow.hide();
     if (isFreshInstall) {
-      console.log("[Refinzi][Main] Opening settings dashboard on fresh install.");
-      openSettings();
-    } else {
-      settingsWindow.hide();
+      console.log("[Refinzi][Main] Fresh installation detected: Orb active and ready for first Rebuild.");
     }
   } catch (err) {
     console.error("[Refinzi][Main] Initialization failed", err);

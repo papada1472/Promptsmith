@@ -177,7 +177,7 @@ async function runPipeline(mode, input, artifactType, { selectionCaptured, gemin
   const startTime = Date.now();
   log.debug(`[Orb] Running pipeline in ${mode} mode`);
 
-  sendStatus(mode === "expert" ? "🧠 Thinking deeper..." : "✨ Improving...");
+  sendStatus(mode === "expert" ? "🧠 Thinking deeper..." : "⚡ Rebuilding...");
 
   const { envelope } = buildEnvelope({ input, mode });
   const optimized = optimizeEnvelope(envelope);
@@ -237,10 +237,10 @@ async function runPipeline(mode, input, artifactType, { selectionCaptured, gemin
 
   let clipboardResult = false;
   const currentRefinements = (store.get("metrics.refinementsMade") || 0) + 1;
-  let successMsg = mode === "expert" ? "🧠 Expert Prompt Created" : "✨ Prompt Improved";
-  if (currentRefinements === 1) successMsg = "🎉 First prompt improved";
+  let successMsg = mode === "expert" ? "🧠 Expert Blueprint Created" : "⚡ Prompt Rebuilt";
+  if (currentRefinements === 1) successMsg = "🎉 First prompt rebuilt";
   else if (currentRefinements === 5) successMsg = "⚡ You're getting faster";
-  else if (currentRefinements === 20) successMsg = "🚀 Refinzi has saved you time on 20 prompts";
+  else if (currentRefinements === 20) successMsg = "🚀 Refinzi has saved you time on 20 rebuilds";
 
   let pasted = false;
   if (initialProcessId) {
@@ -518,6 +518,61 @@ function registerPipelineHandler() {
     outputModalWindow.focus();
 
     return { ok: true, triggerPersonalization };
+  });
+
+  // 1-Click Interactive Sample Execution Pipeline
+  ipcMain.handle("orb:runSample", async (_event, sampleType = "landing-page") => {
+    log.debug("[Orb] orb:runSample requested, type:", sampleType);
+    const samplePayloads = {
+      "landing-page": {
+        type: "landing-page",
+        name: "SaaS Hero Page",
+        text: "Landing Page: Minimalist layout with dark mode void theme, large typography hero heading 'Ship software at the speed of thought', dual action buttons 'Start Free Trial' and 'Book Demo', floating 3D browser showcase illustration below, followed by three horizontal customer logo vectors and kinetic scroll physics.",
+        isSample: true
+      },
+      "reel": {
+        type: "reel",
+        name: "Viral Product Breakdown",
+        text: "Video Reel: Fast-paced 30-second technical breakdown showing a side-by-side comparison of manual prompt engineering vs instant Rebuild execution, ending with a high-contrast CTA.",
+        isSample: true
+      },
+      "idea": {
+        type: "text",
+        name: "Feature Implementation Spec",
+        text: "Turn this requirement into a production-grade TypeScript React component: an ambient floating widget with responsive drag boundaries, glassmorphism backdrop filter, and smooth spring physics.",
+        isSample: true
+      }
+    };
+
+    const sampleArtifact = samplePayloads[sampleType] || samplePayloads["landing-page"];
+    const { generatePromptAngles } = await import("./artifactAnalyzer.js");
+    const result = await generatePromptAngles(sampleArtifact);
+
+    if (result && result.prompt) {
+      if (!outputModalWindow || outputModalWindow.isDestroyed()) {
+        outputModalWindow = createOutputModalWindow();
+      }
+
+      const payload = {
+        prompt: result.prompt,
+        title: result.title || "Sample Rebuild Blueprint",
+        artifactType: sampleArtifact.type,
+        _artifactContext: result._artifactContext || sampleArtifact
+      };
+
+      if (outputModalWindow.webContents.isLoading()) {
+        outputModalWindow.webContents.once("did-finish-load", () => {
+          outputModalWindow.webContents.send("output:setData", payload);
+        });
+      } else {
+        outputModalWindow.webContents.send("output:setData", payload);
+      }
+
+      outputModalWindow.show();
+      outputModalWindow.focus();
+      return { ok: true, prompt: result.prompt };
+    }
+    return { ok: false, error: "Failed to generate sample blueprint" };
   });
 
   // Expert upgrade: post-generation expansion into production-ready prompt

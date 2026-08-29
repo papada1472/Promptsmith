@@ -512,6 +512,126 @@ section {
   color: var(--text-color);
 }
 
+/* Pricing Section */
+.pricing-section {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 56px;
+  align-items: stretch;
+}
+
+.pricing-card {
+  background: var(--surface-color);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 44px 36px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.pricing-card.pro {
+  border-color: var(--accent-color);
+  transform: translateY(-8px);
+  box-shadow: 0 0 32px rgba(59, 130, 246, 0.35), 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.pricing-card.pro:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 0 44px rgba(59, 130, 246, 0.45), 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.pricing-badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-color);
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  padding: 8px 14px;
+  border-radius: 9999px;
+  margin-bottom: 24px;
+}
+
+.pricing-card-title {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+}
+
+.pricing-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.pricing-price {
+  font-size: 52px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--text-color);
+}
+
+.pricing-card.pro .pricing-price {
+  color: var(--accent-color);
+}
+
+.pricing-strike {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.pricing-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex-grow: 1;
+  margin-bottom: 36px;
+}
+
+.pricing-features li {
+  font-size: 15px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.pricing-features li::before {
+  content: "\\2713";
+  color: var(--accent-color);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.pricing-btn {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pricing-card.pro {
+    transform: translateY(0);
+  }
+}
+
 /* Motion / Scroll Fade Animation Class */
 .fade-in-up {
   opacity: 0;

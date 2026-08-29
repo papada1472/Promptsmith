@@ -21,6 +21,14 @@
                 </div>
             </div>
 
+            <!-- Target Export Format Switcher -->
+            <div class="format-toolbar" id="format-toolbar" role="radiogroup" aria-label="Export Format">
+                <span class="format-label">Target:</span>
+                <button type="button" class="format-pill is-active" data-format="cursor" role="radio" aria-checked="true" title="Optimized for Cursor / v0 AI rules">⚡ Cursor / v0</button>
+                <button type="button" class="format-pill" data-format="claude" role="radio" aria-checked="false" title="Optimized for Claude Artifacts"> Claude</button>
+                <button type="button" class="format-pill" data-format="markdown" role="radio" aria-checked="false" title="Clean Markdown"> Markdown</button>
+            </div>
+
             <!-- Prompt editor: hidden textarea + structured sections container -->
             <div class="prompt-body" id="prompt-body-wrapper">
                 <textarea
@@ -99,8 +107,8 @@
             <div class="byok-wall hidden" id="byok-wall" role="alertdialog" aria-labelledby="byok-header">
                 <div class="byok-wall-content">
                     <div class="byok-icon">⚡</div>
-                    <div class="byok-header" id="byok-header">Beta Limit Reached</div>
-                    <div class="byok-sub">You've unlocked full capabilities. Plug in your personal API key for unlimited ultra-fast generations. Keys stay encrypted on your device.</div>
+                    <div class="byok-header" id="byok-header">Usage Limit Reached</div>
+                    <div class="byok-sub">You've unlocked full capabilities. Plug in your personal API key for unlimited ultra-fast generations or upgrade to Refinzi Pro. Keys stay encrypted on your device.</div>
                     <div class="byok-actions">
                         <button class="btn btn-copy" id="wall-add-key-btn">Add API Key</button>
                         <button class="btn btn-regenerate" id="wall-later-btn">Later</button>

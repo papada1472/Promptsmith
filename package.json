@@ -1,8 +1,8 @@
 {
   "name": "refinzi",
   "productName": "Refinzi",
-  "version": "0.1.0-beta.3",
-  "description": "Lightweight Windows tray utility to refine selected text into expert AI instructions.",
+  "version": "2.0.0",
+  "description": "Ambient Windows desktop execution layer that turns inspiration into production-ready blueprints and code.",
   "main": "src/main/main.js",
   "type": "module",
   "author": "",

@@ -251,24 +251,34 @@ async function dismissOnboarding(tryIt = false) {
   updateBubbleVisibility();
 
   if (tryIt) {
-    const sampleArtifact = {
-      type: "landing-page",
-      name: "SaaS Hero Page",
-      text: "Landing Page: Minimalist layout with light theme, large typography hero heading 'Design at the speed of thought', dual action buttons 'Start Free Trial' and 'Book Demo', floating 3D browser showcase illustration below, followed by three horizontal customer logo vectors.",
-      isSample: true
-    };
-
-    try {
-      showState("processing");
-      let promptData = await window.refinzi.orb.generatePrompt(sampleArtifact);
-      if (promptData && (promptData.reason === "quota_exceeded" || promptData.ok === false)) {
-        promptData = { prompt: "", isQuotaExceeded: true };
+    if (window.refinzi && window.refinzi.orb && window.refinzi.orb.runSample) {
+      try {
+        showState("processing");
+        await window.refinzi.orb.runSample("landing-page");
+        showState("ready");
+      } catch (err) {
+        console.error("Failed to run sample:", err);
+        showState("error");
       }
-      await window.refinzi.orb.showPromptWindow(promptData);
-      showState("ready");
-    } catch (err) {
-      console.error("Failed to run sample:", err);
-      showState("error");
+    } else if (window.refinzi && window.refinzi.orb && window.refinzi.orb.generatePrompt) {
+      const sampleArtifact = {
+        type: "landing-page",
+        name: "SaaS Hero Page",
+        text: "Landing Page: Minimalist layout with light theme, large typography hero heading 'Design at the speed of thought', dual action buttons 'Start Free Trial' and 'Book Demo', floating 3D browser showcase illustration below, followed by three horizontal customer logo vectors.",
+        isSample: true
+      };
+      try {
+        showState("processing");
+        let promptData = await window.refinzi.orb.generatePrompt(sampleArtifact);
+        if (promptData && (promptData.reason === "quota_exceeded" || promptData.ok === false)) {
+          promptData = { prompt: "", isQuotaExceeded: true };
+        }
+        await window.refinzi.orb.showPromptWindow(promptData);
+        showState("ready");
+      } catch (err) {
+        console.error("Failed to run sample:", err);
+        showState("error");
+      }
     }
   }
 }
@@ -1019,7 +1029,7 @@ orbHitEl.addEventListener("drop", async (e) => {
 let suggestionInterval = null;
 const SUGGESTIONS = [
   "Drop a Reel or Landing Page.",
-  "Tap to Refine Prompt ⚡",
+  "Tap to Rebuild ⚡",
   "Hold for Deep Blueprint 🧠",
   "Drop any PDF, Image, or Text."
 ];

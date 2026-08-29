@@ -81,6 +81,7 @@ contextBridge.exposeInMainWorld("refinzi", {
     setFocusable: (focusable) => invoke("orb:setFocusable", focusable),
     resize: (bounds) => invoke("orb:resize", bounds),
     showPromptWindow: (data) => invoke("orb:showPromptWindow", data),
+    runSample: (type) => invoke("orb:runSample", type),
     // ORB-UX-002: Interaction Telemetry
     logTelemetry: (evt) => ipcRenderer.send("orb:telemetry", evt),
     getTelemetryStats: () => invoke("orb:getTelemetryStats"),

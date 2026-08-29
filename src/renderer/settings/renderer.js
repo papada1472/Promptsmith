@@ -1018,20 +1018,36 @@ if (feedbackForm) feedbackForm.addEventListener("submit", async (event) => {
 
 document.querySelectorAll(".starter-prompt").forEach((button) => {
   button.addEventListener("click", async () => {
-    const result = await window.refinzi.app.copyText(button.dataset.prompt || "");
-    if (result?.ok) {
-      showNotification("success", "Starter prompt copied. Paste it anywhere, then refine.");
-      const origText = button.textContent;
-      button.textContent = "✓ Copied";
-      button.style.borderColor = "var(--success)";
-      button.style.color = "var(--success)";
+    const origText = button.textContent;
+    button.textContent = "Rebuilding...";
+    button.style.borderColor = "var(--accent-primary)";
+    button.disabled = true;
+
+    try {
+      const promptType = button.dataset.type || "landing-page";
+      if (window.refinzi?.orb?.runSample) {
+        showNotification("success", "Rebuilding blueprint sample...");
+        const result = await window.refinzi.orb.runSample(promptType);
+        if (result?.ok) {
+          button.textContent = "✓ Rebuilt";
+          button.style.borderColor = "var(--success)";
+          button.style.color = "var(--success)";
+        } else {
+          showNotification("error", result?.error || "Could not generate sample blueprint.");
+        }
+      } else {
+        await window.refinzi.app.copyText(button.dataset.prompt || "");
+        showNotification("success", "Starter prompt copied to clipboard.");
+      }
+    } catch (err) {
+      showNotification("error", "Failed to run sample: " + (err?.message || err));
+    } finally {
       setTimeout(() => {
         button.textContent = origText;
         button.style.borderColor = "";
         button.style.color = "";
-      }, 2000);
-    } else {
-      showNotification("error", "Could not copy the starter prompt.");
+        button.disabled = false;
+      }, 2500);
     }
   });
 });

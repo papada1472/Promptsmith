@@ -23,6 +23,8 @@ window.addEventListener('DOMContentLoaded', () => {
     let artifactContext = null;
     let artifactType = 'unknown';
     let sessionStartTime = Date.now();
+    let activeFormat = 'cursor';
+    let currentSections = null;
 
     // Analytics accumulator for this session
     let analytics = {
@@ -35,6 +37,70 @@ window.addEventListener('DOMContentLoaded', () => {
 
     let copyToastTimeout = null;
     let copyResetTimeout = null;
+
+    function compileFormattedText(sections, format) {
+        if (!sections) return '';
+        if (format === 'cursor') {
+            return `# [Refinzi Blueprint] ${artifactType ? artifactType.toUpperCase() : 'PRODUCTION'} SPECIFICATION
+
+## 1. System & Architecture Constraints
+- Layout: ${sections.structure}
+- Components: ${sections.components}
+
+## 2. Creative Copy & Conversion Directives
+${sections.copy}
+
+## 3. Motion & Interaction Curves
+${sections.interactions}
+
+## 4. Implementation Prompt Pack (For AI Coding Agents)
+${sections.promptPack}
+
+## 5. Implementation Checklist
+${sections.checklist}
+
+// Refined with Refinzi 2.0`.trim();
+        } else if (format === 'claude') {
+            return `<blueprint type="${artifactType || 'spec'}">
+<structure>
+${sections.structure}
+</structure>
+<components>
+${sections.components}
+</components>
+<copy>
+${sections.copy}
+</copy>
+<interactions>
+${sections.interactions}
+</interactions>
+<implementation>
+${sections.promptPack}
+</implementation>
+<checklist>
+${sections.checklist}
+</checklist>
+</blueprint>`.trim();
+        } else {
+            return `## Structure
+${sections.structure}
+
+## Components
+${sections.components}
+
+## Copy
+${sections.copy}
+
+## Interactions
+${sections.interactions}
+
+## Prompt Pack
+${sections.promptPack}
+
+## Implementation Checklist
+${sections.checklist}`.trim();
+        }
+    }
 
     // ── Parse & Render Structured Sections ──
     function renderStructuredBlueprint(promptText) {
@@ -79,6 +145,8 @@ window.addEventListener('DOMContentLoaded', () => {
         if (!sections.promptPack) sections.promptPack = promptText;
         if (!sections.checklist) sections.checklist = "Implementation checklist derived from scroll structure.";
 
+        currentSections = sections;
+
         // Populate DOM elements
         const structureEl = document.getElementById("section-structure");
         const componentsEl = document.getElementById("section-components");
@@ -94,26 +162,26 @@ window.addEventListener('DOMContentLoaded', () => {
         if (promptpackEl) promptpackEl.textContent = sections.promptPack;
         if (checklistEl) checklistEl.textContent = sections.checklist;
 
-        // Build clean markdown plain headers payload for the clipboard copy action
-        const copyText = `## Structure
-${sections.structure}
+        editor.value = compileFormattedText(sections, activeFormat);
+    }
 
-## Components
-${sections.components}
-
-## Copy
-${sections.copy}
-
-## Interactions
-${sections.interactions}
-
-## Prompt Pack
-${sections.promptPack}
-
-## Implementation Checklist
-${sections.checklist}`.trim();
-
-        editor.value = copyText;
+    // Format toolbar listener
+    const formatToolbar = document.getElementById("format-toolbar");
+    if (formatToolbar) {
+        formatToolbar.addEventListener("click", (e) => {
+            const pill = e.target.closest(".format-pill");
+            if (!pill) return;
+            formatToolbar.querySelectorAll(".format-pill").forEach(p => {
+                p.classList.remove("is-active");
+                p.setAttribute("aria-checked", "false");
+            });
+            pill.classList.add("is-active");
+            pill.setAttribute("aria-checked", "true");
+            activeFormat = pill.dataset.format || "cursor";
+            if (currentSections) {
+                editor.value = compileFormattedText(currentSections, activeFormat);
+            }
+        });
     }
 
     // ── Receive data from main process ──
