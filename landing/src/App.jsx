@@ -235,7 +235,7 @@ const TESTIMONIALS = [
   {
     name: "Alex Rivera",
     role: "Lead Prompt Engineer & UI Architect",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&q=75&fm=webp",
     text: "Refinzi completely eliminated my prompt iterations. I highlight my rough idea in Windows, tap Ctrl+Alt+Space, and ChatGPT gives me a production-ready system prompt instantly.",
     rating: 5,
     highlight: "Saves 2+ hours daily",
@@ -243,7 +243,7 @@ const TESTIMONIALS = [
   {
     name: "Marcus Chen",
     role: "AI Film Director & Midjourney Artist",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&q=75&fm=webp",
     text: "The Midjourney and Higgsfield prompt rebuilds are magical. It injects the exact camera angles, lighting physics, and lens parameters without memorizing complex syntax.",
     rating: 5,
     highlight: "Unreal Midjourney specs",
@@ -251,7 +251,7 @@ const TESTIMONIALS = [
   {
     name: "Elena Rostova",
     role: "Fullstack Developer & Indie Builder",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=75&fm=webp",
     text: "The 5-Block Blueprint hold mode is a game changer for Cursor. Instead of re-prompting 10 times, the AI builds the complete component with design tokens on the 1st attempt.",
     rating: 5,
     highlight: "1st-try flawless code",
@@ -657,7 +657,7 @@ function OrbMockup() {
           <span className="h-2.5 w-2.5 rounded-full bg-zinc-700/80" />
           <span className="h-2.5 w-2.5 rounded-full bg-zinc-700/80" />
           <span className="h-2.5 w-2.5 rounded-full bg-zinc-700/80" />
-          <span className="ml-2 text-[10px] font-mono text-zinc-500">refinzi-overlay.exe</span>
+          <span className="ml-2 text-[10px] font-mono text-zinc-400 font-medium">refinzi-overlay.exe</span>
         </div>
         <div className="flex items-center gap-1 rounded-lg bg-zinc-950 p-0.5 border border-white/[0.06]">
           <button
@@ -738,7 +738,7 @@ function OrbMockup() {
             </div>
             <div className="space-y-1.5">
               <div className="rounded-lg bg-zinc-900/60 p-2 border border-white/[0.04]">
-                <span className="text-zinc-500 block mb-0.5 text-[9px] uppercase font-semibold">Raw User Highlight</span>
+                <span className="text-zinc-400 block mb-0.5 text-[9px] uppercase font-semibold">Raw User Highlight</span>
                 <p className="text-zinc-300 font-mono text-[11px]">"cyberpunk sports car in rain"</p>
               </div>
               <div className="rounded-lg bg-blue-950/30 p-2 border border-blue-500/30">
@@ -876,10 +876,10 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
           {/* Social Proof Strip */}
           <div className="mt-5 flex items-center gap-3.5 border-t border-white/[0.06] pt-4">
             <div className="flex -space-x-2 shrink-0">
-              <img className="inline-block h-7 w-7 rounded-full ring-2 ring-zinc-950 object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="User 1" loading="lazy" decoding="async" />
-              <img className="inline-block h-7 w-7 rounded-full ring-2 ring-zinc-950 object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="User 2" loading="lazy" decoding="async" />
-              <img className="inline-block h-7 w-7 rounded-full ring-2 ring-zinc-950 object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="User 3" loading="lazy" decoding="async" />
-              <img className="inline-block h-7 w-7 rounded-full ring-2 ring-zinc-950 object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80" alt="User 4" loading="lazy" decoding="async" />
+              <img className="inline-block h-7 w-7 rounded-full ring-2 ring-zinc-950 object-cover" width="28" height="28" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&q=75&fm=webp" alt="User 1" loading="lazy" decoding="async" />
+              <img className="inline-block h-7 w-7 rounded-full ring-2 ring-zinc-950 object-cover" width="28" height="28" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&q=75&fm=webp" alt="User 2" loading="lazy" decoding="async" />
+              <img className="inline-block h-7 w-7 rounded-full ring-2 ring-zinc-950 object-cover" width="28" height="28" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=75&fm=webp" alt="User 3" loading="lazy" decoding="async" />
+              <img className="inline-block h-7 w-7 rounded-full ring-2 ring-zinc-950 object-cover" width="28" height="28" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=64&h=64&q=75&fm=webp" alt="User 4" loading="lazy" decoding="async" />
             </div>
             <div>
               <div className="flex items-center text-amber-400 text-xs leading-none">
@@ -1260,10 +1260,10 @@ function Testimonials() {
                 </div>
 
                 <div className="mt-4 flex items-center gap-2.5 pt-3 border-t border-white/[0.06]">
-                  <img src={t.avatar} alt={t.name} className="h-7 w-7 rounded-full object-cover ring-1 ring-zinc-700" loading="lazy" decoding="async" />
+                  <img src={t.avatar} alt={t.name} width="28" height="28" className="h-7 w-7 rounded-full object-cover ring-1 ring-zinc-700" loading="lazy" decoding="async" />
                   <div>
-                    <h4 className="text-xs font-bold text-white leading-tight">{t.name}</h4>
-                    <p className="text-[10px] text-zinc-500 leading-tight">{t.role}</p>
+                    <h3 className="text-xs font-bold text-white leading-tight">{t.name}</h3>
+                    <p className="text-[10px] text-zinc-400 leading-tight">{t.role}</p>
                   </div>
                 </div>
               </Card>
@@ -1342,7 +1342,7 @@ function Pricing({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD,
               <h3 className="mt-2 text-lg font-bold text-zinc-50">Free / BYOK</h3>
               <div className="mt-2 flex items-baseline gap-1">
                 <span className="text-3xl font-bold text-zinc-50">{currency.symbol}0</span>
-                <span className="text-xs text-zinc-500">/ forever</span>
+                <span className="text-xs text-zinc-400">/ forever</span>
               </div>
               <p className="mt-1.5 text-xs text-zinc-400 leading-relaxed">
                 Bring your own Gemini or OpenRouter API keys. Zero subscription cost forever.
@@ -1379,7 +1379,7 @@ function Pricing({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD,
               <h3 className="mt-1.5 text-lg font-bold text-white">Refinzi Lifetime Pro</h3>
               <div className="mt-2 flex items-baseline gap-2">
                 <span className="text-3xl font-extrabold text-white">{currency.formattedPrice}</span>
-                <span className="text-sm line-through text-zinc-500">{currency.formattedRegular}</span>
+                <span className="text-sm line-through text-zinc-400">{currency.formattedRegular}</span>
                 <span className="text-xs text-emerald-400 font-semibold font-mono">Save 73%</span>
               </div>
               <p className="mt-1 text-xs text-zinc-300 leading-relaxed">
@@ -1568,18 +1568,18 @@ function StickyConversionBar({ show, onOpenOffer, onDownload, currency = SUPPORT
 
 function Footer() {
   return (
-    <footer className="border-t border-white/[0.06] py-6 bg-[#08090c] text-zinc-500 text-[11px]">
+    <footer className="border-t border-white/[0.06] py-6 bg-[#08090c] text-zinc-400 text-[11px]">
       <div className="mx-auto flex max-w-[1140px] flex-col items-center justify-between gap-3 px-4 sm:px-6 sm:flex-row">
         <div className="flex items-center gap-1.5">
           <span>🧠</span>
           <span className="font-semibold text-zinc-300">Refinzi 2.0</span>
-          <span>— Ambient Windows prompt layer</span>
+          <span className="text-zinc-400">— Ambient Windows prompt layer</span>
         </div>
-        <nav aria-label="Legal" className="flex items-center gap-4 text-zinc-500">
-          <a href="/privacy" className="hover:text-zinc-300 transition-colors">Privacy</a>
-          <a href="/terms" className="hover:text-zinc-300 transition-colors">Terms</a>
-          <a href="/docs" className="hover:text-zinc-300 transition-colors">Docs</a>
-          <a href="mailto:support@refinzi.com" className="hover:text-zinc-300 transition-colors">Support</a>
+        <nav aria-label="Legal" className="flex items-center gap-4 text-zinc-400">
+          <a href="/privacy" className="hover:text-zinc-200 transition-colors">Privacy</a>
+          <a href="/terms" className="hover:text-zinc-200 transition-colors">Terms</a>
+          <a href="/docs" className="hover:text-zinc-200 transition-colors">Docs</a>
+          <a href="mailto:support@refinzi.com" className="hover:text-zinc-200 transition-colors">Support</a>
         </nav>
       </div>
     </footer>
