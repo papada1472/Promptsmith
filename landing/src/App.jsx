@@ -294,7 +294,7 @@ const FAQS = [
   {
     question: "What is your refund policy?",
     answer:
-      "We offer an unconditional 14-day money-back guarantee. If Refinzi doesn't save you hours of prompt trial-and-error every day, email support@refinzi.com for a full, instant refund.",
+      "We offer an unconditional 14-day money-back guarantee. If Refinzi doesn't save you hours of prompt trial-and-error every day, email contact@refinzi.com for a full, instant refund.",
   },
 ];
 
@@ -1662,7 +1662,7 @@ function Footer({ onNavigate }) {
           <RequestAiSummary />
         </div>
         <div className="flex flex-col items-start md:items-end gap-2">
-          <nav aria-label="Legal" className="flex items-center gap-4 text-zinc-400">
+          <nav aria-label="Legal" className="flex flex-wrap items-center gap-4 text-zinc-400">
             <button
               onClick={() => onNavigate("privacy", "/privacy")}
               className="hover:text-zinc-200 transition-colors cursor-pointer"
@@ -1681,7 +1681,13 @@ function Footer({ onNavigate }) {
             >
               Docs
             </button>
-            <a href="mailto:support@refinzi.com" className="hover:text-zinc-200 transition-colors">Support</a>
+            <a
+              href="mailto:contact@refinzi.com"
+              className="hover:text-zinc-200 transition-colors font-medium flex items-center gap-1 text-zinc-300 hover:text-white"
+            >
+              <span>Contact</span>
+              <span className="text-[10px] text-blue-400 font-mono">(contact@refinzi.com)</span>
+            </a>
           </nav>
           <p className="text-[10px] text-zinc-400">© 2026 Refinzi. Built for high-speed prompt creators.</p>
         </div>

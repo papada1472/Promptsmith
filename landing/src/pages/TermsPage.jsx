@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { ArrowLeft, FileText, CheckCircle2, ShieldCheck, AlertCircle, RefreshCw, Mail } from "lucide-react";
 
 export function TermsPage({ onNavigateHome }) {
@@ -62,7 +62,7 @@ export function TermsPage({ onNavigateHome }) {
               3. Refund Policy (14-Day Money-Back Guarantee)
             </h2>
             <p className="text-xs sm:text-sm text-zinc-300">
-              We stand behind Refinzi 100%. If Refinzi does not significantly speed up your prompt workflows or meet your expectations, email <code className="text-blue-300 font-mono">support@refinzi.com</code> within <strong>14 days of purchase</strong> for a full, no-questions-asked refund.
+              We stand behind Refinzi 100%. If Refinzi does not significantly speed up your prompt workflows or meet your expectations, email <code className="text-blue-300 font-mono">contact@refinzi.com</code> within <strong>14 days of purchase</strong> for a full, no-questions-asked refund.
             </p>
           </section>
 
@@ -85,10 +85,10 @@ export function TermsPage({ onNavigateHome }) {
               For any questions regarding these Terms, contact our legal & support desk:
             </p>
             <a
-              href="mailto:support@refinzi.com"
+              href="mailto:contact@refinzi.com"
               className="text-xs font-mono text-blue-400 hover:text-blue-300 underline block"
             >
-              support@refinzi.com
+              contact@refinzi.com
             </a>
           </section>
         </div>

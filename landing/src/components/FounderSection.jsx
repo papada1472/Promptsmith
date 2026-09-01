@@ -41,11 +41,11 @@ export function FounderSection() {
                       <span>GitHub</span>
                     </a>
                     <a
-                      href="mailto:support@refinzi.com"
-                      className="flex items-center gap-1 text-[11px] font-mono text-zinc-400 hover:text-white bg-zinc-900 border border-white/10 px-2.5 py-1 rounded-lg transition-colors"
+                      href="mailto:contact@refinzi.com"
+                      className="flex items-center gap-1 text-[11px] font-mono text-zinc-300 hover:text-white bg-zinc-900 border border-white/10 px-2.5 py-1 rounded-lg transition-colors"
                     >
-                      <Mail className="h-3 w-3" />
-                      <span>Email</span>
+                      <Mail className="h-3 w-3 text-blue-400" />
+                      <span>contact@refinzi.com</span>
                     </a>
                   </div>
                 </div>

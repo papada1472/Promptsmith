@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { ArrowLeft, Shield, Lock, EyeOff, Server, Database, Mail } from "lucide-react";
 
 export function PrivacyPage({ onNavigateHome }) {
@@ -103,10 +103,10 @@ export function PrivacyPage({ onNavigateHome }) {
               For any questions regarding privacy or data rights, please reach out to our team:
             </p>
             <a
-              href="mailto:support@refinzi.com"
+              href="mailto:contact@refinzi.com"
               className="text-xs font-mono text-blue-400 hover:text-blue-300 underline block"
             >
-              support@refinzi.com
+              contact@refinzi.com
             </a>
           </section>
         </div>
