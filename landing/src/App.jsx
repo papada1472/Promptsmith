@@ -48,6 +48,7 @@ import { TermsPage } from "./pages/TermsPage.jsx";
 import { DocsPage } from "./pages/DocsPage.jsx";
 import { FounderSection } from "./components/FounderSection.jsx";
 import { RefinziComparison } from "./components/RefinziComparison.jsx";
+import { ThemeToggle } from "./components/ThemeToggle.jsx";
 import { initAnalytics, trackEvent } from "./utils/analytics.js";
 import { initPerformanceMonitoring } from "./utils/performance.js";
 import {
@@ -511,7 +512,7 @@ function DownloadSuccessModal({ isOpen, onClose }) {
 
 /* ---------------------------------- navbar -------------------------------- */
 
-function Navbar({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, osType = "windows" }) {
+function Navbar({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, osType = "windows", theme = "dark", onToggleTheme }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -538,6 +539,7 @@ function Navbar({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, 
         </ul>
 
         <div className="hidden items-center gap-3 md:flex">
+          <ThemeToggle theme={theme} onToggleTheme={onToggleTheme} />
           <a
             href="#pricing"
             onClick={(e) => {
@@ -572,16 +574,19 @@ function Navbar({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, 
           </Button>
         </div>
 
-        {/* Mobile hamburger */}
-        <button
-          type="button"
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((prev) => !prev)}
-          className="rounded-lg border border-white/[0.08] p-1.5 text-zinc-300 hover:text-white md:hidden"
-        >
-          {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-        </button>
+        {/* Mobile controls */}
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle theme={theme} onToggleTheme={onToggleTheme} />
+          <button
+            type="button"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            onClick={() => setOpen((prev) => !prev)}
+            className="rounded-lg border border-white/[0.08] p-1.5 text-zinc-300 hover:text-white"
+          >
+            {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </button>
+        </div>
       </nav>
 
       {open && (
@@ -745,7 +750,7 @@ function OrbMockup() {
               <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 flex items-center gap-1">
                 <Sparkles className="h-3 w-3" /> Live In-Place Prompt Transformation
               </span>
-              <span className="text-[10px] text-emerald-400 font-mono">0ms latency</span>
+              <span className="text-[10px] text-emerald-400 font-mono">Sub-200ms</span>
             </div>
             <div className="space-y-1.5">
               <div className="rounded-lg bg-zinc-900/60 p-2 border border-white/[0.04]">
@@ -1699,6 +1704,27 @@ function detectClientOS() {
 }
 
 export default function App() {
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("refinzi_theme") || "dark";
+    }
+    return "dark";
+  });
+
+  const handleToggleTheme = (newTheme) => {
+    setTheme(newTheme);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("refinzi_theme", newTheme);
+      document.documentElement.classList.toggle("light", newTheme === "light");
+    }
+  };
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.classList.toggle("light", theme === "light");
+    }
+  }, [theme]);
+
   const [currentPage, setCurrentPage] = useState(() => {
     if (typeof window !== "undefined") {
       const path = window.location.pathname.toLowerCase();
@@ -1881,6 +1907,8 @@ export default function App() {
       <Navbar
         currency={currency}
         osType={osType}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
         onOpenOffer={() => handleOpenCheckout("navbar")}
         onDownload={() => handleTriggerDownload("navbar")}
       />
