@@ -271,44 +271,44 @@ const TESTIMONIALS = [
 
 const FAQS = [
   {
-    question: "How does the button appear?",
+    question: "How does Refinzi actually work?",
     answer:
-      "When you select text in any Windows app, Refinzi detects it and shows a floating button next to your selection. One click does the rest.",
+      "Refinzi uses an \"Ambient Orb\" that lives near your cursor without interrupting your workflow. Highlight text in any Windows app (or press Ctrl + Alt + Space), and the Orb instantly drops in, analyzes the context, and lets you rebuild it.",
   },
   {
-    question: "What if I don't like clicking?",
+    question: "What exactly do I get when I \"Rebuild\"?",
     answer:
-      "Ctrl + Alt + Space does the same thing without moving your mouse.",
+      "You don't just get a wall of text. Refinzi outputs a structured Rebuild Pack containing 5 architectural sections: Structure & Layout, Component Assets, Creative Copy & Hooks, Motion & Interactions, and an Implementation Prompt Pack specifically formatted for Cursor, Claude, or v0. One click copies it all to your clipboard.",
   },
   {
-    question: "Is this a subscription?",
+    question: "Which AI models power the rebuilds?",
     answer:
-      "No. Pro is a one-time payment. Pay once, own it forever.",
+      "Refinzi 2.0 features a fast model-switcher with 1-click access to DeepSeek V3, DeepSeek R1, Gemini 1.5 Flash, and Nemotron 120B.",
   },
   {
-    question: "Do you store my prompts?",
+    question: "What happens when my included usage runs out?",
     answer:
-      "No. Everything runs locally on your machine. Zero logging, zero prompt storage.",
+      "We don't hit you with a hard paywall. You can instantly switch to BYOK (Bring Your Own Key). Just add your DeepSeek, Gemini, or OpenRouter key to keep rebuilding indefinitely.",
   },
   {
-    question: "What AI models does Pro use?",
+    question: "Do you store my API keys or my prompts?",
     answer:
-      "Claude 3.5 Sonnet and GPT-4o, routed through our managed high-speed API pool.",
+      "Zero logging, zero prompt storage. If you use BYOK, your API keys are encrypted locally on your machine using AES-256. They never touch our servers.",
   },
   {
-    question: "Is there a Mac version?",
+    question: "Is it a subscription?",
     answer:
-      "Not yet. Windows 10/11 only. You can join the Mac waitlist at the top of the page.",
+      "No. Pro is a one-time payment. Pay once, own it forever. (Any BYOK API usage is billed directly by your provider for pennies).",
   },
   {
-    question: "What if I don't like it?",
+    question: "Is it safe? Will my antivirus flag it?",
     answer:
-      "Email contact@refinzi.com within 14 days for a full, instant refund. No questions asked.",
+      "It's a clean, standard Windows executable (0/72 on VirusTotal) and built in public on GitHub. Our diagnostic logs automatically mask sensitive data. If you're ultra-cautious, run it in a sandbox first.",
   },
   {
-    question: "Is the app safe?",
+    question: "Is it available on Mac?",
     answer:
-      "It's a standard Windows executable. Clean 0/72 on VirusTotal and built in public on GitHub. If you're cautious, run it in a sandbox first.",
+      "Not yet. Refinzi 2.0 is native to Windows 10/11. You can join the Mac waitlist at the top of the page.",
   },
 ];
 
