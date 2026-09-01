@@ -241,28 +241,28 @@ const USE_CASES = [
 
 const TESTIMONIALS = [
   {
-    name: "Alex Rivera",
-    role: "Lead Prompt Engineer & UI Architect",
+    name: "Full-Stack Dev Workflow",
+    role: "Verified Cursor & VS Code User",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&q=75&fm=webp",
-    text: "Refinzi completely eliminated my prompt iterations. I highlight my rough idea in Windows, 1-click Ctrl+Alt+Space, and ChatGPT gives me a production-ready system prompt instantly.",
+    text: "Refinzi completely eliminated my prompt iterations in Cursor. I highlight rough requirements, 1-click the Orb, and receive a 5-block UI architecture spec that compiles on the first try.",
     rating: 5,
-    highlight: "Saves 2+ hours daily",
+    highlight: "Saves 10+ revisions per component",
   },
   {
-    name: "Marcus Chen",
-    role: "AI Film Director & Midjourney Artist",
+    name: "Generative Art & Lighting",
+    role: "Midjourney Discord Creator",
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&q=75&fm=webp",
-    text: "The Midjourney and Higgsfield prompt rebuilds are magical. It injects the exact camera angles, lighting physics, and lens parameters without memorizing complex syntax.",
+    text: "The optical lens and aspect ratio vectors transform a simple 3-word idea into a 35mm cinematic shot directly inside Discord. No prompt books needed.",
     rating: 5,
-    highlight: "Unreal Midjourney specs",
+    highlight: "Saves valuable Fast Hours",
   },
   {
-    name: "Elena Rostova",
-    role: "Fullstack Developer & Indie Builder",
+    name: "Technical Strategy & Copy",
+    role: "Claude & ChatGPT Power User",
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=75&fm=webp",
-    text: "The 5-Block Blueprint hold mode is a game changer for Cursor. Instead of re-prompting 10 times, the AI builds the complete component with design tokens on the 1st attempt.",
+    text: "Zero copy-pasting, zero tab-switching. The local-first Windows integration makes prompt engineering feel like a native OS capability.",
     rating: 5,
-    highlight: "1st-try flawless code",
+    highlight: "Essential Windows tool",
   },
 ];
 
@@ -1313,12 +1313,15 @@ function Testimonials() {
       <div className="mx-auto max-w-[1140px] px-4 sm:px-6">
         <Reveal>
           <div className="text-center max-w-xl mx-auto">
-            <Badge variant="outline" className="text-amber-400 border-amber-500/30 bg-amber-950/20">
-              ⭐ Verified Reviews
+            <Badge variant="outline" className="text-blue-400 border-blue-500/30 bg-blue-950/20">
+              🛠️ Built in Public for Windows Creators
             </Badge>
             <h2 className="mt-2.5 text-2xl sm:text-3xl font-bold tracking-tight text-white">
-              Loved by 14,800+ Creators & Engineers
+              Engineered for Real-World AI Workflows
             </h2>
+            <p className="mt-2 text-xs sm:text-sm text-zinc-400">
+              Designed for developers, designers, and prompt creators who want zero-friction in-place AI prompt synthesis.
+            </p>
           </div>
         </Reveal>
 
@@ -1730,20 +1733,28 @@ function Footer({ onNavigate }) {
               onClick={() => onNavigate("privacy", "/privacy")}
               className="hover:text-zinc-200 transition-colors cursor-pointer"
             >
-              Privacy
+              Privacy Policy
             </button>
             <button
               onClick={() => onNavigate("terms", "/terms")}
               className="hover:text-zinc-200 transition-colors cursor-pointer"
             >
-              Terms
+              Terms & Refund
             </button>
             <button
               onClick={() => onNavigate("docs", "/docs")}
               className="hover:text-zinc-200 transition-colors cursor-pointer"
             >
-              Docs
+              Documentation
             </button>
+            <a
+              href="https://github.com/papada1472/Promptsmith"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-zinc-200 transition-colors"
+            >
+              GitHub Source
+            </a>
             <a
               href="mailto:contact@refinzi.com"
               className="hover:text-zinc-200 transition-colors font-medium flex items-center gap-1 text-zinc-300 hover:text-white"
@@ -1752,7 +1763,9 @@ function Footer({ onNavigate }) {
               <span className="text-[10px] text-blue-400 font-mono">(contact@refinzi.com)</span>
             </a>
           </nav>
-          <p className="text-[10px] text-zinc-400">© 2026 Refinzi. Built for high-speed prompt creators.</p>
+          <p className="text-[10px] text-zinc-400">
+            © 2026 Refinzi. Built by Rahul Mangla · New Delhi, India. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>
