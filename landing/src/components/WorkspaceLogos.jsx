@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 
 /*
  * Minimal, monochrome brand icons for AI tools & workspaces.
@@ -48,6 +48,19 @@ export const GeminiLogo = makeIcon(
   "Gemini"
 );
 
+export const PerplexityLogo = makeIcon(
+  (
+    <g fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2v20" />
+      <path d="M2 12h20" />
+      <path d="m4.93 4.93 14.14 14.14" />
+      <path d="m4.93 19.07 14.14-14.14" />
+      <circle cx="12" cy="12" r="3" fill="currentColor" />
+    </g>
+  ),
+  "Perplexity"
+);
+
 export const HiggsfieldLogo = makeIcon(
   (
     <g>
@@ -67,10 +80,12 @@ export const MidjourneyLogo = makeIcon(
 
 export default {
   CursorLogo,
+  VercelLogo,
   V0Logo,
   ClaudeLogo,
   ChatGptLogo,
   GeminiLogo,
+  PerplexityLogo,
   HiggsfieldLogo,
   MidjourneyLogo,
 };
