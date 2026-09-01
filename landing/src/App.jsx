@@ -42,6 +42,7 @@ import { NonWindowsModal } from "./components/NonWindowsModal.jsx";
 import { CurrencyBadge } from "./components/CurrencySelector.jsx";
 import { SocialProofToast } from "./components/SocialProofToast.jsx";
 import { initAnalytics, trackEvent } from "./utils/analytics.js";
+import { initPerformanceMonitoring } from "./utils/performance.js";
 import {
   SUPPORTED_CURRENCIES,
   detectCountryAndCurrencyAsync,
@@ -1630,6 +1631,35 @@ export default function App() {
       }, 7000);
       return () => clearTimeout(timer);
     }
+  }, [osType]);
+
+  // Analytics & Core Web Vitals Performance Monitoring on Mount
+  useEffect(() => {
+    initAnalytics();
+    initPerformanceMonitoring();
+    trackEvent("page_view", {
+      path: window.location.pathname,
+      referrer: document.referrer || "direct",
+      device: osType,
+    });
+
+    // Scroll depth tracking
+    const scrollMilestones = { 25: false, 50: false, 75: false, 90: false };
+    const handleScrollDepth = () => {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollHeight <= 0) return;
+      const currentScrollPercent = Math.round((window.scrollY / scrollHeight) * 100);
+
+      [25, 50, 75, 90].forEach((depth) => {
+        if (currentScrollPercent >= depth && !scrollMilestones[depth]) {
+          scrollMilestones[depth] = true;
+          trackEvent("scroll_depth_reached", { depth_percent: depth });
+        }
+      });
+    };
+
+    window.addEventListener("scroll", handleScrollDepth, { passive: true });
+    return () => window.removeEventListener("scroll", handleScrollDepth);
   }, [osType]);
 
   // Throttled scroll listener
