@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { Check, X, Sparkles, Zap, Shield, Layers } from "lucide-react";
 import { Reveal } from "./Reveal.jsx";
 
@@ -11,14 +11,14 @@ const COMPARISON_ROWS = [
     promptPerfect: false,
   },
   {
-    feature: "Global In-Place Shortcut (Ctrl+Alt+Space)",
+    feature: "1-Click In-Place Prompt Transformation (Ctrl+Alt+Space)",
     refinzi: true,
     chatgpt: false,
     extensions: false,
     promptPerfect: false,
   },
   {
-    feature: "5-Block Blueprint Hold Engine",
+    feature: "Secondary 300ms Hold 5-Block Blueprint Engine",
     refinzi: true,
     chatgpt: false,
     extensions: false,

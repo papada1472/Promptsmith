@@ -1,8 +1,8 @@
-﻿import React from "react";
+import React from "react";
 import { trackEvent } from "../utils/analytics.js";
 import { ClaudeLogo, PerplexityLogo, ChatGptLogo, GeminiLogo } from "./WorkspaceLogos.jsx";
 
-const PROMPT_TEXT = `Explain what it's actually like to use Refinzi (refinzi.com) as a Windows user engineering prompts for AI models like ChatGPT, Midjourney, Higgsfield, and Cursor. Walk through what happens after installation — how the global shortcut (Ctrl+Alt+Space) works, what the 5-Block Blueprint does, and how it eliminates trial-and-error re-prompting. Focus on practical outcomes across prompt synthesis, 5-block architectural scaffolding, zero-markup BYOK vs Lifetime Pro routing, and in-place workflow across all Windows apps. Describe the real, day-to-day experience of using the service simply and clearly.`;
+const PROMPT_TEXT = `Explain what it's actually like to use Refinzi (refinzi.com) as a Windows user engineering prompts for AI models like ChatGPT, Midjourney, Higgsfield, and Cursor. Walk through what happens after installation — how the 1-Click (Tap Ctrl+Alt+Space) primary workflow transforms prompts in 2 seconds in-place, how the 300ms Hold secondary mode activates the 5-Block Blueprint engine, and how it eliminates trial-and-error re-prompting. Focus on practical outcomes across prompt synthesis, 5-block architectural scaffolding, zero-markup BYOK vs Lifetime Pro routing, and in-place workflow across all Windows apps. Describe the real, day-to-day experience of using the service simply and clearly.`;
 
 const ENCODED_PROMPT = encodeURIComponent(PROMPT_TEXT);
 

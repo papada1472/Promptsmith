@@ -242,7 +242,7 @@ const TESTIMONIALS = [
     name: "Alex Rivera",
     role: "Lead Prompt Engineer & UI Architect",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&q=75&fm=webp",
-    text: "Refinzi completely eliminated my prompt iterations. I highlight my rough idea in Windows, tap Ctrl+Alt+Space, and ChatGPT gives me a production-ready system prompt instantly.",
+    text: "Refinzi completely eliminated my prompt iterations. I highlight my rough idea in Windows, 1-click Ctrl+Alt+Space, and ChatGPT gives me a production-ready system prompt instantly.",
     rating: 5,
     highlight: "Saves 2+ hours daily",
   },
@@ -268,7 +268,7 @@ const FAQS = [
   {
     question: "How does Refinzi work in Windows?",
     answer:
-      "Refinzi runs quietly as a lightweight native Windows companion. Highlight text anywhere (ChatGPT web, Claude, Cursor, VS Code, Discord, Figma, Notion, or browsers) and press Ctrl+Alt+Space. Refinzi captures your raw highlight and rebuilds it directly in-place without copy-pasting.",
+      "Refinzi runs quietly as a lightweight native Windows companion. 1-Click (Tap Ctrl+Alt+Space) is your primary action — it captures your active text highlight and instantly rebuilds it into a production-grade prompt directly in-place. Hold Ctrl+Alt+Space for 300ms as your secondary action to open the interactive 5-Block Blueprint scaffolding engine.",
   },
   {
     question: "What is the difference between Free BYOK and Lifetime Pro?",
@@ -795,11 +795,11 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
       <div className="relative mx-auto grid w-full max-w-[1140px] grid-cols-1 items-center gap-10 px-4 sm:px-6 lg:grid-cols-2">
         {/* Left column */}
         <div>
-          {/* Eyebrow */}
-          <div className="flex items-center gap-2 flex-wrap">
+          {/* Top Badges */}
+          <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/25">
               <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
-              A silent Windows utility for AI creators
+              1-Click In-Place Prompt Transformation ⚡
             </span>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/25">
               <Flame className="h-3 w-3 text-amber-400" />
@@ -811,17 +811,13 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
           <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.12] tracking-tight text-white">
             Stop Re-Prompting AI.{" "}
             <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">
-              Rebuild in 2 Seconds.
+              1-Click Rebuild in 2 Seconds.
             </span>
           </h1>
 
           {/* Plain English Subheadline */}
           <p className="mt-4 max-w-xl text-sm sm:text-base leading-relaxed text-zinc-300">
-            Select any text, hit{" "}
-            <kbd className="inline-flex items-center font-mono text-xs font-semibold px-2 py-0.5 rounded-md bg-zinc-800 text-white border border-zinc-700 shadow-sm">
-              Ctrl+Alt+Space
-            </kbd>
-            , and Refinzi rebuilds it into a production-ready prompt — inside ChatGPT, Midjourney, Cursor & more. No tab-switching, no copy-paste.
+            Select any text and <strong className="text-white">1-Click (Tap <kbd className="font-mono text-xs font-semibold px-2 py-0.5 rounded-md bg-zinc-800 text-blue-300 border border-zinc-700">Ctrl+Alt+Space</kbd>)</strong> to rebuild it into a production-grade prompt in-place. Hold 300ms anytime for 5-Block Blueprint architecture. No tab-switching, no copy-paste.
           </p>
 
           {/* Primary CTA + Secondary Link */}
@@ -868,15 +864,19 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
             </a>
           </div>
 
-          {/* Clear Free vs Paid Value Gap */}
-          <div className="mt-4 space-y-1 text-xs text-zinc-400 font-medium">
+          {/* Clear Primary vs Secondary Interaction & Free vs Paid Value Gap */}
+          <div className="mt-4 space-y-1.5 text-xs text-zinc-400 font-medium">
             <div className="flex items-center gap-2">
-              <Check className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-              <span><strong className="text-zinc-200">Free BYOK Mode</strong> — use your own API keys, zero subscription</span>
+              <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-blue-500/20 text-blue-400 text-[10px] font-bold">1</span>
+              <span><strong className="text-zinc-200">Primary (1-Click Tap Ctrl+Alt+Space)</strong> — Instant in-place prompt transformation</span>
             </div>
             <div className="flex items-center gap-2">
-              <Check className="h-3.5 w-3.5 text-blue-400 shrink-0" />
-              <span><strong className="text-zinc-200">Lifetime Pro ({currency.formattedPrice})</strong> — built-in Claude & GPT routing + Blueprint packs</span>
+              <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-purple-500/20 text-purple-400 text-[10px] font-bold">2</span>
+              <span><strong className="text-zinc-200">Secondary (Hold 300ms)</strong> — Opens 5-Block Blueprint Scaffolding & Context Architect</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+              <span><strong className="text-zinc-200">Free BYOK Mode</strong> — use your own API keys, 0% markup forever</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-3.5 w-3.5 text-purple-400 shrink-0" />
@@ -935,7 +935,7 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
               />
             </div>
             <p className="mt-2 text-center text-[10px] text-zinc-400">
-              Highlight text ➔ Press <kbd className="font-mono text-blue-300 font-bold">Ctrl+Alt+Space</kbd> ➔ Prompt transformed in-place
+              <strong className="text-blue-300">1-Click (Tap Ctrl+Alt+Space)</strong> for instant in-place rebuild · <span className="text-zinc-400">Hold 300ms for 5-Block Blueprint</span>
             </p>
           </div>
         </div>
@@ -1118,14 +1118,14 @@ function Mechanism() {
       body: "Highlight instructions or vague text anywhere in Windows (ChatGPT, Discord, VS Code, Browser, Figma).",
     },
     {
-      icon: Layers,
-      title: "2. Press Ctrl+Alt+Space",
-      body: "Single tap for in-place prompt transformation ⚡. Hold 300ms for full 5-block architectural Blueprint 🧠.",
+      icon: Zap,
+      title: "2. 1-Click Tap (Primary Use Case)",
+      body: "1-Click (Tap Ctrl+Alt+Space) to instantly transform active text in-place into a production-grade prompt ⚡.",
     },
     {
-      icon: Zap,
-      title: "3. Instant 1st-Try Perfection",
-      body: "Paste production-ready prompts into ChatGPT, Midjourney, Higgsfield AI, Gemini, Cursor or Claude.",
+      icon: Layers,
+      title: "3. Hold 300ms (Secondary Blueprint)",
+      body: "Hold Ctrl+Alt+Space for 300ms anytime to open the full 5-block architectural Blueprint engine 🧠.",
     },
   ];
 
