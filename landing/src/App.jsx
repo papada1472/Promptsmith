@@ -805,7 +805,7 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/25">
               <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
-              1-Click on Orb — Instant In-Place Transformation ⚡
+              1-Click Prompt Engineering for Windows ⚡
             </span>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/25">
               <Flame className="h-3 w-3 text-amber-400" />
@@ -813,21 +813,21 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
             </span>
           </div>
 
-          {/* H1 Headline */}
+          {/* H1 Headline — Harry Dry Style */}
           <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.12] tracking-tight text-white">
-            Stop Re-Prompting AI.{" "}
-            <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">
-              1-Click Rebuild in 2 Seconds.
+            Turn messy ideas into perfect prompts.{" "}
+            <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent block sm:inline">
+              In 1-click.
             </span>
           </h1>
 
           {/* Punchy, High-Contrast Subheadline */}
           <p className="mt-4 max-w-lg text-base sm:text-lg font-medium text-zinc-100 leading-relaxed">
-            Highlight text anywhere in Windows. <strong className="text-white font-bold">1-Click the floating Orb</strong> to rebuild your prompt in 2 seconds.
+            Highlight text anywhere in Windows. <strong className="text-white font-bold">1-Click the floating Orb</strong> to replace rough 1-liners with production-ready prompts in 2 seconds.
           </p>
 
           <p className="mt-2 text-xs sm:text-sm text-purple-300 font-medium flex items-center gap-1.5">
-            <span>🧠 Hold 300ms anytime for 5-Block Blueprint architecture.</span>
+            <span>🧠 Hold 300ms anytime for complete 5-Block Blueprint architecture.</span>
           </p>
 
           {/* Primary CTA + Secondary Link */}
@@ -1153,18 +1153,18 @@ function Mechanism() {
   const STEPS = [
     {
       icon: MousePointer,
-      title: "1. Highlight Any Rough Prompt",
-      body: "Highlight instructions or vague text anywhere in Windows (ChatGPT, Discord, VS Code, Browser, Figma).",
+      title: "1. Highlight your rough idea",
+      body: "Type whatever is in your head in ChatGPT, Discord, Cursor, or Slack. Then highlight it.",
     },
     {
       icon: Zap,
-      title: "2. 1-Click on the Orb (Primary)",
-      body: "1-Click the glowing ambient Orb (or press Ctrl+Alt+Space) to instantly transform active text in-place into a production prompt ⚡.",
+      title: "2. 1-Click the floating Orb",
+      body: "Click the glowing Orb that appears right at your cursor (or press Ctrl+Alt+Space).",
     },
     {
       icon: Layers,
-      title: "3. Hold 300ms (Secondary Blueprint)",
-      body: "Hold the Orb or shortcut for 300ms anytime to open the full 5-block architectural Blueprint engine 🧠.",
+      title: "3. Done in 2 seconds",
+      body: "Refinzi replaces your text in-place with a production-grade prompt. Zero copy-pasting.",
     },
   ];
 
@@ -1175,10 +1175,10 @@ function Mechanism() {
           <div className="text-center max-w-xl mx-auto">
             <Badge variant="outline" className="text-blue-400 border-blue-500/30">⚡ How It Works</Badge>
             <h2 className="mt-2.5 text-2xl sm:text-3xl font-bold tracking-tight text-white">
-              3 Steps. Zero Friction.
+              3 Steps. 2 Seconds. Zero Copy-Pasting.
             </h2>
             <p className="mt-1.5 text-zinc-400 text-xs sm:text-sm">
-              No browser extensions. No tab switching. Just highlight, hotkey, and build.
+              No browser extensions. No tab switching. Just highlight, click, and get better answers.
             </p>
           </div>
         </Reveal>
@@ -1218,10 +1218,10 @@ function Blueprint({ onDownload }) {
               🧠 5-Block Blueprint Engine
             </Badge>
             <h2 className="mt-2.5 text-2xl sm:text-3xl font-bold tracking-tight text-white">
-              Inside Every Architectural Blueprint
+              Need an entire system spec? Hold for 300ms.
             </h2>
             <p className="mt-1.5 text-zinc-400 text-xs sm:text-sm">
-              Hold the Orb for 300ms to synthesize an entire architectural specification — not just a prompt.
+              When 1-line improvements aren't enough, hold the Orb to generate full 5-block architectural scaffolding.
             </p>
           </div>
         </Reveal>
@@ -1396,12 +1396,12 @@ function Pricing({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD,
       <div className="mx-auto max-w-[1140px] px-4 sm:px-6">
         <Reveal>
           <div className="text-center max-w-xl mx-auto flex flex-col items-center">
-            <Badge variant="outline" className="mb-2">Transparent Pricing</Badge>
+            <Badge variant="outline" className="mb-2">Honest Pricing</Badge>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-              Start Rebuilding Today
+              Pay once. Own it forever.
             </h2>
             <p className="mt-1 text-zinc-400 text-xs sm:text-sm">
-              Use Refinzi 100% free with your own API keys, or lock in the Lifetime Pro deal.
+              Use Refinzi 100% free with your own API keys, or lock in the Lifetime Pro launch deal.
             </p>
 
             {/* Currency Selector Badge */}
