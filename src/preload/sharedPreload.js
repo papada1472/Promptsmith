@@ -23,6 +23,11 @@ contextBridge.exposeInMainWorld("refinzi", {
     shareCardSeen: () => invoke("reward:shareCardSeen")
   },
 
+  // ── Live Rebuilder Sandbox ──
+  prompt: {
+    rebuild: (params) => invoke("prompt:rebuildDirect", params)
+  },
+
   // ── Logs ──
   logs: {
     get: (params) => invoke("logs:get", params),

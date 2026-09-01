@@ -87,7 +87,9 @@ async function extractTextFromDocx(filePath) {
           const compressedData = buffer.slice(dataOffset, dataOffset + compSize);
           let xmlData;
           if (compMethod === 8) {
-            xmlData = zlib.inflateRawSync(compressedData).toString("utf8");
+            // Use async decompression (zlib.promises) to avoid blocking the event
+            // loop on large DOCX files — the function is already async.
+            xmlData = (await zlib.promises.inflateRaw(compressedData)).toString("utf8");
           } else if (compMethod === 0) {
             xmlData = compressedData.toString("utf8");
           } else {

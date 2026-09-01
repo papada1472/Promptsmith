@@ -25,7 +25,7 @@ if (!window.refinzi) {
     settings: {
       get: async () => ({
         activeProvider: "gemini",
-        activeModel: "gemini-2.5-flash",
+        activeModel: "gemini-flash-latest",
         geminiApiKey: "••••••••••••1234",
         openRouterApiKey: "",
         launchOnStartup: true,

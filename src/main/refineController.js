@@ -104,18 +104,16 @@ export async function refineSelectedText({ notifySuccess, notifyError, notifyWar
     const latency = Date.now() - startTime;
     log.info(`AI response received from ${providerId}, length:`, output ? output.length : 0);
 
-    // Save to lastRefinement store for Undo
-    store.set("lastRefinement", {
-      before: input,
-      after: output,
-      timestamp: new Date().toISOString()
+    // Persist refinement data with minimal disk writes:
+    // recordRefinement writes metrics + historyLogs in ONE store.set.
+    // lastRefinement + telemetryLogs are batched into a SECOND store.set.
+    // Total: 2 writes (was 4).
+    const refineTimestamp = new Date().toISOString();
+    const refinements = metricsService.recordRefinement("prompt-improve", {
+      input,
+      output,
+      timestamp: refineTimestamp,
     });
-
-    metricsService.recordSuccess("prompt-improve");
-    const refinements = store.get("metrics.refinementsMade") || 0;
-
-    // Save to history logs if user opted in
-    metricsService.appendLog({ input, output, timestamp: new Date().toISOString() });
 
     // Replace in-place
     let pasted = false;
@@ -150,17 +148,20 @@ export async function refineSelectedText({ notifySuccess, notifyError, notifyWar
       }
     }
 
-    // Save telemetry log according to simplified schema
-    const logs = store.get("telemetryLogs") || [];
-    logs.push({
+    // Batch lastRefinement + telemetryLogs into a single write (was 2 separate writes)
+    const existingLogs = store.get("telemetryLogs") || [];
+    existingLogs.push({
       mode: "sparkle",
       success: true,
       prompt_length_before: input.length,
       prompt_length_after: output.length,
       duration_ms: latency,
-      timestamp: new Date().toISOString()
+      timestamp: refineTimestamp,
     });
-    store.set("telemetryLogs", logs.slice(logs.length - 500));
+    store.set({
+      lastRefinement: { before: input, after: output, timestamp: refineTimestamp },
+      telemetryLogs: existingLogs.length > 500 ? existingLogs.slice(-500) : existingLogs,
+    });
 
     try {
       refreshRewardDashboard();
@@ -173,23 +174,29 @@ export async function refineSelectedText({ notifySuccess, notifyError, notifyWar
     const errMsg = e?.message || "Refinement failed";
     log.error("Refinement failed:", e?.code, "-", errMsg);
 
-    // Record provider call failure for reliability metrics
+    // Record provider call failure + telemetry in a single batched write
+    // (was 2 separate full-store disk writes)
     try {
       const failedProvider = store.get("activeProvider") || "gemini";
       const failLabel = failedProvider.charAt(0).toUpperCase() + failedProvider.slice(1);
-      metricsService.recordProviderCall(failLabel, false, Date.now() - startTime, e?.code || "UNKNOWN_ERROR");
+      const errorDuration = Date.now() - startTime;
+      const providerDelta = metricsService._computeProviderCallDelta(
+        failLabel, false, errorDuration, e?.code || "UNKNOWN_ERROR"
+      );
+      const errorLogs = store.get("telemetryLogs") || [];
+      errorLogs.push({
+        mode: "sparkle",
+        success: false,
+        prompt_length_before: 0,
+        prompt_length_after: 0,
+        duration_ms: errorDuration,
+        timestamp: new Date().toISOString(),
+      });
+      store.set({
+        ...providerDelta,
+        telemetryLogs: errorLogs.length > 500 ? errorLogs.slice(-500) : errorLogs,
+      });
     } catch (_) { /* never let metrics recording break the error path */ }
-
-    const logs = store.get("telemetryLogs") || [];
-    logs.push({
-      mode: "sparkle",
-      success: false,
-      prompt_length_before: 0,
-      prompt_length_after: 0,
-      duration_ms: Date.now() - startTime,
-      timestamp: new Date().toISOString()
-    });
-    store.set("telemetryLogs", logs.slice(logs.length - 500));
 
     if (notifyError) {
       notifyError("Couldn't refine this selection.", errMsg, 3000);

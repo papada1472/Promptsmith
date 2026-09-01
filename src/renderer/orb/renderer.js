@@ -490,23 +490,28 @@ function sendMove(x, y) {
 function firePreserve() {
   telemetry.click();
   lastInteractionMode = 'preserve';
-  if (window.refinzi?.orb?.clicked) window.refinzi.orb.clicked("preserve");
+  showState("processing");
+  if (window.refinzi?.orb?.clicked) {
+    window.refinzi.orb.clicked("preserve").catch((err) => {
+      console.error("[Orb] firePreserve failed:", err);
+      showState("error");
+    });
+  }
 }
 
 function fireExpert() {
   telemetry.holdSuccess();
   lastInteractionMode = 'expert';
-  if (window.refinzi?.orb?.clicked) window.refinzi.orb.clicked("expert");
-  // Show brain for 1.5s then revert to sparkle
-  if (brainMorphTimer) { clearTimeout(brainMorphTimer); brainMorphTimer = null; }
+  showState("processing");
   if (sparkleEl) sparkleEl.classList.add("hidden");
   if (brainEl) brainEl.classList.add("visible");
-  brainMorphTimer = setTimeout(() => {
-    if (sparkleEl) sparkleEl.classList.remove("hidden");
-    if (brainEl) brainEl.classList.remove("visible");
-    brainMorphTimer = null;
-    updateBubbleVisibility();
-  }, 1500);
+  
+  if (window.refinzi?.orb?.clicked) {
+    window.refinzi.orb.clicked("expert").catch((err) => {
+      console.error("[Orb] fireExpert failed:", err);
+      showState("error");
+    });
+  }
 }
 
 function centerPointerDown(e) {

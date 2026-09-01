@@ -1,5 +1,20 @@
-import "dotenv/config";
-import { app, globalShortcut, session } from "electron";
+import dns from "dns";
+try { dns.setDefaultResultOrder("ipv4first"); } catch (_) {}
+
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import path from "path";
+import os from "os";
+
+// Load .env and .env.local (like Vite/Next.js) so local overrides are picked up.
+// Must happen before any other module reads process.env.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const rootDir = path.resolve(__dirname, "../../");
+dotenv.config({ path: path.join(rootDir, ".env") });
+dotenv.config({ path: path.join(rootDir, ".env.local"), override: true });
+
+import { app, globalShortcut, session, clipboard } from "electron";
+import fs from "fs";
 import { createTray } from "./tray.js";
 import { ensureAppUserModelId, notifyError, notifySuccess, notifyWarning } from "./notifications.js";
 import { store } from "./store.js";
@@ -9,9 +24,6 @@ import { registerIpcHandlers } from "./ipc.js";
 import { registerHotkey, unregisterAllHotkeys } from "./shortcuts.js";
 import { refineSelectedText } from "./refineController.js";
 import { GeminiProvider } from "./ai/GeminiProvider.js";
-import { clipboard } from "electron";
-import path from "path";
-import fs from "fs";
 import { SYSTEM_PROMPT, REFINE_TIMEOUT_MS } from "./constants.js";
 
 let settingsWindow = null;
@@ -31,7 +43,6 @@ function openSettings(options = {}) {
     }, 150);
   }
 }
-
 
 async function onHotkey() {
   if (isRefining) return;
@@ -261,7 +272,15 @@ process.on("unhandledRejection", (err) => {
 
 function logCrash(err, type) {
   try {
-    const logPath = path.join(app.getPath("userData"), "crash_reports.log");
+    // app.getPath("userData") throws "App is not ready" if called before app.whenReady.
+    // Fall back to os.tmpdir() so early crashes (e.g. during store initialisation)
+    // are still captured rather than silently lost.
+    let logPath;
+    try {
+      logPath = path.join(app.getPath("userData"), "crash_reports.log");
+    } catch {
+      logPath = path.join(os.tmpdir(), "refinzi_crash_reports.log");
+    }
     const timestamp = new Date().toISOString();
     const errorDetails = {
       timestamp,
@@ -270,9 +289,8 @@ function logCrash(err, type) {
       stack: err?.stack ? err.stack.split("\n").map(l => l.trim()).filter(l => !l.includes("node_modules")) : []
     };
     fs.appendFileSync(logPath, JSON.stringify(errorDetails) + "\n", "utf8");
-    console.error(`[Refinzi][Crash] Saved ${type} to crash_reports.log`);
+    console.error(`[Refinzi][Crash] Saved ${type} to ${logPath}`);
   } catch (e) {
     console.error("Failed to write crash report:", e);
   }
 }
-

@@ -1,5 +1,6 @@
 import { GeminiProvider } from "./GeminiProvider.js";
 import { OpenRouterProvider } from "./OpenRouterProvider.js";
+import { DeepSeekProvider } from "./DeepSeekProvider.js";
 import { GatewayProvider } from "./GatewayProvider.js";
 import { ByokVault } from "./ByokVault.js";
 import { store } from "../store.js";
@@ -23,6 +24,7 @@ export class ProviderManager {
   static #registry = {
     "gemini": GeminiProvider,
     "openrouter": OpenRouterProvider,
+    "deepseek": DeepSeekProvider,
     "gateway": GatewayProvider
   };
 
@@ -50,6 +52,9 @@ export class ProviderManager {
    * @returns {string} The provider identifier.
    */
   static getActiveProviderId(opts) {
+    if (opts?.deepSeekApiKey && opts?.activeProvider === "deepseek") {
+      return "deepseek";
+    }
     if (opts?.openRouterApiKey && opts?.activeProvider === "openrouter") {
       return "openrouter";
     }
@@ -96,6 +101,9 @@ export class ProviderManager {
     if (id === "openrouter") {
       return OpenRouterProvider.DEFAULT_MODEL;
     }
+    if (id === "deepseek") {
+      return DeepSeekProvider.DEFAULT_MODEL;
+    }
     if (id === "gateway") {
       return "gateway-default";
     }
@@ -116,7 +124,17 @@ export class ProviderManager {
    * @returns {string} The recommended model identifier.
    */
   static getRecommendedModel(providerId, mode) {
-    if (providerId?.toLowerCase() !== "openrouter") {
+    const id = providerId?.toLowerCase();
+    if (id === "deepseek") {
+      if (mode === "expert" || mode === "hold") {
+        return "deepseek-v4-pro";
+      }
+      if (mode === "drop") {
+        return "deepseek-v4-flash-vision-exp";
+      }
+      return "deepseek-v4-flash";
+    }
+    if (id !== "openrouter") {
       return this.getDefaultModel(providerId);
     }
     switch (mode) {
@@ -149,12 +167,21 @@ export class ProviderManager {
     const id = providerId?.toLowerCase();
     if (id === "gemini") {
       return [
-        "gemini-3.5-flash",
-        "gemini-3.5-pro",
+        "gemini-flash-latest",
+        "gemini-3.7-flash",
+        "gemini-2.0-flash",
         "gemini-2.5-flash",
-        "gemini-2.5-pro",
         "gemini-1.5-flash",
         "gemini-1.5-pro"
+      ];
+    }
+    if (id === "deepseek") {
+      return [
+        "deepseek-v4-flash",
+        "deepseek-v4-pro",
+        "deepseek-v4-flash-vision-exp",
+        "deepseek-chat",
+        "deepseek-reasoner"
       ];
     }
     if (id === "openrouter") {
@@ -197,6 +224,7 @@ export class ProviderManager {
   static #healthState = {
     gemini: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 },
     openrouter: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 },
+    deepseek: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 },
     gateway: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 }
   };
 
@@ -204,6 +232,7 @@ export class ProviderManager {
     return {
       gemini: { ...this.#healthState.gemini },
       openrouter: { ...this.#healthState.openrouter },
+      deepseek: { ...this.#healthState.deepseek },
       gateway: { ...this.#healthState.gateway }
     };
   }
@@ -305,6 +334,7 @@ export class ProviderManager {
     const activeProvider = store.get("activeProvider") || "gemini";
     const geminiApiKey = ByokVault.decrypt(store.get("geminiApiKey")) || process.env.GEMINI_API_KEY || process.env.GEMINI_KEY || "";
     const openRouterApiKey = ByokVault.decrypt(store.get("openRouterApiKey")) || process.env.OPENROUTER_API_KEY || "";
+    const deepSeekApiKey = ByokVault.decrypt(store.get("deepSeekApiKey")) || process.env.DEEPSEEK_API_KEY || "";
 
     // Initialize diagnostic report for the request
     this.lastCallDiagnostic = {
@@ -322,17 +352,31 @@ export class ProviderManager {
 
     // 1. Resolve fallback chain
     const providersToTry = [];
+    const hasValidGeminiKey = Boolean(geminiApiKey && (geminiApiKey.startsWith("AIza") || geminiApiKey.startsWith("AQ.") || geminiApiKey.length >= 20));
+    const hasValidOpenRouterKey = Boolean(openRouterApiKey && (openRouterApiKey.startsWith("sk-or-") || openRouterApiKey.startsWith("sk-") || openRouterApiKey.length >= 20));
+    const hasValidDeepSeekKey = Boolean(deepSeekApiKey && (deepSeekApiKey.startsWith("sk-") || deepSeekApiKey.length >= 20));
+
     if (activeProvider === "gemini") {
-      if (geminiApiKey) providersToTry.push("gemini");
-      if (openRouterApiKey) providersToTry.push("openrouter");
+      if (hasValidGeminiKey) providersToTry.push("gemini");
+      if (hasValidDeepSeekKey && !opts.media) providersToTry.push("deepseek");
+      if (hasValidOpenRouterKey) providersToTry.push("openrouter");
+    } else if (activeProvider === "deepseek") {
+      if (hasValidDeepSeekKey && !opts.media) providersToTry.push("deepseek");
+      if (hasValidGeminiKey) providersToTry.push("gemini");
+      if (hasValidOpenRouterKey) providersToTry.push("openrouter");
     } else if (activeProvider === "openrouter") {
-      if (openRouterApiKey) providersToTry.push("openrouter");
-      if (geminiApiKey) providersToTry.push("gemini");
+      if (hasValidOpenRouterKey) providersToTry.push("openrouter");
+      if (hasValidDeepSeekKey && !opts.media) providersToTry.push("deepseek");
+      if (hasValidGeminiKey) providersToTry.push("gemini");
     } else if (activeProvider === "gateway") {
       providersToTry.push("gateway");
+      if (hasValidGeminiKey) providersToTry.push("gemini");
+      if (hasValidDeepSeekKey && !opts.media) providersToTry.push("deepseek");
+      if (hasValidOpenRouterKey) providersToTry.push("openrouter");
     } else {
-      if (geminiApiKey) providersToTry.push("gemini");
-      if (openRouterApiKey) providersToTry.push("openrouter");
+      if (hasValidGeminiKey) providersToTry.push("gemini");
+      if (hasValidDeepSeekKey && !opts.media) providersToTry.push("deepseek");
+      if (hasValidOpenRouterKey) providersToTry.push("openrouter");
     }
     
     if (!providersToTry.includes("gateway")) {
@@ -361,7 +405,10 @@ export class ProviderManager {
       this.lastCallDiagnostic.fallbackUsed = (providerId !== activeProvider);
 
       // 4. Instantiate Provider
-      const apiKey = providerId === "openrouter" ? openRouterApiKey : geminiApiKey;
+      let apiKey = geminiApiKey;
+      if (providerId === "openrouter") apiKey = openRouterApiKey;
+      else if (providerId === "deepseek") apiKey = deepSeekApiKey;
+      const attemptTimeout = opts.timeoutMs ? Math.max(opts.timeoutMs, 25000) : 25000;
       
       let provider;
       try {
@@ -369,7 +416,7 @@ export class ProviderManager {
           apiKey: providerId === "gateway" ? undefined : apiKey,
           model: model,
           systemPrompt: opts.systemPrompt || SYSTEM_PROMPT,
-          timeoutMs: opts.timeoutMs || REFINE_TIMEOUT_MS
+          timeoutMs: attemptTimeout
         });
       } catch (err) {
         log.error(`[ProviderManager] Failed to create provider ${providerId}:`, err);

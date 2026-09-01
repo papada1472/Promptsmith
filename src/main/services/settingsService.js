@@ -15,9 +15,14 @@ export class SettingsService {
    * @returns {Object}
    */
   getSettings() {
+    const geminiKey = ByokVault.decrypt(store.get("geminiApiKey")) || (typeof process !== "undefined" ? (process.env.GEMINI_API_KEY || process.env.GEMINI_KEY || "") : "");
+    const openRouterKey = ByokVault.decrypt(store.get("openRouterApiKey")) || (typeof process !== "undefined" ? (process.env.OPENROUTER_API_KEY || "") : "");
+    const deepSeekKey = ByokVault.decrypt(store.get("deepSeekApiKey")) || (typeof process !== "undefined" ? (process.env.DEEPSEEK_API_KEY || "") : "");
+
     return {
-      geminiApiKey: maskKey(ByokVault.decrypt(store.get("geminiApiKey"))),
-      openRouterApiKey: maskKey(ByokVault.decrypt(store.get("openRouterApiKey"))),
+      geminiApiKey: maskKey(geminiKey),
+      openRouterApiKey: maskKey(openRouterKey),
+      deepSeekApiKey: maskKey(deepSeekKey),
       hotkey: store.get("hotkey"),
       launchOnStartup: store.get("launchOnStartup"),
       activeProvider: store.get("activeProvider") || "gemini",
@@ -41,8 +46,10 @@ export class SettingsService {
       // Ignore saving if the user did not modify the masked key
       return { ok: true };
     }
-    const key = provider?.toLowerCase() === "openrouter" ? "openRouterApiKey" : "geminiApiKey";
-    const encryptedKey = ByokVault.encrypt(String(apiKey || "").trim());
+    const prov = provider?.toLowerCase();
+    const key = prov === "deepseek" ? "deepSeekApiKey" : (prov === "openrouter" ? "openRouterApiKey" : "geminiApiKey");
+    const trimmed = String(apiKey || "").trim();
+    const encryptedKey = trimmed ? ByokVault.encrypt(trimmed) : "";
     store.set(key, encryptedKey);
     return { ok: true };
   }

@@ -13,11 +13,7 @@ export function createTray({ onOpenSettings, onQuit, getHotkey, onDebugTriggerRe
   function buildMenu() {
       const hotkey = String(getHotkey() || "Not set").trim() || "Not set";
       return Menu.buildFromTemplate([
-        { label: APP_NAME, enabled: false },
-        { label: "✓ Running", enabled: false },
-        { type: "separator" },
         { label: "Open Dashboard", click: onOpenSettings },
-        { label: "View Stats", click: onOpenSettings },
         { type: "separator" },
         { label: "Quit", click: onQuit }
       ]);

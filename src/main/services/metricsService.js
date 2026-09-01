@@ -9,16 +9,18 @@ const log = loggers.metricsService;
  */
 class MetricsService {
   // ── Provider Reliability Metrics ────────────────────────────────────────
-  /**
-   * Records a provider call outcome.
+    /**
+   * Computes the provider metrics delta WITHOUT writing to the store.
+   * Callers can batch this with other writes via store.set({ providerMetrics: ... }).
    *
    * @param {string} providerName - e.g. "Gemini", "OpenRouter", "Gateway"
    * @param {boolean} success - true if the call succeeded
    * @param {number} durationMs - elapsed time for the call
    * @param {string} [errorCode] - optional error identifier if failed
+   * @returns {{ providerMetrics: Object|null }} patch object for batched persistence
    */
-  recordProviderCall(providerName, success, durationMs, errorCode) {
-    if (!providerName) return;
+  _computeProviderCallDelta(providerName, success, durationMs, errorCode) {
+    if (!providerName) return {};
     const all = store.get("providerMetrics") || {};
     const entry = all[providerName] || {
       successCount: 0,
@@ -39,9 +41,24 @@ class MetricsService {
     }
 
     entry.totalDurationMs += durationMs;
-
     all[providerName] = entry;
-    store.set("providerMetrics", all);
+
+    return { providerMetrics: all };
+  }
+
+  /**
+   * Records a provider call outcome.
+   *
+   * @param {string} providerName - e.g. "Gemini", "OpenRouter", "Gateway"
+   * @param {boolean} success - true if the call succeeded
+   * @param {number} durationMs - elapsed time for the call
+   * @param {string} [errorCode] - optional error identifier if failed
+   */
+  recordProviderCall(providerName, success, durationMs, errorCode) {
+    const delta = this._computeProviderCallDelta(providerName, success, durationMs, errorCode);
+    if (Object.keys(delta).length > 0) {
+      store.set(delta);
+    }
   }
 
   /**
@@ -122,12 +139,15 @@ class MetricsService {
     };
   }
 
-  /**
-   * Checks whether the user has hit the daily quota (50 refinements/day).
-   * Resets the daily counter if the current ISO date differs from the stored one.
-   * @returns {{ exceeded: boolean, count: number, limit: number }}
+    /**
+   * Computes the daily quota delta WITHOUT writing to the store.
+   * On day rollover the original code did TWO writes (reset + increment).
+   * This compute-only method resolves the final state in one step so callers
+   * can batch the result with other store writes.
+   *
+   * @returns {{ delta: Object, exceeded: boolean, count: number, limit: number }}
    */
-  checkAndTrackQuota() {
+  _computeQuotaDelta() {
     const DAILY_LIMIT = 50;
     const nowDay = this.#isoDay(new Date());
     const metrics = store.get("metrics") || {};
@@ -135,24 +155,49 @@ class MetricsService {
     let count = metrics.dailyCount || 0;
 
     if (storedDay !== nowDay) {
-      // New day — reset counter
+      // New day — reset counter (merged with increment below to avoid double-write)
       count = 0;
-      store.set("metrics", { ...metrics, quotaDay: nowDay, dailyCount: 0 });
     }
 
     if (count >= DAILY_LIMIT) {
-      return { exceeded: true, count, limit: DAILY_LIMIT };
+      // Quota exceeded — only persist a day reset if the day changed
+      if (storedDay !== nowDay) {
+        return { delta: { quotaDay: nowDay, dailyCount: 0 }, exceeded: true, count: 0, limit: DAILY_LIMIT };
+      }
+      return { delta: {}, exceeded: true, count, limit: DAILY_LIMIT };
     }
 
-    // Increment
-    store.set("metrics", { ...metrics, quotaDay: nowDay, dailyCount: count + 1 });
-    return { exceeded: false, count: count + 1, limit: DAILY_LIMIT };
+    // Increment (merged with day reset for single-write on roll-over)
+    return {
+      delta: { quotaDay: nowDay, dailyCount: count + 1 },
+      exceeded: false,
+      count: count + 1,
+      limit: DAILY_LIMIT,
+    };
   }
 
   /**
-   * Records a successful refinement and updates streaks.
+   * Checks whether the user has hit the daily quota (50 refinements/day).
+   * Resets the daily counter if the current ISO date differs from the stored one.
+   * Uses _computeQuotaDelta() to avoid the double-write on day rollover.
+   * @returns {{ exceeded: boolean, count: number, limit: number }}
    */
-  recordSuccess(type) {
+  checkAndTrackQuota() {
+    const { delta, exceeded, count, limit } = this._computeQuotaDelta();
+    if (Object.keys(delta).length > 0) {
+      store.set("metrics", { ...(store.get("metrics") || {}), ...delta });
+    }
+    return { exceeded, count, limit };
+  }
+
+  /**
+   * Computes the metrics delta for a successful refinement WITHOUT writing.
+   * Returns only the changed fields so callers can merge with other deltas.
+   *
+   * @param {string} type - e.g. "prompt-improve", "reel", "landing-page"
+   * @returns {{ delta: Object, refinementsMade: number }}
+   */
+  _computeRefinementDelta(type) {
     const metrics = store.get("metrics") || {};
     const nowDay = this.#isoDay(new Date());
 
@@ -185,23 +230,87 @@ class MetricsService {
       promptsCount += 1;
     }
 
-    store.set("metrics", {
-      ...metrics,
+    return {
+      delta: {
+        refinementsMade: (metrics.refinementsMade || 0) + 1,
+        timeSavedSeconds: (metrics.timeSavedSeconds || 0) + 40,
+        retriesAvoided: (metrics.retriesAvoided || 0) + 1.7,
+        currentStreak: nextStreak,
+        lastRefinementDay: nowDay,
+        reelsReverseEngineered: reelsCount,
+        landingPagesReverseEngineered: lpCount,
+        promptsImproved: promptsCount,
+        blueprintsGenerated: bgCount,
+      },
       refinementsMade: (metrics.refinementsMade || 0) + 1,
-      timeSavedSeconds: (metrics.timeSavedSeconds || 0) + 40,
-      retriesAvoided: (metrics.retriesAvoided || 0) + 1.7,
-      currentStreak: nextStreak,
-      lastRefinementDay: nowDay,
-      reelsReverseEngineered: reelsCount,
-      landingPagesReverseEngineered: lpCount,
-      promptsImproved: promptsCount,
-      blueprintsGenerated: bgCount
-    });
+    };
+  }
+
+  /**
+   * Computes the history log append WITHOUT writing to the store.
+   * Respects the saveHistoryLocally privacy toggle.
+   *
+   * @param {{ input: string, output: string, timestamp: string }} logEntry
+   * @returns {{ historyLogs: Array|null }} patch object, or {} if history is disabled
+   */
+  _computeHistoryLogPatch(logEntry) {
+    if (!store.get("saveHistoryLocally")) {
+      return {};
+    }
+    let existing = store.get("historyLogs");
+    let metricsDelta = {};
+    if (!Array.isArray(existing)) {
+      existing = [];
+      metricsDelta.settingsRecovered = true;
+      return { historyLogs: [logEntry], _metricsDelta: metricsDelta };
+    }
+    const next = [...existing, logEntry];
+    const capped = next.length > 500 ? next.slice(next.length - 500) : next;
+    return { historyLogs: capped };
+  }
+
+  /**
+   * Records a successful refinement AND appends the history log in a SINGLE
+   * store.set() write — combining the old recordSuccess() + appendLog() calls
+   * to eliminate one full-store disk write per refinement.
+   *
+   * @param {string} type - e.g. "prompt-improve", "reel", "landing-page"
+   * @param {{ input: string, output: string, timestamp: string }} logEntry
+   * @returns {number} The updated total refinement count.
+   */
+  recordRefinement(type, logEntry) {
+    const { delta, refinementsMade } = this._computeRefinementDelta(type);
+    const metrics = store.get("metrics") || {};
+    const writes = { metrics: { ...metrics, ...delta } };
+
+    if (store.get("saveHistoryLocally") && logEntry) {
+      const histPatch = this._computeHistoryLogPatch(logEntry);
+      if (histPatch.historyLogs) {
+        writes.historyLogs = histPatch.historyLogs;
+        if (histPatch._metricsDelta?.settingsRecovered) {
+          writes.metrics.settingsRecovered = true;
+        }
+      }
+    }
+
+    store.set(writes);
+    return refinementsMade;
+  }
+
+  /**
+   * Records a successful refinement and updates streaks.
+   * @deprecated Use recordRefinement() for combined metrics+history write.
+   */
+  recordSuccess(type) {
+    const { delta } = this._computeRefinementDelta(type);
+    const metrics = store.get("metrics") || {};
+    store.set("metrics", { ...metrics, ...delta });
   }
 
   /**
    * Appends a refinement log entry to historyLogs, capped at 500.
    * Respects the saveHistoryLocally privacy toggle.
+   * @deprecated Use recordRefinement() for combined metrics+history write.
    */
   appendLog({ input, output, timestamp }) {
     if (!store.get("saveHistoryLocally")) {

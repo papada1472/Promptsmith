@@ -1,15 +1,15 @@
 import React from "react";
 
 const variantClasses = {
-  default: "border-transparent bg-blue-500 text-white font-bold",
+  default: "border-transparent bg-blue-500/20 text-blue-300 border border-blue-500/30 font-semibold",
   outline:
-    "border border-blue-500/20 bg-blue-500/10 text-blue-400 font-semibold uppercase",
-  muted: "border border-zinc-800 bg-zinc-900 text-zinc-400",
+    "border border-blue-500/25 bg-blue-950/30 text-blue-400 font-semibold uppercase tracking-wider",
+  muted: "border border-zinc-800 bg-zinc-900/80 text-zinc-400 font-medium",
 };
 
 export function Badge({ children, className = "", variant = "default", ...props }) {
   const classes = [
-    "inline-flex items-center rounded-full px-3 py-1 text-xs tracking-widest transition-colors duration-200",
+    "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] transition-colors duration-150",
     variantClasses[variant],
     className,
   ]

@@ -12,6 +12,48 @@ import { createLogger } from "./logger.js";
 const log = createLogger("IPC");
 
 export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSettings }) {
+  ipcMain.handle("prompt:rebuildDirect", async (_e, { text, mode = "sparkle" }) => {
+    try {
+      if (!text || !text.trim()) {
+        return { ok: false, error: "Please enter a prompt to rebuild." };
+      }
+      const { buildEnvelope, optimizeEnvelope } = await import("./promptCompiler.js");
+      const { buildExecutionPlan } = await import("./executionPlanner.js");
+      const { ProviderManager } = await import("./ai/ProviderManager.js");
+      const { validateOutput } = await import("./outputValidator.js");
+
+      const envelope = buildEnvelope({ input: text.trim(), mode });
+      const optimized = optimizeEnvelope(envelope);
+      const plan = buildExecutionPlan(optimized);
+      const start = Date.now();
+      const rawResult = await ProviderManager.refineWithFailover(plan.systemPrompt, plan.userPrompt, {
+        mode,
+        timeoutMs: mode === "expert" ? 25000 : 15000
+      });
+      const validated = validateOutput(rawResult, mode);
+      const finalOutput = validated.output || rawResult;
+
+      try {
+        metricsService.recordSuccess?.({
+          input: text.trim(),
+          output: finalOutput,
+          mode,
+          durationMs: Date.now() - start
+        });
+      } catch (_) {}
+
+      return {
+        ok: true,
+        output: finalOutput,
+        durationMs: Date.now() - start,
+        provider: ProviderManager.getLastCallDiagnostic()?.provider || "ai"
+      };
+    } catch (err) {
+      log.error("prompt:rebuildDirect failed:", err);
+      return { ok: false, error: err?.message || "Failed to rebuild prompt." };
+    }
+  });
+
   ipcMain.handle("settings:verifyApiKey", async (_e, key, provider) => {
     return providerService.verifyApiKey(key, provider);
   });

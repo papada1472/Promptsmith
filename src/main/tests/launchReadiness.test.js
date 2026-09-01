@@ -31,12 +31,15 @@ describe("Launch Readiness & Core Loop Validation", () => {
     expect(html).not.toContain("Beta Limit Reached");
   });
 
-  it("Starter prompts in settings HTML have data-type attributes for 1-click execution", () => {
+  it("Settings index.html contains desktop dashboard tabs and impact sections", () => {
     const settingsHtmlPath = path.resolve(process.cwd(), "src/renderer/settings/index.html");
     const html = fs.readFileSync(settingsHtmlPath, "utf8");
-    expect(html).toContain("data-type=\"landing-page\"");
-    expect(html).toContain("data-type=\"reel\"");
-    expect(html).toContain("data-type=\"idea\"");
-    expect(html).toContain("Rebuild Landing Page");
+    expect(html).toContain("data-tab=\"home\"");
+    expect(html).toContain("data-tab=\"history\"");
+    expect(html).toContain("data-tab=\"blueprints\"");
+    expect(html).toContain("data-tab=\"settings\"");
+    expect(html).toContain("data-tab=\"upgrade\"");
+    expect(html).toContain("Your Impact");
+    expect(html).toContain("Recent Activity");
   });
 });

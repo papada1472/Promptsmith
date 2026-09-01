@@ -63,7 +63,7 @@ if (__isVitest) {
     userName: { type: "string", default: "User" },
     theme: { type: "string", default: "system" },
     activeProvider: { type: "string", default: "gemini" },
-    activeModel: { type: "string", default: "gemini-2.5-flash" },
+    activeModel: { type: "string", default: "gemini-flash-latest" },
     installedAt: { type: "number", default: 0 },
     reminder1Shown: { type: "boolean", default: false },
     reminder2Shown: { type: "boolean", default: false },

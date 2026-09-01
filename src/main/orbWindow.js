@@ -97,6 +97,9 @@ function trackQuotaUsage() {
  * Log a single analytics event to the telemetryLogs store.
  * Every Orb interaction generates exactly one event.
  * NEVER stores: clipboard contents, user prompts, user documents.
+ *
+ * @deprecated Use flushPendingState() which now batches telemetry with all
+ * other pending writes in a single store.set() call.
  */
 function logAnalyticsEvent({ mode, success, prompt_length_before, prompt_length_after, duration_ms }) {
   const logs = store.get("telemetryLogs") || [];
@@ -142,6 +145,16 @@ function deferAnalyticsEvent(event) {
   };
 }
 
+/**
+ * Flushes ALL deferred state in a SINGLE store.set() write.
+ *
+ * Previously each flush did up to 6-7 separate full-store disk writes:
+ *   clipboard → clipboardTimestamp → quota(metrics) → telemetryLogs →
+ *   recordSuccess(metrics) → appendLog(historyLogs)
+ *
+ * Now all deltas are computed in-memory (no writes) and persisted with one
+ * batched store.set({ clipboard, metrics, telemetryLogs, historyLogs, ... }).
+ */
 function flushPendingState() {
   if (!pendingFlush) return;
   const state = pendingFlush;
@@ -149,29 +162,78 @@ function flushPendingState() {
 
   // Defer persistence to avoid any potential sync I/O during the next event loop tick
   setTimeout(() => {
+    const writes = {};
+
+    // ── Clipboard ──────────────────────────────────────────────────────
     if (state.clipboard !== undefined) {
-      store.set("orbPreviousClipboard", state.clipboard);
-      store.set("orbPreviousClipboardTimestamp", state.clipboardTimestamp);
+      writes.orbPreviousClipboard = state.clipboard;
+      writes.orbPreviousClipboardTimestamp = state.clipboardTimestamp;
     }
+
+    // ── Compute all metrics changes in-memory (no writes) ──────────────
+    const baseMetrics = store.get("metrics") || {};
+    let metricsDelta = {};
+
     if (state.quota) {
-      trackQuotaUsage();
+      const { delta: quotaDelta, exceeded } = metricsService._computeQuotaDelta();
+      Object.assign(metricsDelta, quotaDelta);
+      if (exceeded) {
+        log.warn("[Orb] Daily quota exceeded during orb interaction");
+      }
     }
+
     if (state.analytics) {
-      logAnalyticsEvent(state.analytics);
+      const normalizedMode = state.analytics.mode === "expert" ? "gold" : "sparkle";
+
+      // telemetryLogs push (deferred write)
+      const logs = store.get("telemetryLogs") || [];
+      logs.push({
+        mode: normalizedMode,
+        success: !!state.analytics.success,
+        prompt_length_before: state.analytics.prompt_length_before || 0,
+        prompt_length_after: state.analytics.prompt_length_after || 0,
+        duration_ms: state.analytics.duration_ms || 0,
+        timestamp: new Date().toISOString(),
+      });
+      writes.telemetryLogs = logs.length > 500 ? logs.slice(-500) : logs;
+
       if (state.analytics.success) {
-        metricsService.recordSuccess("prompt-improve");
-        metricsService.appendLog({
+        // Refinement metrics delta (no write)
+        const { delta: refineDelta } = metricsService._computeRefinementDelta("prompt-improve");
+        Object.assign(metricsDelta, refineDelta);
+
+        // History log patch (respects saveHistoryLocally opt-in, no write)
+        const histPatch = metricsService._computeHistoryLogPatch({
           input: state.analytics.input,
           output: state.analytics.output,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
+        if (histPatch.historyLogs) {
+          writes.historyLogs = histPatch.historyLogs;
+          if (histPatch._metricsDelta?.settingsRecovered) {
+            metricsDelta.settingsRecovered = true;
+          }
+        }
       }
+
+      log.debug(`[Usage] Mode: ${normalizedMode}, Success: ${state.analytics.success}, Before: ${state.analytics.prompt_length_before}, After: ${state.analytics.prompt_length_after}, Duration: ${state.analytics.duration_ms}ms`);
+    }
+
+    // Merge all metrics deltas into a single metrics object
+    if (Object.keys(metricsDelta).length > 0) {
+      writes.metrics = { ...baseMetrics, ...metricsDelta };
+    }
+
+    // ── SINGLE batched write for ALL pending state ─────────────────────
+    if (Object.keys(writes).length > 0) {
+      store.set(writes);
     }
   }, 0);
 
   // Notify dashboard to refresh after any Orb event (success or failure)
   refreshRewardDashboard();
 }
+
 
 async function runPipeline(mode, input, artifactType, { selectionCaptured, geminiCalls }, initialProcessId) {
   const startTime = Date.now();
@@ -211,7 +273,10 @@ async function runPipeline(mode, input, artifactType, { selectionCaptured, gemin
       prompt_length_after: 0,
       duration_ms: Date.now() - startTime
     });
-    sendResponse("Unable to process right now. Please try again.");
+    sendStatus("❌ Refinement failed");
+    const errMsg = err?.message || "Unable to process right now. Please check your API key.";
+    notifyError("Refinement Failed", errMsg, 3500);
+    sendResponse(errMsg);
     flushPendingState();
     return;
   }
@@ -413,19 +478,19 @@ function registerPipelineHandler() {
       };
 
       const detection = classifyClipboardContent(input);
-      await runPipeline(mode, input, detection.type, telemetry, initialProcessId);
+      await runPipeline(normalizedMode, input, detection.type, telemetry, initialProcessId);
       return { ok: true };
     } catch (e) {
       log.error("[Orb] orb:clicked handler error:", e?.message || e);
       metricsService.logEvent("refine_failed", {
-        mode: mode || "preserve",
+        mode: normalizedMode || "preserve",
         artifactType: "text",
         failure: "handler_error",
         retryCount: 0,
         inputLength: 0,
       });
       deferAnalyticsEvent({
-        mode,
+        mode: normalizedMode,
         success: false,
         prompt_length_before: 0,
         prompt_length_after: 0,

@@ -18,30 +18,41 @@ export class ProviderService {
       let actualKey = key ? String(key).trim() : "";
       
       if (actualKey.startsWith("••••") || !actualKey) {
-        const storedEnc = store.get(providerId === "openrouter" ? "openRouterApiKey" : "geminiApiKey") || "";
-        actualKey = ByokVault.decrypt(storedEnc) || (providerId === "gemini" ? (process.env.GEMINI_API_KEY || process.env.GEMINI_KEY || "") : (process.env.OPENROUTER_API_KEY || ""));
+        const storeKey = providerId === "deepseek" ? "deepSeekApiKey" : (providerId === "openrouter" ? "openRouterApiKey" : "geminiApiKey");
+        const envKey = providerId === "deepseek" ? process.env.DEEPSEEK_API_KEY : (providerId === "gemini" ? (process.env.GEMINI_API_KEY || process.env.GEMINI_KEY || "") : (process.env.OPENROUTER_API_KEY || ""));
+        const storedEnc = store.get(storeKey) || "";
+        actualKey = ByokVault.decrypt(storedEnc) || envKey || "";
+      }
+
+      if (providerId === "gateway") {
+        const provider = ProviderManager.createProvider("gateway", {
+          model: "gateway-default",
+          systemPrompt: "You are a test helper.",
+          timeoutMs: 8000
+        });
+        await provider.refine("Reply with OK");
+        return { ok: true };
       }
       
-      const isGateway = !actualKey && (providerId === "gemini" || providerId === "gateway");
-      if (!actualKey && !isGateway) {
-        return { ok: false, error: "No API key provided" };
+      if (!actualKey) {
+        const name = providerId === "deepseek" ? "DeepSeek" : (providerId === "openrouter" ? "OpenRouter" : "Google Gemini");
+        return { ok: false, error: `Please enter a valid ${name} API key` };
       }
       
-      const targetProviderId = isGateway ? "gateway" : providerId;
-      const model = store.get("activeModel") || (targetProviderId === "openrouter" ? OpenRouterProvider.DEFAULT_MODEL : targetProviderId === "gateway" ? "gateway-default" : "gemini-2.5-flash");
+      const model = store.get("activeModel") || ProviderManager.getDefaultModel(providerId);
       
-      const provider = ProviderManager.createProvider(targetProviderId, {
-        apiKey: targetProviderId === "gateway" ? undefined : actualKey,
+      const provider = ProviderManager.createProvider(providerId, {
+        apiKey: actualKey,
         model,
-        systemPrompt: SYSTEM_PROMPT,
-        timeoutMs: REFINE_TIMEOUT_MS
+        systemPrompt: "You are a test helper. Reply only with OK.",
+        timeoutMs: 8000
       });
       
-      await provider.refine("Reply only with 'OK'");
+      await provider.refine("OK");
       return { ok: true };
     } catch (err) {
       console.error("[Refinzi][ProviderService] API Key verification failed", err);
-      return { ok: false, error: err?.message || "Connection failed" };
+      return { ok: false, error: err?.message || "Connection failed. Please check your API key." };
     }
   }
 

@@ -8,47 +8,72 @@
   }
 
   body {
-    @apply bg-[#08090d] text-zinc-100 antialiased selection:bg-blue-600/30 selection:text-white;
+    @apply bg-[#08090c] text-zinc-100 antialiased selection:bg-blue-600/30 selection:text-white;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     overflow-x: hidden;
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.15), transparent 70%),
+      radial-gradient(circle at 100% 0%, rgba(147, 51, 234, 0.08), transparent 50%);
+  }
+
+  /* Custom subtle scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #08090c;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.28);
   }
 }
 
-/* ------------------------- luxury card surfaces ------------------------- */
+/* ------------------------- refined luxury card surfaces ------------------------- */
 .luxury-surface {
-  background: rgba(13, 15, 20, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(14, 16, 22, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   box-shadow: 
-    0 4px 24px -1px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+    0 4px 20px -2px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .luxury-surface:hover {
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.14);
   box-shadow: 
-    0 8px 32px -2px rgba(0, 0, 0, 0.7),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+    0 8px 28px -2px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.09);
 }
 
 .luxury-surface-glow {
-  background: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.12) 0%, rgba(13, 15, 20, 0.85) 60%);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(59, 130, 246, 0.35);
+  background: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.12) 0%, rgba(14, 16, 22, 0.8) 65%);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(59, 130, 246, 0.32);
   box-shadow: 
-    0 8px 32px rgba(37, 99, 235, 0.15),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    0 8px 30px rgba(37, 99, 235, 0.12),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Subtle dot-matrix overlay */
+.bg-dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 /* ------------------------- scroll reveal animation ------------------------- */
 .reveal {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translateY(14px);
   transition:
-    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 
@@ -76,24 +101,24 @@ body.orb-cursor-active * {
   top: 0;
   left: 0;
   z-index: 99999;
-  width: 20px;
-  height: 20px;
-  margin: -10px 0 0 -10px;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
   border-radius: 50%;
   pointer-events: none;
   background: radial-gradient(circle at 35% 30%, #2e2e38 0%, #171720 60%, #0a0a0f 100%);
-  border: 1px solid rgba(255, 215, 0, 0.65);
+  border: 1px solid rgba(255, 215, 0, 0.7);
   box-shadow:
-    0 0 10px rgba(255, 215, 0, 0.4),
-    0 0 22px rgba(255, 170, 0, 0.2),
+    0 0 8px rgba(255, 215, 0, 0.4),
+    0 0 18px rgba(255, 170, 0, 0.2),
     inset 0 1px 2px rgba(255, 255, 255, 0.4),
     inset 0 -1px 2px rgba(255, 215, 0, 0.2);
   transition:
-    width 0.18s ease,
-    height 0.18s ease,
-    margin 0.18s ease,
-    box-shadow 0.2s ease,
-    opacity 0.25s ease;
+    width 0.16s ease,
+    height 0.16s ease,
+    margin 0.16s ease,
+    box-shadow 0.18s ease,
+    opacity 0.2s ease;
   will-change: transform;
   animation: orb-breathe 4s ease-in-out infinite;
 }
@@ -106,7 +131,7 @@ body.orb-cursor-active * {
   width: 300%;
   height: 300%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 215, 0, 0.22) 0%, rgba(255, 170, 0, 0.08) 45%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, rgba(255, 170, 0, 0.06) 45%, transparent 70%);
   pointer-events: none;
   z-index: -1;
   animation: orb-aura 4s ease-in-out infinite;
@@ -131,14 +156,14 @@ body.orb-cursor-active * {
 }
 
 .orb-cursor.is-hover {
-  width: 24px;
-  height: 24px;
-  margin: -12px 0 0 -12px;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
   background: radial-gradient(circle at 35% 30%, #3a3a46 0%, #1e1e28 55%, #0d0d12 100%);
-  border-color: rgba(255, 215, 0, 0.9);
+  border-color: rgba(255, 215, 0, 0.95);
   box-shadow:
-    0 0 14px rgba(255, 215, 0, 0.65),
-    0 0 32px rgba(255, 170, 0, 0.3),
+    0 0 12px rgba(255, 215, 0, 0.65),
+    0 0 26px rgba(255, 170, 0, 0.3),
     inset 0 1px 2px rgba(255, 255, 255, 0.5);
 }
 
@@ -147,18 +172,18 @@ body.orb-cursor-active * {
   top: 0;
   left: 0;
   z-index: 99998;
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   pointer-events: none;
   background: radial-gradient(circle, rgba(255, 215, 0, 0.6) 0%, transparent 70%);
-  transition: opacity 0.35s ease, transform 0.2s ease;
+  transition: opacity 0.3s ease, transform 0.18s ease;
   will-change: transform;
 }
 
 .orb-cursor-trail.is-hover {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   background: radial-gradient(circle, rgba(255, 215, 0, 0.85) 0%, transparent 70%);
 }
 
@@ -166,14 +191,14 @@ body.orb-cursor-active * {
   0%,
   100% {
     box-shadow:
-      0 0 10px rgba(255, 215, 0, 0.4),
-      0 0 22px rgba(255, 170, 0, 0.2),
+      0 0 8px rgba(255, 215, 0, 0.4),
+      0 0 18px rgba(255, 170, 0, 0.2),
       inset 0 1px 2px rgba(255, 255, 255, 0.4);
   }
   50% {
     box-shadow:
-      0 0 14px rgba(255, 215, 0, 0.6),
-      0 0 28px rgba(255, 170, 0, 0.3),
+      0 0 12px rgba(255, 215, 0, 0.6),
+      0 0 24px rgba(255, 170, 0, 0.3),
       inset 0 1px 2px rgba(255, 255, 255, 0.4);
   }
 }

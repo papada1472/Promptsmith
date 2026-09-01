@@ -1,19 +1,38 @@
+import dns from "dns";
 import { GoogleGenAI } from "@google/genai";
 import { AIProvider } from "./AIProvider.js";
 import { createLogger } from "../logger.js";
 
+try {
+  dns.setDefaultResultOrder("ipv4first");
+} catch (_) {}
+
 const log = createLogger("GeminiProvider");
 
+import https from "https";
+
 export class GeminiProvider extends AIProvider {
+  // Canonical stable model verified live against Google Generative Language API
   static MODEL = "gemini-flash-latest";
 
   constructor(opts) {
     super(opts);
     const rawModel = opts?.model || GeminiProvider.MODEL;
-    this.model = (rawModel === "gemini-2.5-flash" || !rawModel) ? "gemini-flash-latest" : rawModel;
-    log.debug("Creating GoogleGenAI client...");
-    this.client = new GoogleGenAI({ apiKey: this.apiKey });
-    log.debug("Client created, model set to:", this.model);
+    // Map UI model selections & legacy names to active Google Generative AI API endpoints
+    const MODEL_ALIASES = {
+      "gemini-2.0-flash": "gemini-flash-latest",
+      "gemini-2.5-flash": "gemini-flash-latest",
+      "gemini-3.6-flash": "gemini-flash-latest",
+      "gemini-3.7-flash": "gemini-flash-latest",
+      "gemini-flash-latest": "gemini-flash-latest",
+      "gemini-1.5-flash": "gemini-flash-latest",
+      "gemini-1.5-flash-latest": "gemini-flash-latest",
+      "gemini-2.5-pro": "gemini-pro-latest",
+      "gemini-1.5-pro": "gemini-pro-latest",
+      "gemini-1.5-pro-latest": "gemini-pro-latest"
+    };
+    this.model = MODEL_ALIASES[rawModel] || rawModel;
+    log.debug("GeminiProvider model set to:", this.model);
   }
 
   static getModelName() {
@@ -36,71 +55,99 @@ export class GeminiProvider extends AIProvider {
       throw err;
     }
 
-    const controller = new AbortController();
-    let timeoutId;
-    if (this.timeoutMs) {
-      timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
-    }
-    if (opts.signal) {
-      if (opts.signal.aborted) controller.abort();
-      opts.signal.addEventListener("abort", () => controller.abort());
-    }
+    const payload = {
+      system_instruction: this.systemPrompt ? { parts: [{ text: this.systemPrompt }] } : undefined,
+      contents: [{
+        parts: opts.media ? [
+          { text },
+          { inline_data: { mime_type: opts.media.mimeType, data: opts.media.data } }
+        ] : [{ text }]
+      }],
+      ...(opts.responseMimeType && { generationConfig: { responseMimeType: opts.responseMimeType } })
+    };
 
-    try {
-      log.debug("Calling Google Gemini API REST endpoint, model:", this.model);
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent`;
-      const payload = {
-        system_instruction: this.systemPrompt ? { parts: [{ text: this.systemPrompt }] } : undefined,
-        contents: [{
-          parts: opts.media ? [
-            { text },
-            { inline_data: { mime_type: opts.media.mimeType, data: opts.media.data } }
-          ] : [{ text }]
-        }],
-        ...(opts.responseMimeType && { generationConfig: { responseMimeType: opts.responseMimeType } })
-      };
+    const requestBody = JSON.stringify(payload);
+    const urlStr = `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`;
 
-      const res = await fetch(url, {
+    return new Promise((resolve, reject) => {
+      let isSettled = false;
+      const timeoutMs = this.timeoutMs || 25000;
+      const timer = setTimeout(() => {
+        if (!isSettled) {
+          isSettled = true;
+          req.destroy();
+          const err = new Error("Gemini request timed out");
+          err.code = "timeout";
+          reject(err);
+        }
+      }, timeoutMs);
+
+      if (opts.signal) {
+        opts.signal.addEventListener("abort", () => {
+          if (!isSettled) {
+            isSettled = true;
+            clearTimeout(timer);
+            req.destroy();
+            const err = new Error("Gemini request aborted");
+            err.code = "timeout";
+            reject(err);
+          }
+        });
+      }
+
+      log.debug("Calling Google Gemini API, model:", this.model);
+
+      const req = https.request(urlStr, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-goog-api-key": this.apiKey
-        },
-        body: JSON.stringify(payload),
-        signal: controller.signal
+          "Content-Length": Buffer.byteLength(requestBody),
+          "Connection": "close"
+        }
+      }, (res) => {
+        let data = "";
+        res.on("data", chunk => { data += chunk; });
+        res.on("end", () => {
+          if (isSettled) return;
+          isSettled = true;
+          clearTimeout(timer);
+
+          if (res.statusCode !== 200) {
+            let errJson;
+            try { errJson = JSON.parse(data); } catch (_) {}
+            const msg = errJson?.error?.message || `Gemini API error: ${res.statusCode}`;
+            const err = new Error(msg);
+            err.code = res.statusCode === 429 ? "RATE_LIMIT" : (res.statusCode === 503 ? "SERVICE_UNAVAILABLE" : "API_ERROR");
+            err.status = res.statusCode;
+            return reject(err);
+          }
+
+          try {
+            const parsed = JSON.parse(data);
+            const responseText = parsed.candidates?.[0]?.content?.parts?.[0]?.text || "";
+            if (!responseText) {
+              const err = new Error("Empty response from Gemini");
+              err.code = "EMPTY_OUTPUT";
+              return reject(err);
+            }
+            log.debug("Response received, length:", responseText.length);
+            resolve(responseText);
+          } catch (parseErr) {
+            reject(parseErr);
+          }
+        });
       });
 
-      if (timeoutId) clearTimeout(timeoutId);
+      req.on("error", (err) => {
+        if (!isSettled) {
+          isSettled = true;
+          clearTimeout(timer);
+          reject(err);
+        }
+      });
 
-      if (!res.ok) {
-        const errJson = await res.json().catch(() => ({}));
-        const msg = errJson?.error?.message || `Gemini API error: ${res.status}`;
-        const err = new Error(msg);
-        err.code = res.status === 429 ? "RATE_LIMIT" : "API_ERROR";
-        err.status = res.status;
-        throw err;
-      }
-
-      const data = await res.json();
-      const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      log.debug("Response received, length:", responseText.length);
-
-      if (!responseText) {
-        const err = new Error("Empty response from Gemini");
-        err.code = "EMPTY_OUTPUT";
-        throw err;
-      }
-
-      return responseText;
-    } catch (e) {
-      if (timeoutId) clearTimeout(timeoutId);
-      if (e.name === "AbortError" || controller.signal.aborted) {
-        const err = new Error("Gemini request timed out");
-        err.code = "timeout";
-        throw err;
-      }
-      log.error("FULL ERROR RESPONSE:", e.message || String(e));
-      throw e;
-    }
+      req.write(requestBody);
+      req.end();
+    });
   }
 }
