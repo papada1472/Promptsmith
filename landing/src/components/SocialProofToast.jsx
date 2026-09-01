@@ -1,13 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Sparkles, Zap, Lock, Key } from "lucide-react";
 
-const RECENT_ACTIVITIES = [
-  { name: "Dev in London", flag: "🇬🇧", action: "claimed Lifetime Pro", time: "2m ago" },
-  { name: "Alex R. in Munich", flag: "🇩🇪", action: "downloaded Refinzi for Windows", time: "4m ago" },
-  { name: "Engineer in SF", flag: "🇺🇸", action: "activated Cursor blueprint", time: "6m ago" },
-  { name: "Priya in Bengaluru", flag: "🇮🇳", action: "unlocked Lifetime Deal", time: "7m ago" },
-  { name: "Marcus in Tokyo", flag: "🇯🇵", action: "downloaded Midjourney pack", time: "11m ago" },
-  { name: "Indie in Toronto", flag: "🇨🇦", action: "claimed Lifetime Pro", time: "14m ago" },
+const WORKFLOW_TIPS = [
+  {
+    icon: Zap,
+    title: "Windows Shortcut",
+    desc: "Press Ctrl + Alt + Space to rebuild text without touching your mouse.",
+  },
+  {
+    icon: Sparkles,
+    title: "5-Block Blueprint",
+    desc: "Hold the Orb for 300ms to generate complete UI component specs.",
+  },
+  {
+    icon: Key,
+    title: "Free BYOK Mode",
+    desc: "Connect your Gemini or OpenRouter key for 100% free prompt synthesis.",
+  },
+  {
+    icon: Lock,
+    title: "Privacy First",
+    desc: "Runs locally with Windows DPAPI encryption. Zero prompts logged.",
+  },
 ];
 
 export function SocialProofToast({ onOpenOffer }) {
@@ -20,15 +34,15 @@ export function SocialProofToast({ onOpenOffer }) {
 
     const initialTimer = setTimeout(() => {
       setVisible(true);
-    }, 4000);
+    }, 6000);
 
     const interval = setInterval(() => {
       setVisible(false);
       setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % RECENT_ACTIVITIES.length);
+        setCurrentIndex((prev) => (prev + 1) % WORKFLOW_TIPS.length);
         setVisible(true);
       }, 800);
-    }, 18000);
+    }, 20000);
 
     return () => {
       clearTimeout(initialTimer);
@@ -38,31 +52,31 @@ export function SocialProofToast({ onOpenOffer }) {
 
   if (dismissed || !visible) return null;
 
-  const item = RECENT_ACTIVITIES[currentIndex];
+  const item = WORKFLOW_TIPS[currentIndex];
+  const Icon = item.icon;
 
   return (
     <aside
-      aria-label="Recent user activity"
-      className="fixed bottom-4 left-4 z-30 hidden sm:flex items-center gap-2.5 rounded-xl border border-white/[0.08] bg-zinc-950/85 py-2 px-3 shadow-xl backdrop-blur-md animate-in fade-in slide-in-from-bottom-2 duration-200 max-w-xs"
+      aria-label="Workflow tip"
+      className="fixed bottom-4 left-4 z-30 hidden sm:flex items-center gap-2.5 rounded-xl border border-white/[0.08] bg-zinc-950/90 py-2 px-3 shadow-xl backdrop-blur-md animate-in fade-in slide-in-from-bottom-2 duration-200 max-w-xs"
     >
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-zinc-900 border border-white/[0.08] text-xs">
-        <span>{item.flag}</span>
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs">
+        <Icon className="h-3.5 w-3.5" />
       </div>
 
-      <div className="flex-1 min-w-0 cursor-pointer" onClick={onOpenOffer}>
+      <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1">
-          <p className="text-[11px] font-semibold text-zinc-200 truncate">{item.name}</p>
-          <span className="text-[9px] text-zinc-500">• {item.time}</span>
+          <p className="text-[11px] font-bold text-zinc-200 truncate">{item.title}</p>
         </div>
-        <p className="text-[10px] text-blue-400 font-medium truncate">
-          {item.action}
+        <p className="text-[10px] text-zinc-400 truncate">
+          {item.desc}
         </p>
       </div>
 
       <button
         onClick={() => setDismissed(true)}
-        className="rounded p-0.5 text-zinc-500 hover:text-zinc-300 transition-colors"
-        aria-label="Dismiss notification"
+        className="rounded p-0.5 text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer"
+        aria-label="Dismiss tip"
       >
         <X className="h-3 w-3" />
       </button>

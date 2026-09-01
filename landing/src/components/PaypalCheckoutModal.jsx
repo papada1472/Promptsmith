@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import {
   X,
   ShieldCheck,
@@ -122,12 +122,12 @@ export function PaypalCheckoutModal({ isOpen, onClose, onDownload, currency = SU
           <div>
             {/* Header */}
             <div className="flex items-center justify-between gap-2 pr-7">
-              <div className="flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider shadow-sm">
-                <Flame className="h-3 w-3 text-amber-300 animate-pulse" />
-                <span>Launch Deal · 73% OFF</span>
+              <div className="flex items-center gap-1.5 bg-blue-600 text-white font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider shadow-sm">
+                <Sparkles className="h-3 w-3 text-amber-300" />
+                <span>Lifetime License · Pay Once</span>
               </div>
               <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-950/40 border border-emerald-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
-                <ShieldCheck className="h-3 w-3" /> Instant Activation
+                <ShieldCheck className="h-3 w-3" /> Instant License Key
               </span>
             </div>
 

@@ -150,7 +150,7 @@ Phase 3: Expiring Launch Incentive & Close (Emails 6-8)
 Constraints & Tone:
 - Subject Lines: 3 variants per email (Curiosity, Pain, Social Proof) under 42 characters.
 - Body: 140-180 words, punchy single-thought paragraphs, 1 distinct CTA with dynamic UTM tracking.`,
-    stats: "+420% Quality & Detail",
+    stats: "Complete 8-Part Sequence",
   },
   {
     id: "midjourney",
@@ -159,7 +159,7 @@ Constraints & Tone:
     badge: "Photoreal Optics",
     raw: "A futuristic sports car driving in neon rainy city",
     rebuilt: `/imagine prompt: cinematic 35mm anamorphic wide tracking shot of an ultra-aerodynamic concept hypercar gliding through a rain-slicked Neo-Tokyo avenue at night, raytraced reflections shimmering in asphalt puddles, cyan and magenta neon ambiance, Cooke Anamorphic /i 35mm lens, f/1.4, subtle shutter motion blur, volumetric atmospheric mist and tire spray, photorealistic Octane render, hyper-detailed carbon fiber chassis, 8k resolution --ar 16:9 --style raw --v 6.0 --q 2 --s 750`,
-    stats: "Octane 8K Cinematic Spec",
+    stats: "Midjourney v6.0 Camera Spec",
   },
   {
     id: "higgsfield",
@@ -174,7 +174,7 @@ Scene & Physics Specifications:
 - Environment: Massive bioluminescent amethyst cavern pulsating with gentle violet and teal luminescence.
 - Particle Dynamics: Sub-zero micro-gravity crystal dust drifting through volumetric sun rays; realistic planetary gravitational drag on footsteps.
 - Lighting & Optics: Internal helmet rim light + external subterranean glow, 4K 60fps temporal velocity coherence, liquid fluid dynamics.`,
-    stats: "Camera Vector & Physics Mapped",
+    stats: "3D Camera Vector Spec",
   },
   {
     id: "gemini",
@@ -189,7 +189,7 @@ Technical Requirements:
 2. High-Performance State: Normalized circular ring buffer retaining 10,000 active datapoints with Web Worker computation offloading to guarantee zero UI thread blocking.
 3. GPU Charting Engine: Canvas/WebGL GPU-accelerated rendering locked at 60fps with dynamic downsampling and threshold alerts.
 4. Interface & Accessibility: Dark-mode glassmorphism, 12-column responsive layout tokens, and ARIA-live regions for screen reader compliance.`,
-    stats: "Full Architecture Blueprint",
+    stats: "WebSocket Architecture Spec",
   },
   {
     id: "cursor",
@@ -208,7 +208,7 @@ Architecture & State:
 Motion & Accessibility:
 - Kinetic hover elevation with cubic-bezier(0.25, 1, 0.5, 1) and active click spring feedback.
 - Full keyboard navigation (Arrow keys, Space/Enter toggle) and aria-expanded indicators.`,
-    stats: "Zero-Boilerplate Cursor Ready",
+    stats: "React & Tailwind UI Spec",
   },
 ];
 
@@ -347,15 +347,13 @@ function LifetimeOfferModal({ isOpen, onClose, onDownload, onOpenCheckout, curre
 
         {/* Top bar */}
         <div className="flex items-center justify-between gap-2 pr-7">
-          <div className="flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider shadow-sm">
-            <Flame className="h-3 w-3 text-amber-300 animate-pulse" />
-            <span>Launch Deal · 73% OFF</span>
+          <div className="flex items-center gap-1.5 bg-blue-600 text-white font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider shadow-sm">
+            <Sparkles className="h-3 w-3 text-amber-300" />
+            <span>Lifetime License · Pay Once</span>
           </div>
-          <div className="flex items-center gap-1 font-mono text-[10px] font-bold text-amber-400 bg-amber-950/40 border border-amber-500/30 px-2 py-0.5 rounded-full">
-            <Clock className="h-2.5 w-2.5" />
-            <span>
-              {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
-            </span>
+          <div className="flex items-center gap-1 font-mono text-[10px] font-bold text-emerald-400 bg-emerald-950/40 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+            <ShieldCheck className="h-2.5 w-2.5" />
+            <span>Instant Key</span>
           </div>
         </div>
 
@@ -817,9 +815,9 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
               <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
               1-Click Prompt Engineering for Windows ⚡
             </span>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/25">
-              <Flame className="h-3 w-3 text-amber-400" />
-              Launch Special 73% Off
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/25">
+              <ShieldCheck className="h-3 w-3 text-emerald-400" />
+              One-Time License · Zero Subscriptions
             </span>
           </div>
 
@@ -1456,8 +1454,8 @@ function Pricing({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD,
 
           {/* Card 2 — Pro Lifetime Deal */}
           <Card className="luxury-surface-glow relative flex flex-col justify-between p-5 sm:p-6">
-            <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-amber-500 text-zinc-950 font-extrabold px-3 py-0.5 text-[10px] shadow-md">
-              🔥 LAUNCH DEAL — 73% OFF
+            <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-blue-600 text-white font-extrabold px-3 py-0.5 text-[10px] shadow-md border border-blue-400/40">
+              ✨ EARLY ADOPTER LICENSE — PAY ONCE
             </Badge>
 
             <div>
@@ -1471,7 +1469,7 @@ function Pricing({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD,
               <div className="mt-2 flex items-baseline gap-2">
                 <span className="text-3xl font-extrabold text-white">{currency.formattedPrice}</span>
                 <span className="text-sm line-through text-zinc-400">{currency.formattedRegular}</span>
-                <span className="text-xs text-emerald-400 font-semibold font-mono">Save 73%</span>
+                <span className="text-xs text-emerald-400 font-semibold font-mono">One-Time License</span>
               </div>
               <p className="mt-1 text-xs text-zinc-300 leading-relaxed">
                 Zero API configuration. Built-in managed Claude & GPT models. Lifetime updates.
