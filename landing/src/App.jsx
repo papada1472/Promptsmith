@@ -43,6 +43,9 @@ import { NonWindowsModal } from "./components/NonWindowsModal.jsx";
 import { CurrencyBadge } from "./components/CurrencySelector.jsx";
 import { SocialProofToast } from "./components/SocialProofToast.jsx";
 import { RequestAiSummary } from "./components/RequestAiSummary.jsx";
+import { PrivacyPage } from "./pages/PrivacyPage.jsx";
+import { TermsPage } from "./pages/TermsPage.jsx";
+import { DocsPage } from "./pages/DocsPage.jsx";
 import { initAnalytics, trackEvent } from "./utils/analytics.js";
 import { initPerformanceMonitoring } from "./utils/performance.js";
 import {
@@ -1596,7 +1599,7 @@ function ScrollToTopButton() {
   );
 }
 
-function Footer() {
+function Footer({ onNavigate }) {
   return (
     <footer className="border-t border-white/[0.06] pt-8 pb-28 sm:pb-24 bg-[#08090c] text-zinc-400 text-[11px]">
       <div className="mx-auto flex max-w-[1140px] flex-col justify-between gap-6 px-4 sm:px-6 md:flex-row md:items-end">
@@ -1610,9 +1613,24 @@ function Footer() {
         </div>
         <div className="flex flex-col items-start md:items-end gap-2">
           <nav aria-label="Legal" className="flex items-center gap-4 text-zinc-400">
-            <a href="/privacy" className="hover:text-zinc-200 transition-colors">Privacy</a>
-            <a href="/terms" className="hover:text-zinc-200 transition-colors">Terms</a>
-            <a href="/docs" className="hover:text-zinc-200 transition-colors">Docs</a>
+            <button
+              onClick={() => onNavigate("privacy", "/privacy")}
+              className="hover:text-zinc-200 transition-colors cursor-pointer"
+            >
+              Privacy
+            </button>
+            <button
+              onClick={() => onNavigate("terms", "/terms")}
+              className="hover:text-zinc-200 transition-colors cursor-pointer"
+            >
+              Terms
+            </button>
+            <button
+              onClick={() => onNavigate("docs", "/docs")}
+              className="hover:text-zinc-200 transition-colors cursor-pointer"
+            >
+              Docs
+            </button>
             <a href="mailto:support@refinzi.com" className="hover:text-zinc-200 transition-colors">Support</a>
           </nav>
           <p className="text-[10px] text-zinc-400">© 2026 Refinzi. Built for high-speed prompt creators.</p>
@@ -1636,6 +1654,16 @@ function detectClientOS() {
 }
 
 export default function App() {
+  const [currentPage, setCurrentPage] = useState(() => {
+    if (typeof window !== "undefined") {
+      const path = window.location.pathname.toLowerCase();
+      if (path.includes("privacy")) return "privacy";
+      if (path.includes("terms")) return "terms";
+      if (path.includes("docs")) return "docs";
+    }
+    return "home";
+  });
+
   const [currency, setCurrency] = useState(() => detectLocalCurrencyOffline().currency);
   const [detectedCountry, setDetectedCountry] = useState(() => detectLocalCurrencyOffline().country);
   const [osType, setOsType] = useState(() => detectClientOS());
@@ -1644,6 +1672,27 @@ export default function App() {
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [isNonWindowsModalOpen, setIsNonWindowsModalOpen] = useState(false);
   const [showStickyBar, setShowStickyBar] = useState(false);
+
+  const handleNavigate = (page, path) => {
+    setCurrentPage(page);
+    trackEvent("page_navigated", { page, path });
+    if (typeof window !== "undefined") {
+      window.history.pushState({}, "", path);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    const onPopState = () => {
+      const path = window.location.pathname.toLowerCase();
+      if (path.includes("privacy")) setCurrentPage("privacy");
+      else if (path.includes("terms")) setCurrentPage("terms");
+      else if (path.includes("docs")) setCurrentPage("docs");
+      else setCurrentPage("home");
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   useEffect(() => {
     initAnalytics();
@@ -1764,6 +1813,23 @@ export default function App() {
     trackEvent("currency_manually_switched", { currency: newCurrency.code });
   };
 
+  if (currentPage === "privacy") {
+    return <PrivacyPage onNavigateHome={() => handleNavigate("home", "/")} />;
+  }
+
+  if (currentPage === "terms") {
+    return <TermsPage onNavigateHome={() => handleNavigate("home", "/")} />;
+  }
+
+  if (currentPage === "docs") {
+    return (
+      <DocsPage
+        onNavigateHome={() => handleNavigate("home", "/")}
+        onDownload={() => handleTriggerDownload("docs_page")}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#08090c] font-sans text-zinc-50 selection:bg-blue-500/30 selection:text-white pb-10 sm:pb-0">
       <OrbCursor />
@@ -1803,7 +1869,7 @@ export default function App() {
           onOpenNonWindows={() => setIsNonWindowsModalOpen(true)}
         />
       </main>
-      <Footer />
+      <Footer onNavigate={handleNavigate} />
 
       {/* Social Proof Live Activity Toast (Clean bottom-left, no corner fighting) */}
       {!showStickyBar && (
