@@ -924,11 +924,6 @@ function TrustBar() {
               </div>
             ))}
           </div>
-
-          {/* AI Search & LLM Summary Interactive Selector */}
-          <div className="mt-4 pt-4 border-t border-white/[0.04]">
-            <RequestAiSummary />
-          </div>
         </div>
       </section>
     </Reveal>
@@ -1568,19 +1563,25 @@ function StickyConversionBar({ show, onOpenOffer, onDownload, currency = SUPPORT
 
 function Footer() {
   return (
-    <footer className="border-t border-white/[0.06] py-6 bg-[#08090c] text-zinc-400 text-[11px]">
-      <div className="mx-auto flex max-w-[1140px] flex-col items-center justify-between gap-3 px-4 sm:px-6 sm:flex-row">
-        <div className="flex items-center gap-1.5">
-          <span>🧠</span>
-          <span className="font-semibold text-zinc-300">Refinzi 2.0</span>
-          <span className="text-zinc-400">— Ambient Windows prompt layer</span>
+    <footer className="border-t border-white/[0.06] py-8 bg-[#08090c] text-zinc-400 text-[11px]">
+      <div className="mx-auto flex max-w-[1140px] flex-col justify-between gap-6 px-4 sm:px-6 md:flex-row md:items-end">
+        <div className="flex flex-col items-start gap-3">
+          <div className="flex items-center gap-2">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-xs">🧠</span>
+            <span className="font-bold text-zinc-200 text-sm">Refinzi <span className="text-[10px] text-blue-400 font-semibold bg-blue-500/10 px-1 rounded">2.0</span></span>
+            <span className="text-zinc-400 text-xs">— Ambient Windows prompt layer</span>
+          </div>
+          <RequestAiSummary />
         </div>
-        <nav aria-label="Legal" className="flex items-center gap-4 text-zinc-400">
-          <a href="/privacy" className="hover:text-zinc-200 transition-colors">Privacy</a>
-          <a href="/terms" className="hover:text-zinc-200 transition-colors">Terms</a>
-          <a href="/docs" className="hover:text-zinc-200 transition-colors">Docs</a>
-          <a href="mailto:support@refinzi.com" className="hover:text-zinc-200 transition-colors">Support</a>
-        </nav>
+        <div className="flex flex-col items-start md:items-end gap-2">
+          <nav aria-label="Legal" className="flex items-center gap-4 text-zinc-400">
+            <a href="/privacy" className="hover:text-zinc-200 transition-colors">Privacy</a>
+            <a href="/terms" className="hover:text-zinc-200 transition-colors">Terms</a>
+            <a href="/docs" className="hover:text-zinc-200 transition-colors">Docs</a>
+            <a href="mailto:support@refinzi.com" className="hover:text-zinc-200 transition-colors">Support</a>
+          </nav>
+          <p className="text-[10px] text-zinc-400">© 2026 Refinzi. Built for high-speed prompt creators.</p>
+        </div>
       </div>
     </footer>
   );
