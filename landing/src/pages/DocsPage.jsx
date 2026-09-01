@@ -116,19 +116,19 @@ export function DocsPage({ onNavigateHome, onDownload }) {
             <section id="shortcuts" className="space-y-3 rounded-2xl border border-white/[0.08] bg-zinc-900/40 p-5 sm:p-6">
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
                 <Keyboard className="h-4 w-4 text-purple-400" />
-                2. Primary Action: 1-Click (Tap Ctrl+Alt+Space)
+                2. Primary Action: 1-Click on the Ambient Orb (or Ctrl+Alt+Space)
               </h2>
               <p className="text-xs sm:text-sm text-zinc-300">
-                1-Click (Tap <kbd className="font-mono text-xs text-blue-300 font-bold bg-zinc-950 px-1.5 py-0.5 rounded border border-white/10">Ctrl+Alt+Space</kbd>) is your primary daily workflow. Highlight any raw idea anywhere in Windows and tap once — Refinzi rebuilds it directly in-place in 2 seconds without copy-pasting:
+                <strong>1-Click on the floating ambient Orb</strong> is your primary daily workflow. Highlight any raw idea anywhere in Windows and click the Orb (or press <kbd className="font-mono text-xs text-blue-300 font-bold bg-zinc-950 px-1.5 py-0.5 rounded border border-white/10">Ctrl+Alt+Space</kbd>) — Refinzi rebuilds it directly in-place in 2 seconds without copy-pasting:
               </p>
               <div className="p-3 rounded-xl bg-zinc-950 border border-white/10 flex items-center justify-between">
-                <span className="font-mono text-xs text-blue-300 font-bold">1-Click (Tap Ctrl + Alt + Space)</span>
+                <span className="font-mono text-xs text-blue-300 font-bold">1-Click on Orb · (Or Ctrl + Alt + Space)</span>
                 <button
                   onClick={() => copyShortcut("Ctrl+Alt+Space")}
                   className="text-[11px] text-zinc-400 hover:text-white flex items-center gap-1 cursor-pointer"
                 >
                   {copiedKey ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3" />}
-                  <span>{copiedKey ? "Copied" : "Copy"}</span>
+                  <span>{copiedKey ? "Copied" : "Copy Shortcut"}</span>
                 </button>
               </div>
               <p className="text-xs text-zinc-400">
@@ -140,11 +140,11 @@ export function DocsPage({ onNavigateHome, onDownload }) {
             <section id="modes" className="space-y-3 rounded-2xl border border-white/[0.08] bg-zinc-900/40 p-5 sm:p-6">
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
                 <Zap className="h-4 w-4 text-amber-400" />
-                3. 1-Click (Primary) vs 300ms Hold (Secondary)
+                3. 1-Click on Orb (Primary) vs 300ms Hold (Secondary)
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <div className="p-3.5 rounded-xl border border-blue-500/30 bg-blue-950/20 space-y-1">
-                  <span className="text-xs font-bold text-blue-400 block">⚡ 1-Click Tap (Primary Use Case)</span>
+                  <span className="text-xs font-bold text-blue-400 block">⚡ 1-Click on Orb (Primary Use Case)</span>
                   <p className="text-[11px] text-zinc-300">
                     Instantly transforms your active prompt in-place for your target model (Midjourney lens flags, ChatGPT chain-of-thought, Cursor tokens).
                   </p>

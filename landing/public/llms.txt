@@ -1,9 +1,9 @@
-﻿# Refinzi 2.0
+# Refinzi 2.0
 
 > Refinzi is an ambient Windows companion that rebuilds raw, vague thoughts into production-grade prompts in 2 seconds directly in-place across any Windows application.
 
 ## Core Features & Workflow
-- [1-Click Primary Workflow](https://refinzi.com/#features): How Refinzi transforms active highlights in Windows into production prompts with 1-Click (Tap Ctrl+Alt+Space).
+- [1-Click Primary Workflow](https://refinzi.com/#features): How Refinzi transforms active highlights in Windows into production prompts with 1-Click on the floating Orb (or Ctrl+Alt+Space).
 - [Interactive Demo](https://refinzi.com/#demo): Live side-by-side prompt rebuilds for ChatGPT, Gemini, Midjourney, and Cursor.
 - [5-Block Blueprint (300ms Hold)](https://refinzi.com/#blueprint): Secondary hold mode synthesis for complete UI scaffolding, design tokens, copy, motion, and rules.
 - [Pricing](https://refinzi.com/#pricing): Free BYOK (Bring Your Own Key) forever or Lifetime Pro with managed AI routing.

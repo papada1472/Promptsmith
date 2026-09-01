@@ -269,7 +269,7 @@ const FAQS = [
   {
     question: "How does Refinzi work in Windows?",
     answer:
-      "Refinzi runs quietly as a lightweight native Windows companion. 1-Click (Tap Ctrl+Alt+Space) is your primary action — it captures your active text highlight and instantly rebuilds it into a production-grade prompt directly in-place. Hold Ctrl+Alt+Space for 300ms as your secondary action to open the interactive 5-Block Blueprint scaffolding engine.",
+      "Refinzi runs quietly as an ambient Windows companion. 1-Click on the floating Orb is your primary action — it captures your active text highlight and instantly rebuilds it into a production-grade prompt directly in-place. Power users can also use the global Ctrl+Alt+Space shortcut, or hold for 300ms to open the interactive 5-Block Blueprint scaffolding engine.",
   },
   {
     question: "What is the difference between Free BYOK and Lifetime Pro?",
@@ -804,7 +804,7 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/25">
               <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
-              1-Click In-Place Prompt Transformation ⚡
+              1-Click on Orb — Instant In-Place Transformation ⚡
             </span>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/25">
               <Flame className="h-3 w-3 text-amber-400" />
@@ -823,7 +823,7 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
           {/* Plain English Subheadline */}
           <div className="mt-4 max-w-xl leading-relaxed">
             <p className="text-sm sm:text-base text-zinc-100 font-normal">
-              Select any text and <strong className="text-white font-semibold">1-Click (Tap <kbd className="font-mono text-xs font-bold px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 border border-blue-500/30 shadow-sm">Ctrl+Alt+Space</kbd>)</strong> to instantly rebuild it into a production-grade prompt directly in-place.
+              Select any text and <strong className="text-white font-semibold">1-Click the ambient Orb</strong> (or press <kbd className="font-mono text-xs font-bold px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 border border-blue-500/30 shadow-sm">Ctrl+Alt+Space</kbd>) to instantly rebuild it into a production-grade prompt directly in-place.
             </p>
             <p className="mt-2 text-xs sm:text-sm text-zinc-300">
               Hold for 300ms anytime for full 5-Block Blueprint architecture. Works across ChatGPT, Midjourney, Cursor & Discord with zero copy-pasting.
@@ -878,7 +878,7 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
           <div className="mt-4 space-y-1.5 text-xs text-zinc-400 font-medium">
             <div className="flex items-center gap-2">
               <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-blue-500/20 text-blue-400 text-[10px] font-bold">1</span>
-              <span><strong className="text-zinc-200">Primary (1-Click Tap Ctrl+Alt+Space)</strong> — Instant in-place prompt transformation</span>
+              <span><strong className="text-zinc-200">Primary (1-Click on Orb)</strong> — Instant in-place prompt transformation (or press <code className="text-blue-300 font-mono text-[11px]">Ctrl+Alt+Space</code>)</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-purple-500/20 text-purple-400 text-[10px] font-bold">2</span>
@@ -945,7 +945,7 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
               />
             </div>
             <p className="mt-2 text-center text-[10px] text-zinc-400">
-              <strong className="text-blue-300">1-Click (Tap Ctrl+Alt+Space)</strong> for instant in-place rebuild · <span className="text-zinc-400">Hold 300ms for 5-Block Blueprint</span>
+              <strong className="text-blue-300">1-Click the Orb</strong> for instant in-place rebuild · <span className="text-zinc-400">(Or press Ctrl+Alt+Space · Hold 300ms for Blueprint)</span>
             </p>
           </div>
         </div>
@@ -1129,13 +1129,13 @@ function Mechanism() {
     },
     {
       icon: Zap,
-      title: "2. 1-Click Tap (Primary Use Case)",
-      body: "1-Click (Tap Ctrl+Alt+Space) to instantly transform active text in-place into a production-grade prompt ⚡.",
+      title: "2. 1-Click on the Orb (Primary)",
+      body: "1-Click the glowing ambient Orb (or press Ctrl+Alt+Space) to instantly transform active text in-place into a production prompt ⚡.",
     },
     {
       icon: Layers,
       title: "3. Hold 300ms (Secondary Blueprint)",
-      body: "Hold Ctrl+Alt+Space for 300ms anytime to open the full 5-block architectural Blueprint engine 🧠.",
+      body: "Hold the Orb or shortcut for 300ms anytime to open the full 5-block architectural Blueprint engine 🧠.",
     },
   ];
 
