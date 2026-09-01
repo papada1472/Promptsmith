@@ -2,21 +2,18 @@
 
 > Refinzi is an ambient Windows desktop AI companion that rebuilds raw, vague thoughts into production-grade prompts in 2 seconds directly in-place across any Windows application.
 
-## Overview
-Refinzi eliminates repetitive prompt engineering and trial-and-error AI re-prompting. Users simply highlight text anywhere on Windows and press the global hotkey `Ctrl+Alt+Space` to instantly refine their prompt for leading AI models.
+## Core Features & Workflow
+- [Overview](https://refinzi.com/#features): How Refinzi transforms active highlights in Windows into production prompts with Ctrl+Alt+Space.
+- [Interactive Demo](https://refinzi.com/#demo): Live side-by-side prompt rebuilds for ChatGPT, Gemini, Midjourney, and Cursor.
+- [5-Block Blueprint](https://refinzi.com/#blueprint): Hold mode synthesis for complete UI scaffolding, design tokens, copy, motion, and rules.
+- [Pricing](https://refinzi.com/#pricing): Free BYOK (Bring Your Own Key) forever or Lifetime Pro with managed AI routing.
+- [FAQ](https://refinzi.com/#faq): Windows system requirements, privacy guarantees, and supported AI models.
 
-## Key Capabilities
-- **Universal Windows In-Place Rebuilding**: Works inside ChatGPT web, Claude, Cursor IDE, VS Code, Discord, Notion, Figma, Midjourney Discord, or web browsers without copy-pasting.
-- **Model-Specific Intelligence Engines**:
-  - **ChatGPT & Gemini**: Multi-step chain-of-thought reasoning, persona grounding, and structured system instructions.
-  - **Midjourney & AI Image Generators**: Optical focal lengths, anamorphic lenses, lighting vectors, and rendering flags (`--ar 16:9`, `--style raw`).
-  - **Higgsfield AI & Video Engines**: Cinematic 3D orbital camera physics, volumetric lighting, and temporal velocity curves.
-  - **Cursor & Claude**: 5-Block architectural blueprints (scaffolding, component token matrix, conversion copy, motion dynamics, model rules).
-- **Zero-Latency Execution**: Native lightweight Windows app (< 40 MB RAM, runs on Windows 10 & 11).
-- **Privacy First (Local-First)**: Clipboard selections and user API keys are handled locally and never stored on third-party servers.
+## Downloads & Repositories
+- [Windows Installer](https://github.com/papada1472/Promptsmith/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe): Official Windows 10 & 11 64-bit setup executable (v2.0.0).
+- [GitHub Releases](https://github.com/papada1472/Promptsmith/releases): Release notes and verified checksums for Refinzi builds.
+- [Source Repository](https://github.com/papada1472/Promptsmith): Official GitHub repository.
 
-## Pricing & Availability
-- **Free BYOK (Bring Your Own Key)**: Unlimited usage with free tier or user API keys. Zero monthly subscriptions.
-- **Lifetime Pro ($29 one-time)**: Managed high-speed AI routing (Claude 3.5 Sonnet / GPT-4o), unlimited 5-Block Blueprint synthesis, cloud preset sync, and lifetime updates.
-- **Website & Download**: https://refinzi.com
-- **Official Windows Installer**: https://github.com/papada1472/Promptsmith/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe
+## Optional
+- [Sitemap](https://refinzi.com/sitemap.xml): Complete XML indexing sitemap.
+- [Robots](https://refinzi.com/robots.txt): Crawler rules and sitemap directives.
