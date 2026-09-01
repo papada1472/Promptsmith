@@ -1,8 +1,25 @@
 import React from "react";
-import { ShieldCheck, Heart, Github, Mail, Sparkles, Terminal } from "lucide-react";
+import { ShieldCheck, Heart, Github, Mail, Sparkles, Terminal, Calendar, Phone, ExternalLink } from "lucide-react";
 import { Reveal } from "./Reveal.jsx";
 
+const CAL_LINK = "https://cal.com/rahul-mangla-ub8se9/30min";
+const WHATSAPP_URL = "https://wa.me/919971271291?text=Hi%20Rahul,%20I'm%20reaching%20out%20about%20Refinzi!";
+const WHATSAPP_NUMBER = "+91-9971271291";
+
 export function FounderSection() {
+  const handleOpenCal = () => {
+    if (typeof window !== "undefined" && window.Cal) {
+      try {
+        window.Cal.ns["30min"]("modal", {
+          calLink: "rahul-mangla-ub8se9/30min",
+          config: { layout: "month_view", useSlotsViewOnSmallScreen: "true" },
+        });
+        return;
+      } catch (_) {}
+    }
+    window.open(CAL_LINK, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <section className="py-12 sm:py-16 border-t border-white/[0.06] bg-zinc-950/40" id="founder">
       <div className="mx-auto max-w-[860px] px-4 sm:px-6">
@@ -30,7 +47,7 @@ export function FounderSection() {
                     <h3 className="text-lg font-bold text-white">Rahul Mangla</h3>
                     <p className="text-xs text-blue-400 font-medium">Creator & Lead Architect of Refinzi</p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center justify-center gap-1.5">
                     <a
                       href="https://github.com/papada1472/Promptsmith"
                       target="_blank"
@@ -59,8 +76,29 @@ export function FounderSection() {
                   Refinzi puts the entire prompt engineering layer directly at your fingertips with a single <strong className="text-white">1-Click on the ambient Orb</strong> (or press <code className="text-blue-300 font-mono text-xs bg-blue-500/10 px-1 py-0.5 rounded">Ctrl+Alt+Space</code>) in Windows, or Hold 300ms for deep 5-block architecture. It’s local-first, zero-subscription with BYOK, and built to respect your time."
                 </p>
 
+                {/* Direct Action Hub for Founder */}
+                <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+                  <button
+                    type="button"
+                    onClick={handleOpenCal}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded-xl transition-all shadow-md shadow-blue-500/20 cursor-pointer"
+                  >
+                    <Calendar className="h-3.5 w-3.5" />
+                    <span>Book 30-Min Call with Rahul</span>
+                  </button>
+                  <a
+                    href={WHATSAPP_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-300 bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-500/30 px-3 py-1.5 rounded-xl transition-all cursor-pointer"
+                  >
+                    <Phone className="h-3.5 w-3.5 text-emerald-400" />
+                    <span>WhatsApp {WHATSAPP_NUMBER}</span>
+                  </a>
+                </div>
+
                 {/* Guarantee Note */}
-                <div className="pt-2 flex items-center justify-center sm:justify-start gap-2 text-xs text-emerald-400 font-medium">
+                <div className="pt-1 flex items-center justify-center sm:justify-start gap-2 text-xs text-emerald-400 font-medium">
                   <ShieldCheck className="h-4 w-4 shrink-0" />
                   <span>Personal 14-Day Money-Back Guarantee on all Pro orders</span>
                 </div>

@@ -245,7 +245,7 @@ async function runPipeline(mode, input, artifactType, { selectionCaptured, gemin
   const optimized = optimizeEnvelope(envelope);
   const { systemPrompt, userPrompt } = buildExecutionPlan(optimized, mode);
 
-  const activeProvider = store.get("activeProvider") || "gemini";
+  const activeProvider = store.get("activeProvider") || "deepseek";
   captureIntent({
     surface: input,
     mode,
@@ -275,7 +275,11 @@ async function runPipeline(mode, input, artifactType, { selectionCaptured, gemin
     });
     sendStatus("❌ Refinement failed");
     const errMsg = err?.message || "Unable to process right now. Please check your API key.";
-    notifyError("Refinement Failed", errMsg, 3500);
+    if (err?.code === "MISSING_API_KEY" || errMsg.toLowerCase().includes("api key required")) {
+      notifyError("API Key Required", "DeepSeek API key required. Right-click Refinzi Tray > Settings to add your key.", 5000);
+    } else {
+      notifyError("Refinement Failed", errMsg, 4500);
+    }
     sendResponse(errMsg);
     flushPendingState();
     return;

@@ -41,7 +41,7 @@ window.addEventListener('DOMContentLoaded', () => {
     function compileFormattedText(sections, format) {
         if (!sections) return '';
         if (format === 'cursor') {
-            return `# [Refinzi Blueprint] ${artifactType ? artifactType.toUpperCase() : 'PRODUCTION'} SPECIFICATION
+            return `# [Refinzi Rebuild Pack] ${artifactType ? artifactType.toUpperCase() : 'PRODUCTION'} SPECIFICATION
 
 ## 1. System & Architecture Constraints
 - Layout: ${sections.structure}
@@ -57,11 +57,9 @@ ${sections.interactions}
 ${sections.promptPack}
 
 ## 5. Implementation Checklist
-${sections.checklist}
-
-// Refined with Refinzi 2.0`.trim();
+${sections.checklist}`.trim();
         } else if (format === 'claude') {
-            return `<blueprint type="${artifactType || 'spec'}">
+            return `<rebuild_pack type="${artifactType || 'spec'}">
 <structure>
 ${sections.structure}
 </structure>
@@ -80,7 +78,7 @@ ${sections.promptPack}
 <checklist>
 ${sections.checklist}
 </checklist>
-</blueprint>`.trim();
+</rebuild_pack>`.trim();
         } else {
             return `## Structure
 ${sections.structure}
@@ -286,13 +284,13 @@ ${sections.checklist}`.trim();
     function resetAllButtons() {
         // Copy
         copyBtn.classList.remove('copied');
-        copyLabel.textContent = 'Copy Full Blueprint';
+        copyLabel.textContent = 'Copy All';
         copyBtn.disabled = false;
 
         // Regenerate
         regenBtn.classList.remove('loading');
         regenIcon.textContent = '↻';
-        regenLabel.textContent = 'Rebuild';
+        regenLabel.textContent = 'Rebuild Again';
         regenBtn.disabled = false;
 
         // Expert
@@ -314,10 +312,10 @@ ${sections.checklist}`.trim();
 
         // Visual feedback
         copyBtn.classList.add('copied');
-        copyLabel.textContent = '✓ Copied Full Blueprint!';
+        copyLabel.textContent = '✓ Copied. Ready to ship.';
         
         if (copyToast) {
-            copyToast.textContent = `✓ Blueprint copied to clipboard`;
+            copyToast.textContent = `✓ Copied. Ready to ship.`;
             copyToast.classList.remove('hidden');
         }
 
@@ -330,7 +328,7 @@ ${sections.checklist}`.trim();
 
         copyResetTimeout = setTimeout(() => {
             copyBtn.classList.remove('copied');
-            copyLabel.textContent = 'Copy Full Blueprint';
+            copyLabel.textContent = 'Copy All';
         }, 2200);
     }
 

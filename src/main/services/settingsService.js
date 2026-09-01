@@ -1,6 +1,7 @@
 import { store } from "../store.js";
 import { providerService } from "./providerService.js";
 import { ByokVault } from "../ai/ByokVault.js";
+import { ProviderManager } from "../ai/ProviderManager.js";
 
 function maskKey(key) {
   if (!key) return "";
@@ -25,7 +26,7 @@ export class SettingsService {
       deepSeekApiKey: maskKey(deepSeekKey),
       hotkey: store.get("hotkey"),
       launchOnStartup: store.get("launchOnStartup"),
-      activeProvider: store.get("activeProvider") || "gemini",
+      activeProvider: store.get("activeProvider") || "deepseek",
       activeModel: store.get("activeModel") || providerService.getDefaultModel(),
       userName: store.get("userName"),
       theme: store.get("theme"),
@@ -41,7 +42,7 @@ export class SettingsService {
    * @param {string} provider 
    * @returns {Object}
    */
-  setApiKey(apiKey, provider = "gemini") {
+  setApiKey(apiKey, provider = "deepseek") {
     if (apiKey && apiKey.startsWith("••••")) {
       // Ignore saving if the user did not modify the masked key
       return { ok: true };
@@ -51,6 +52,9 @@ export class SettingsService {
     const trimmed = String(apiKey || "").trim();
     const encryptedKey = trimmed ? ByokVault.encrypt(trimmed) : "";
     store.set(key, encryptedKey);
+    try {
+      ProviderManager.resetCircuitBreaker(prov);
+    } catch (_) {}
     return { ok: true };
   }
 

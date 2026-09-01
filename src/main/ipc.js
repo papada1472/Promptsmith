@@ -104,6 +104,14 @@ export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSet
     for (const [key, val] of Object.entries(settingsObj)) {
       store.set(key, val);
     }
+    try {
+      const { ProviderManager } = await import("./ai/ProviderManager.js");
+      if (settingsObj.activeProvider) {
+        ProviderManager.resetCircuitBreaker(settingsObj.activeProvider);
+      } else {
+        ProviderManager.resetCircuitBreaker();
+      }
+    } catch (_) {}
     return { ok: true };
   });
 

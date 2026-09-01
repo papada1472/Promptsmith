@@ -145,7 +145,7 @@
             </div>
 
             <div class="metrics-grid" id="metricsGrid">
-              <!-- Metric 1: Prompts Rebuilt -->
+              <!-- Metric 1: Rebuilds Completed -->
               <div class="metric-card">
                 <div class="metric-icon-wrap icon-blue">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -153,10 +153,10 @@
                   </svg>
                 </div>
                 <div class="metric-content">
-                  <span class="metric-label">Prompts Rebuilt</span>
+                  <span class="metric-label">Rebuilds Completed</span>
                   <div class="metric-val-row">
-                    <span class="metric-value" id="statPromptsRebuilt">142</span>
-                    <span class="metric-trend trend-positive" id="statPromptsTrend">+12% vs last wk</span>
+                    <span class="metric-value" id="statPromptsRebuilt">0</span>
+                    <span class="metric-trend trend-positive" id="statPromptsTrend">⚡ Active</span>
                   </div>
                   <span class="metric-subtext">Transformed instantly in-place</span>
                 </div>
@@ -173,14 +173,14 @@
                 <div class="metric-content">
                   <span class="metric-label">Time Saved</span>
                   <div class="metric-val-row">
-                    <span class="metric-value" id="statTimeSaved">4.7 hrs</span>
-                    <span class="metric-tag">Est. 34m / day</span>
+                    <span class="metric-value" id="statTimeSaved">0m</span>
+                    <span class="metric-tag">Est. 2m / rebuild</span>
                   </div>
                   <span class="metric-subtext">Manual prompt writing eliminated</span>
                 </div>
               </div>
 
-              <!-- Metric 3: Retries Prevented -->
+              <!-- Metric 3: Included Usage -->
               <div class="metric-card">
                 <div class="metric-icon-wrap icon-purple">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -188,12 +188,12 @@
                   </svg>
                 </div>
                 <div class="metric-content">
-                  <span class="metric-label">Retries Prevented</span>
+                  <span class="metric-label">Usage Status</span>
                   <div class="metric-val-row">
-                    <span class="metric-value" id="statRetriesAvoided">84</span>
-                    <span class="metric-tag">First-shot accuracy</span>
+                    <span class="metric-value" id="statRetriesAvoided" style="font-size: 18px;">Active</span>
+                    <span class="metric-tag">BYOK / Local</span>
                   </div>
-                  <span class="metric-subtext">Based on production-grade outputs</span>
+                  <span class="metric-subtext">Keys encrypted on device</span>
                 </div>
               </div>
 
@@ -229,6 +229,33 @@
             </div>
 
             <div class="provider-card-surface">
+              <!-- Quick Model Switcher Strip -->
+              <div class="quick-models-strip">
+                <span class="quick-models-label">⚡ Fast Switch:</span>
+                <div class="quick-models-pills" id="quickModelPills">
+                  <button type="button" class="btn-model-chip active" data-provider="deepseek" data-model="deepseek-chat" title="DeepSeek V3 - Default Production Fast Model">
+                    <span class="chip-badge">DeepSeek V3</span>
+                    <span class="chip-sub">⚡ Fast</span>
+                  </button>
+                  <button type="button" class="btn-model-chip" data-provider="deepseek" data-model="deepseek-reasoner" title="DeepSeek R1 - Frontier Chain of Thought">
+                    <span class="chip-badge">DeepSeek R1</span>
+                    <span class="chip-sub">🧠 Reasoning</span>
+                  </button>
+                  <button type="button" class="btn-model-chip" data-provider="gemini" data-model="gemini-1.5-flash" title="Google Gemini 1.5 Flash">
+                    <span class="chip-badge">Gemini 1.5 Flash</span>
+                    <span class="chip-sub">🚀 Fast</span>
+                  </button>
+                  <button type="button" class="btn-model-chip" data-provider="openrouter" data-model="nvidia/nemotron-3-super-120b-a12b:free" title="Nvidia Nemotron 120B Free Tier">
+                    <span class="chip-badge">Nemotron 120B</span>
+                    <span class="chip-sub">🆓 Free</span>
+                  </button>
+                  <button type="button" class="btn-model-chip" data-provider="openrouter" data-model="deepseek/deepseek-r1:free" title="DeepSeek R1 Free via OpenRouter">
+                    <span class="chip-badge">DeepSeek R1 (OR)</span>
+                    <span class="chip-sub">🆓 Free</span>
+                  </button>
+                </div>
+              </div>
+
               <div class="provider-form-grid">
                 <div class="form-group">
                   <label for="homeProviderSelect">Active Provider</label>
@@ -243,11 +270,11 @@
                 <div class="form-group">
                   <label for="homeModelSelect">Active Model</label>
                   <select id="homeModelSelect" class="form-select">
-                    <option value="deepseek-v4-pro">DeepSeek V4 Pro (Frontier Reasoning & 1M Ctx)</option>
-                    <option value="deepseek-v4-flash">DeepSeek V4 Flash (Lightning Speed)</option>
-                    <option value="deepseek-v4-flash-vision-exp">DeepSeek V4 Vision (Multimodal)</option>
-                    <option value="deepseek-chat">DeepSeek V3 Chat (Standard)</option>
-                    <option value="deepseek-reasoner">DeepSeek R1 (Chain of Thought)</option>
+                    <option value="deepseek-chat">DeepSeek V3 (deepseek-chat) ⚡ Fast & Production Default</option>
+                    <option value="deepseek-reasoner">DeepSeek R1 (deepseek-reasoner) 🧠 Frontier Reasoning</option>
+                    <option value="deepseek-v4-pro">DeepSeek V4 Pro (deepseek-v4-pro) 🚀 Flagship 1M Context</option>
+                    <option value="deepseek-v4-flash">DeepSeek V4 Flash (deepseek-v4-flash) ⚡ Sub-Second</option>
+                    <option value="deepseek-v4-flash-vision-exp">DeepSeek V4 Vision (deepseek-v4-flash-vision-exp) 👁️ Image/OCR</option>
                     <option value="custom">Custom Model...</option>
                   </select>
                 </div>
@@ -298,7 +325,29 @@
               <!-- Connection Status Ping Box -->
               <div class="connection-status-box" id="homeConnectionResult">
                 <span class="status-indicator-dot connected" id="homeConnectionDot"></span>
-                <span class="connection-result-text" id="homeConnectionText">Connected via DeepSeek V4 Pro (Latency: 42ms)</span>
+                <span class="connection-result-text" id="homeConnectionText">Connected via DeepSeek V3 (Latency: 38ms)</span>
+              </div>
+
+              <!-- Clear Guidance & Troubleshooting Box -->
+              <div class="guidance-callout-card" id="homeGuidanceCard">
+                <div class="guidance-header">
+                  <span class="guidance-icon">💡</span>
+                  <span class="guidance-title">Out-of-the-Box Quick Guide</span>
+                </div>
+                <div class="guidance-steps">
+                  <div class="guidance-step">
+                    <span class="step-num">1</span>
+                    <span class="step-desc">Get your free API key at <a href="https://platform.deepseek.com/api_keys" target="_blank" class="step-link">platform.deepseek.com</a></span>
+                  </div>
+                  <div class="guidance-step">
+                    <span class="step-num">2</span>
+                    <span class="step-desc">Paste your key above &mdash; it auto-saves immediately with local AES-256 encryption.</span>
+                  </div>
+                  <div class="guidance-step">
+                    <span class="step-num">3</span>
+                    <span class="step-desc">Highlight any text in any app and press <kbd class="step-kbd">Ctrl+Alt+Space</kbd> to refine instantly!</span>
+                  </div>
+                </div>
               </div>
             </div>
           </section>

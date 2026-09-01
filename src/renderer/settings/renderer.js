@@ -5,40 +5,36 @@
 // ── Provider Models Configuration ──
 const PROVIDER_MODELS = {
   deepseek: [
-    { value: "deepseek-v4-pro", label: "DeepSeek V4 Pro (Frontier Reasoning & 1M Ctx)" },
-    { value: "deepseek-v4-flash", label: "DeepSeek V4 Flash (Lightning Speed)" },
-    { value: "deepseek-v4-flash-vision-exp", label: "DeepSeek V4 Vision (Multimodal)" },
-    { value: "deepseek-chat", label: "DeepSeek V3 Chat (Standard)" },
-    { value: "deepseek-reasoner", label: "DeepSeek R1 (Chain of Thought)" },
+    { value: "deepseek-chat", label: "DeepSeek V3 (deepseek-chat) ⚡ Fast & Production Default" },
+    { value: "deepseek-reasoner", label: "DeepSeek R1 (deepseek-reasoner) 🧠 Frontier Reasoning" },
+    { value: "deepseek-v4-pro", label: "DeepSeek V4 Pro (deepseek-v4-pro) 🚀 Flagship 1M Context" },
+    { value: "deepseek-v4-flash", label: "DeepSeek V4 Flash (deepseek-v4-flash) ⚡ Sub-Second" },
+    { value: "deepseek-v4-flash-vision-exp", label: "DeepSeek V4 Vision (deepseek-v4-flash-vision-exp) 👁️ Image/OCR" },
     { value: "custom", label: "Custom Model..." }
   ],
   gemini: [
-    { value: "gemini-flash-latest", label: "Gemini Flash (Auto-Updating)" },
-    { value: "gemini-3.7-flash", label: "Gemini 3.7 Flash" },
-    { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash" },
-    { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro" },
-    { value: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
-    { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash" },
-    { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro" },
+    { value: "gemini-1.5-flash", label: "Google Gemini 1.5 Flash ⚡ Free Tier & Fast" },
+    { value: "gemini-2.0-flash", label: "Google Gemini 2.0 Flash 🚀 Next-Gen Fast" },
+    { value: "gemini-2.5-flash", label: "Google Gemini 2.5 Flash ⚡ Ultra-Fast" },
+    { value: "gemini-1.5-pro", label: "Google Gemini 1.5 Pro 🧠 Deep Logic & Reasoning" },
+    { value: "gemini-flash-latest", label: "Gemini Flash Latest (Auto-Updating)" },
     { value: "custom", label: "Custom Model..." }
   ],
   openrouter: [
-    { value: "meta-llama/llama-3.3-70b-instruct:free", label: "FREE: Llama 3.3 70B (Fast)" },
-    { value: "deepseek/deepseek-r1:free", label: "FREE: DeepSeek R1 (Reasoning)" },
-    { value: "qwen/qwen-2.5-coder-32b-instruct:free", label: "FREE: Qwen 2.5 Coder 32B" },
-    { value: "google/gemma-4-31b-it:free", label: "FREE: Gemma 4 31B" },
-    { value: "openai/gpt-4o-mini", label: "GPT-4o Mini" },
-    { value: "openai/gpt-4o", label: "GPT-4o" },
-    { value: "anthropic/claude-3.7-sonnet", label: "Claude 3.7 Sonnet" },
-    { value: "anthropic/claude-3.5-sonnet", label: "Claude 3.5 Sonnet" },
+    { value: "nvidia/nemotron-3-super-120b-a12b:free", label: "Nvidia Nemotron 120B 🆓 Free Tier (Recommended)" },
+    { value: "deepseek/deepseek-r1:free", label: "DeepSeek R1 via OpenRouter 🆓 Free Tier" },
+    { value: "meta-llama/llama-3.3-70b-instruct:free", label: "Meta Llama 3.3 70B 🆓 Free Tier" },
+    { value: "qwen/qwen3-coder:free", label: "Qwen 3 Coder 🆓 Free Coding" },
+    { value: "google/gemma-4-26b-a4b-it:free", label: "Google Gemma 4 🆓 Free Tier" },
+    { value: "anthropic/claude-3.5-sonnet", label: "Claude 3.5 Sonnet (BYOK)" },
+    { value: "openai/gpt-4o-mini", label: "GPT-4o Mini (BYOK)" },
     { value: "custom", label: "Custom Model..." }
   ],
   gateway: [
-    { value: "gateway-default", label: "Refinzi Free Gateway (Multi-Model Auto)" },
-    { value: "deepseek-v4-pro", label: "DeepSeek V4 Pro (via Gateway)" },
-    { value: "deepseek-v4-flash", label: "DeepSeek V4 Flash (via Gateway)" },
+    { value: "gateway-default", label: "Refinzi Free Gateway (Auto Failover)" },
     { value: "deepseek-chat", label: "DeepSeek V3 (via Gateway)" },
-    { value: "deepseek-reasoner", label: "DeepSeek R1 (via Gateway)" }
+    { value: "deepseek-reasoner", label: "DeepSeek R1 (via Gateway)" },
+    { value: "deepseek-v4-pro", label: "DeepSeek V4 Pro (via Gateway)" }
   ]
 };
 
@@ -325,26 +321,29 @@ function switchTab(tabName) {
 // ============================================================
 function renderMetrics() {
   if (elements.statPromptsRebuilt) {
-    elements.statPromptsRebuilt.textContent = String(state.stats.promptsRebuilt);
+    elements.statPromptsRebuilt.textContent = String(state.stats.promptsRebuilt || 0);
   }
   if (elements.statTimeSaved) {
-    elements.statTimeSaved.textContent = state.stats.timeSavedHours;
+    elements.statTimeSaved.textContent = state.stats.timeSavedHours || "0m";
   }
   if (elements.statRetriesAvoided) {
-    elements.statRetriesAvoided.textContent = String(state.stats.retriesAvoided);
+    const hasKey = Boolean(state.settings.deepSeekApiKey || state.settings.geminiApiKey || state.settings.openRouterApiKey);
+    elements.statRetriesAvoided.textContent = hasKey ? "BYOK Active" : "Active";
   }
   if (elements.statActiveEngine) {
-    const model = state.settings.activeModel || "deepseek-v4-pro";
-    let formattedModel = "DeepSeek V4 Pro";
+    const model = state.settings.activeModel || "deepseek-chat";
+    let formattedModel = "DeepSeek V3";
     if (model.includes("deepseek-v4-flash")) formattedModel = "DeepSeek V4 Flash";
     else if (model.includes("deepseek-v4-pro")) formattedModel = "DeepSeek V4 Pro";
     else if (model.includes("deepseek-reasoner")) formattedModel = "DeepSeek R1";
     else if (model.includes("deepseek-chat")) formattedModel = "DeepSeek V3";
     else if (model.includes("gemini-3.7")) formattedModel = "Gemini 3.7 Flash";
     else if (model.includes("gemini-2.5")) formattedModel = "Gemini 2.5 Flash";
-    else if (model.includes("gemini")) formattedModel = "Gemini Flash";
+    else if (model.includes("gemini-1.5-pro")) formattedModel = "Gemini 1.5 Pro";
+    else if (model.includes("gemini")) formattedModel = "Gemini 1.5 Flash";
+    else if (model.includes("nemotron")) formattedModel = "Nemotron 120B";
     else if (model.includes("llama")) formattedModel = "Llama 3.3 70B";
-    else if (model.includes("claude")) formattedModel = "Claude 3.7 Sonnet";
+    else if (model.includes("claude")) formattedModel = "Claude 3.5 Sonnet";
     
     elements.statActiveEngine.textContent = formattedModel;
   }
@@ -369,7 +368,7 @@ function updateProviderModelsDropdown(provider, selectedModel) {
     elements.homeModelSelect.appendChild(opt);
   });
 
-  const defaultModel = selectedModel || (provider === "deepseek" ? "deepseek-v4-pro" : provider === "gemini" ? "gemini-flash-latest" : provider === "gateway" ? "gateway-default" : "meta-llama/llama-3.3-70b-instruct:free");
+  const defaultModel = selectedModel || (provider === "deepseek" ? "deepseek-chat" : provider === "gemini" ? "gemini-1.5-flash" : provider === "gateway" ? "gateway-default" : "nvidia/nemotron-3-super-120b-a12b:free");
   const hasModel = models.some(m => m.value === defaultModel);
   
   if (hasModel) {
@@ -413,6 +412,18 @@ function syncProviderUI() {
     else if (provider === "openrouter") elements.homeApiKeyInput.value = state.settings.openRouterApiKey || "";
     else elements.homeApiKeyInput.value = "";
   }
+
+  // Sync Quick Switch Pills Active State
+  const quickModelPills = document.querySelectorAll(".btn-model-chip");
+  quickModelPills.forEach(chip => {
+    const chipModel = chip.getAttribute("data-model");
+    const chipProvider = chip.getAttribute("data-provider");
+    if (chipModel === state.settings.activeModel && chipProvider === provider) {
+      chip.classList.add("active");
+    } else {
+      chip.classList.remove("active");
+    }
+  });
 }
 
 function syncSettingsUI() {
@@ -749,13 +760,39 @@ function setupEventListeners() {
   elements.homeProviderSelect?.addEventListener("change", (e) => {
     const provider = e.target.value;
     state.settings.activeProvider = provider;
+    const defaultModel = provider === "gemini" 
+      ? "gemini-1.5-flash" 
+      : (provider === "openrouter" 
+          ? "nvidia/nemotron-3-super-120b-a12b:free" 
+          : (provider === "deepseek" ? "deepseek-chat" : "gateway-default"));
+    state.settings.activeModel = defaultModel;
     syncProviderUI();
     
     // Save to Electron Bridge if running
     if (window.refinzi?.settings?.set) {
-      window.refinzi.settings.set({ activeProvider: provider });
+      window.refinzi.settings.set({ activeProvider: provider, activeModel: defaultModel });
     }
     renderMetrics();
+  });
+
+  // Quick Model Switcher Pills Click Handlers
+  const quickModelPills = document.querySelectorAll(".btn-model-chip");
+  quickModelPills.forEach(chip => {
+    chip.addEventListener("click", () => {
+      const provider = chip.getAttribute("data-provider") || "deepseek";
+      const model = chip.getAttribute("data-model") || "deepseek-chat";
+      
+      state.settings.activeProvider = provider;
+      state.settings.activeModel = model;
+      
+      syncProviderUI();
+      if (window.refinzi?.settings?.set) {
+        window.refinzi.settings.set({ activeProvider: provider, activeModel: model });
+      }
+      renderMetrics();
+      const chipTitle = chip.querySelector(".chip-badge")?.textContent || model;
+      showToast(`Switched active AI engine to ${chipTitle}`, "success", 1800);
+    });
   });
 
   elements.homeModelSelect?.addEventListener("change", (e) => {
@@ -768,7 +805,9 @@ function setupEventListeners() {
       if (window.refinzi?.settings?.set) {
         window.refinzi.settings.set({ activeModel: model });
       }
+      syncProviderUI();
       renderMetrics();
+      showToast(`Active AI Model switched to ${model}`, "success", 2000);
     }
   });
 
@@ -788,6 +827,14 @@ function setupEventListeners() {
       const key = elements.homeApiKeyInput?.value?.trim() || "";
       const provider = elements.homeProviderSelect?.value || "deepseek";
 
+      // Auto-save key first before testing
+      if (key && !key.startsWith("••••") && window.refinzi?.settings?.setApiKey) {
+        await window.refinzi.settings.setApiKey(key, provider);
+        if (provider === "deepseek") state.settings.deepSeekApiKey = key;
+        else if (provider === "gemini") state.settings.geminiApiKey = key;
+        else if (provider === "openrouter") state.settings.openRouterApiKey = key;
+      }
+
       try {
         if (window.refinzi?.settings?.verifyApiKey) {
           const res = await window.refinzi.settings.verifyApiKey(key, provider);
@@ -796,14 +843,13 @@ function setupEventListeners() {
             elements.homeConnectionText.textContent = `Connected successfully! (Latency: ${res.latencyMs || 42}ms)`;
             showToast("Connection test passed!", "success");
             return;
+          } else {
+            elements.homeConnectionDot.className = "status-indicator-dot";
+            elements.homeConnectionText.textContent = res?.error || "Connection failed. Please check API key.";
+            showToast(res?.error || "Connection failed.", "warning");
+            return;
           }
         }
-        // Simulated local fallback
-        setTimeout(() => {
-          elements.homeConnectionDot.className = "status-indicator-dot connected";
-          elements.homeConnectionText.textContent = `Connected successfully! (Latency: 42ms via ${provider === "deepseek" ? "DeepSeek V4" : provider === "gemini" ? "Google Gemini" : "OpenRouter"})`;
-          showToast("AI provider connected successfully!", "success");
-        }, 300);
       } catch (err) {
         elements.homeConnectionDot.className = "status-indicator-dot";
         elements.homeConnectionText.textContent = `Connection error: ${err.message || "Invalid credentials"}`;
@@ -812,11 +858,13 @@ function setupEventListeners() {
     }
   });
 
-  // 13. Save Key Button on Homepage
-  elements.homeSaveKeyBtn?.addEventListener("click", async () => {
+  // 13. Auto-Save API Key on Input, Paste, & Save Button
+  const saveCurrentApiKey = async () => {
     const key = elements.homeApiKeyInput?.value?.trim() || "";
     const provider = elements.homeProviderSelect?.value || "deepseek";
     
+    if (key.startsWith("••••")) return;
+
     if (provider === "deepseek") state.settings.deepSeekApiKey = key;
     else if (provider === "gemini") state.settings.geminiApiKey = key;
     else if (provider === "openrouter") state.settings.openRouterApiKey = key;
@@ -824,7 +872,24 @@ function setupEventListeners() {
     if (window.refinzi?.settings?.setApiKey) {
       await window.refinzi.settings.setApiKey(key, provider);
     }
-    showToast(`API Key saved locally for ${provider.toUpperCase()}`, "success");
+  };
+
+  elements.homeApiKeyInput?.addEventListener("input", () => {
+    saveCurrentApiKey();
+  });
+
+  elements.homeApiKeyInput?.addEventListener("change", () => {
+    saveCurrentApiKey();
+  });
+
+  elements.homeApiKeyInput?.addEventListener("blur", () => {
+    saveCurrentApiKey();
+  });
+
+  elements.homeSaveKeyBtn?.addEventListener("click", async () => {
+    await saveCurrentApiKey();
+    const provider = elements.homeProviderSelect?.value || "deepseek";
+    showToast(`API Key saved securely for ${provider.toUpperCase()}`, "success");
   });
 
   // 14. Settings Tab Toggles & Preferences

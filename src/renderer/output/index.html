@@ -107,8 +107,8 @@
             <div class="byok-wall hidden" id="byok-wall" role="alertdialog" aria-labelledby="byok-header">
                 <div class="byok-wall-content">
                     <div class="byok-icon">⚡</div>
-                    <div class="byok-header" id="byok-header">Usage Limit Reached</div>
-                    <div class="byok-sub">You've unlocked full capabilities. Plug in your personal API key for unlimited ultra-fast generations or upgrade to Refinzi Pro. Keys stay encrypted on your device.</div>
+                    <div class="byok-header" id="byok-header">You've reached your included usage.</div>
+                    <div class="byok-sub">Add your DeepSeek, Gemini, or OpenRouter key to keep rebuilding. Your key stays encrypted on your device.</div>
                     <div class="byok-actions">
                         <button class="btn btn-copy" id="wall-add-key-btn">Add API Key</button>
                         <button class="btn btn-regenerate" id="wall-later-btn">Later</button>
@@ -123,17 +123,17 @@
             <div class="action-bar" id="action-bar">
 
                 <!-- Primary: Copy All -->
-                <button class="btn btn-copy" id="copy-btn" title="Copy full blueprint (Ctrl+Enter)">
+                <button class="btn btn-copy" id="copy-btn" title="Copy full rebuild pack (Ctrl+Enter)">
                     <span class="btn-icon">⚡</span>
-                    <span class="btn-label" id="copy-label">Copy Full Blueprint</span>
+                    <span class="btn-label" id="copy-label">Copy All</span>
                     <span class="btn-kbd">Ctrl+Enter</span>
                 </button>
 
                 <div class="action-row">
-                    <!-- Secondary: Rebuild -->
-                    <button class="btn btn-regenerate" id="regenerate-btn" title="Rebuild blueprint">
+                    <!-- Secondary: Rebuild Again -->
+                    <button class="btn btn-regenerate" id="regenerate-btn" title="Rebuild again">
                         <span class="btn-icon" id="regen-icon">↻</span>
-                        <span class="btn-label" id="regen-label">Rebuild</span>
+                        <span class="btn-label" id="regen-label">Rebuild Again</span>
                     </button>
 
                     <!-- Tertiary: Expert (hidden by default) -->

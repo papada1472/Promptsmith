@@ -47,6 +47,8 @@ import { PrivacyPage } from "./pages/PrivacyPage.jsx";
 import { TermsPage } from "./pages/TermsPage.jsx";
 import { DocsPage } from "./pages/DocsPage.jsx";
 import { FounderSection } from "./components/FounderSection.jsx";
+import { ContactFeedbackSection } from "./components/ContactFeedbackSection.jsx";
+import { FloatingContactWidget } from "./components/FloatingContactWidget.jsx";
 import { RefinziComparison } from "./components/RefinziComparison.jsx";
 import { ThemeToggle } from "./components/ThemeToggle.jsx";
 import { CookieBanner } from "./components/CookieBanner.jsx";
@@ -76,6 +78,7 @@ const NAV_LINKS = [
   { label: "5-Block Blueprint", href: "#blueprint" },
   { label: "Pricing", href: "#pricing" },
   { label: "FAQ", href: "#faq" },
+  { label: "Contact & Feedback", href: "#contact" },
 ];
 
 const WORKSPACES = [
@@ -460,59 +463,73 @@ function LifetimeOfferModal({ isOpen, onClose, onDownload, onOpenCheckout, curre
   );
 }
 
-/* --------------------------- Download Started Modal ----------------------- */
+/* --------------------------- Non-Intrusive Download Toast ----------------------- */
 
-function DownloadSuccessModal({ isOpen, onClose }) {
+function DownloadToast({ isOpen, onClose }) {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const timer = setTimeout(() => {
+      onClose();
+    }, 9000);
+    return () => clearTimeout(timer);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText("Ctrl+Alt+Space");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
-      <div className="relative w-full max-w-[440px] overflow-hidden rounded-2xl border border-emerald-500/40 bg-zinc-950 p-5 sm:p-6 shadow-2xl">
+    <div className="fixed bottom-24 right-4 sm:bottom-6 sm:right-6 z-50 max-w-sm w-[calc(100vw-32px)] sm:w-auto rounded-2xl border border-emerald-500/40 bg-zinc-950/95 p-4 shadow-2xl backdrop-blur-xl animate-in slide-in-from-bottom-3 duration-200">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 ring-2 ring-emerald-500/30">
+            <Download className="h-4 w-4" />
+          </div>
+          <div>
+            <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
+              <span>Downloading Refinzi 2.0</span>
+              <span className="text-[10px] text-emerald-400 font-mono">.exe</span>
+            </h4>
+            <p className="text-[11px] text-zinc-400">Direct download started to your PC</p>
+          </div>
+        </div>
         <button
           onClick={onClose}
-          className="absolute right-3.5 top-3.5 rounded-full p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors"
-          aria-label="Close download modal"
+          className="rounded-full p-1 text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors"
+          aria-label="Close notification"
         >
-          <X className="h-4 w-4" />
+          <X className="h-3.5 w-3.5" />
         </button>
+      </div>
 
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 ring-2 ring-emerald-500/30 mx-auto">
-          <Download className="h-5 w-5" />
+      <div className="mt-3 rounded-xl border border-white/[0.06] bg-zinc-900/70 p-2.5 space-y-1.5 text-[11px] text-zinc-300">
+        <p className="text-[9px] font-bold uppercase tracking-wider text-zinc-400">Quick 3-Step Setup:</p>
+        <div className="flex items-center gap-2">
+          <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-blue-500/20 text-blue-400 text-[9px] font-bold">1</span>
+          <span>Open <code className="text-blue-300 bg-blue-950/40 px-1 py-0.2 rounded font-mono">Refinzi-Setup-v2.0.0.exe</code></span>
         </div>
-
-        <h3 className="mt-3 text-center text-lg font-bold text-white">
-          Download Started!
-        </h3>
-        <p className="mt-1 text-center text-xs text-zinc-400">
-          Refinzi 2.0 is downloading to your PC.
-        </p>
-
-        {/* 3 Step Setup Guide */}
-        <div className="mt-4 rounded-xl border border-white/[0.07] bg-zinc-900/60 p-3 space-y-2">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">3-Step Quickstart:</p>
-          <div className="flex items-start gap-2.5 text-xs text-zinc-300">
-            <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-blue-500/20 font-bold text-blue-400 text-[10px]">1</span>
-            <span>Open <code className="text-blue-300 bg-blue-950/40 px-1 py-0.2 rounded">Refinzi-Setup-2.0.0.exe</code>.</span>
-          </div>
-          <div className="flex items-start gap-2.5 text-xs text-zinc-300">
-            <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-purple-500/20 font-bold text-purple-400 text-[10px]">2</span>
-            <span>Refinzi launches as an ambient desktop Orb.</span>
-          </div>
-          <div className="flex items-start gap-2.5 text-xs text-zinc-300">
-            <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 font-bold text-emerald-400 text-[10px]">3</span>
-            <span>Highlight text anywhere and tap <kbd className="bg-zinc-800 text-white px-1.5 py-0.2 rounded border border-zinc-700 font-mono text-[10px]">Ctrl+Alt+Space</kbd>!</span>
-          </div>
+        <div className="flex items-center gap-2">
+          <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-purple-500/20 text-purple-400 text-[9px] font-bold">2</span>
+          <span>Orb floats ambiently on your desktop</span>
         </div>
-
-        <div className="mt-4 flex flex-col gap-2">
-          <Button
-            size="default"
-            variant="primary"
-            className="w-full font-bold"
-            onClick={onClose}
+        <div className="flex items-center justify-between gap-2 pt-0.5">
+          <div className="flex items-center gap-2">
+            <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 text-[9px] font-bold">3</span>
+            <span>Highlight text & tap</span>
+          </div>
+          <button
+            onClick={handleCopy}
+            className="flex items-center gap-1 font-mono text-[10px] font-bold text-blue-300 bg-blue-950/50 hover:bg-blue-900/50 px-1.5 py-0.5 rounded border border-blue-500/30 transition-colors cursor-pointer"
           >
-            Launch & Build 🚀
-          </Button>
+            {copied ? <CheckCheck className="h-2.5 w-2.5 text-emerald-400" /> : <Copy className="h-2.5 w-2.5" />}
+            <span>Ctrl+Alt+Space</span>
+          </button>
         </div>
       </div>
     </div>
@@ -563,23 +580,10 @@ function Navbar({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, 
             variant="primary"
             size="xs"
             onClick={onDownload}
+            className="font-bold text-xs"
           >
-            {osType === "mac" ? (
-              <>
-                <Apple className="h-3 w-3" />
-                Mac Beta
-              </>
-            ) : osType === "ios" || osType === "android" ? (
-              <>
-                <Smartphone className="h-3 w-3" />
-                Get Link
-              </>
-            ) : (
-              <>
-                <Download className="h-3 w-3" />
-                Download Free
-              </>
-            )}
+            <Download className="h-3 w-3 mr-1" />
+            Download Free (.exe)
           </Button>
         </div>
 
@@ -617,10 +621,10 @@ function Navbar({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, 
                 variant="primary"
                 size="sm"
                 onClick={() => { setOpen(false); onDownload(); }}
-                className="w-full"
+                className="w-full font-bold"
               >
-                <Download className="h-3.5 w-3.5" />
-                Download Free
+                <Download className="h-3.5 w-3.5 mr-1" />
+                Download Free (.exe)
               </Button>
               <Button
                 variant="deal"
@@ -628,7 +632,7 @@ function Navbar({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, 
                 onClick={() => { setOpen(false); onOpenOffer(); }}
                 className="w-full"
               >
-                <Flame className="h-3.5 w-3.5" />
+                <Flame className="h-3.5 w-3.5 mr-1" />
                 Lifetime Deal — {currency.formattedPrice}
               </Button>
             </li>
@@ -840,34 +844,15 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
 
           {/* Primary CTA + Secondary Link */}
           <div className="mt-6 flex flex-wrap items-center gap-4">
-            {osType === "mac" ? (
-              <Button
-                size="lg"
-                variant="primary"
-                onClick={onOpenNonWindows}
-              >
-                <Apple className="h-4 w-4 mr-1" />
-                Join Mac Beta Waitlist
-              </Button>
-            ) : osType === "ios" || osType === "android" ? (
-              <Button
-                size="lg"
-                variant="primary"
-                onClick={onOpenNonWindows}
-              >
-                <Smartphone className="h-4 w-4 mr-1" />
-                Email Me Download Link
-              </Button>
-            ) : (
-              <Button
-                size="lg"
-                variant="primary"
-                onClick={onDownload}
-              >
-                <Download className="h-4 w-4" />
-                Download Free for Windows
-              </Button>
-            )}
+            <Button
+              size="lg"
+              variant="primary"
+              onClick={onDownload}
+              className="font-bold text-sm sm:text-base shadow-xl shadow-blue-500/20"
+            >
+              <Download className="h-4 w-4 mr-1.5" />
+              Download Free for Windows (.exe)
+            </Button>
 
             <a
               href="#pricing"
@@ -880,6 +865,16 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
               <span>See Lifetime Deal ({currency.formattedPrice})</span>
               <ArrowRight className="h-3.5 w-3.5 text-amber-400 group-hover:translate-x-0.5 transition-transform" />
             </a>
+
+            {osType !== "windows" && (
+              <button
+                type="button"
+                onClick={onOpenNonWindows}
+                className="text-[11px] text-zinc-400 hover:text-blue-300 underline font-medium cursor-pointer"
+              >
+                On Mac/Linux/Mobile? Join Preview List
+              </button>
+            )}
           </div>
 
           {/* Clear Primary vs Secondary Interaction & Free vs Paid Value Gap */}
@@ -1587,47 +1582,28 @@ function FinalCTA({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD
           </p>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            {osType === "mac" ? (
-              <Button
-                size="lg"
-                variant="primary"
-                onClick={onOpenNonWindows}
-              >
-                <Apple className="h-4 w-4 mr-1" />
-                Join Mac Beta Waitlist
-              </Button>
-            ) : osType === "ios" || osType === "android" ? (
-              <Button
-                size="lg"
-                variant="primary"
-                onClick={onOpenNonWindows}
-              >
-                <Smartphone className="h-4 w-4 mr-1" />
-                Email Me Download Link
-              </Button>
-            ) : (
-              <Button
-                size="lg"
-                variant="primary"
-                onClick={onDownload}
-              >
-                <Download className="h-4 w-4" />
-                Download Free for Windows
-              </Button>
-            )}
+            <Button
+              size="lg"
+              variant="primary"
+              onClick={onDownload}
+              className="font-bold shadow-lg shadow-blue-500/20"
+            >
+              <Download className="h-4 w-4 mr-1.5" />
+              Download Free for Windows (.exe)
+            </Button>
 
             <Button
               variant="deal"
               size="lg"
               onClick={onOpenOffer}
             >
-              <Flame className="h-4 w-4" />
+              <Flame className="h-4 w-4 mr-1.5" />
               Claim Lifetime Pro — {currency.formattedPrice}
             </Button>
           </div>
 
           <p className="mt-3 text-[11px] text-zinc-400">
-            Windows 10 & 11 (64-bit) · 84 MB · Code-verified & VirusTotal clean (0/72) · Zero configuration
+            Windows 10 & 11 (64-bit) · 111.8 MB · Code-verified & VirusTotal clean (0/72) · Direct instant download
           </p>
         </Reveal>
       </div>
@@ -1637,7 +1613,7 @@ function FinalCTA({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD
 
 /* -------------------------- Sticky Conversion Bar ------------------------- */
 
-function StickyConversionBar({ show, onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, osType = "windows", onOpenNonWindows }) {
+function StickyConversionBar({ show, onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD }) {
   if (!show) return null;
 
   return (
@@ -1656,31 +1632,18 @@ function StickyConversionBar({ show, onOpenOffer, onDownload, currency = SUPPORT
         <div className="flex w-full sm:w-auto items-center justify-end gap-2.5">
           <button
             onClick={onOpenOffer}
-            className="text-xs font-semibold text-zinc-300 hover:text-amber-300 px-2 py-1 transition-colors"
+            className="text-xs font-semibold text-zinc-300 hover:text-amber-300 px-2 py-1 transition-colors cursor-pointer"
           >
             Lifetime {currency.formattedPrice}
           </button>
           <Button
             size="xs"
             variant="primary"
-            onClick={osType === "windows" ? onDownload : onOpenNonWindows}
+            onClick={onDownload}
+            className="font-bold text-xs"
           >
-            {osType === "mac" ? (
-              <>
-                <Apple className="h-3 w-3" />
-                Mac Beta
-              </>
-            ) : osType === "ios" || osType === "android" ? (
-              <>
-                <Smartphone className="h-3 w-3" />
-                Get Link
-              </>
-            ) : (
-              <>
-                <Download className="h-3 w-3" />
-                Download Free
-              </>
-            )}
+            <Download className="h-3 w-3 mr-1" />
+            Download Free (.exe)
           </Button>
         </div>
       </div>
@@ -1735,7 +1698,29 @@ function Footer({ onNavigate }) {
           <RequestAiSummary />
         </div>
         <div className="flex flex-col items-start md:items-end gap-2">
-          <nav aria-label="Legal" className="flex flex-wrap items-center gap-4 text-zinc-400">
+          <nav aria-label="Footer Navigation" className="flex flex-wrap items-center gap-4 text-zinc-400">
+            <a
+              href="#contact"
+              className="hover:text-blue-300 transition-colors font-medium text-zinc-300"
+            >
+              Contact & Feedback
+            </a>
+            <a
+              href="https://cal.com/rahul-mangla-ub8se9/30min"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-300 transition-colors text-zinc-300"
+            >
+              Book 30-Min Call (Cal.com)
+            </a>
+            <a
+              href="https://wa.me/919971271291?text=Hi%20Rahul,%20I'm%20reaching%20out%20about%20Refinzi!"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-emerald-300 transition-colors text-emerald-400 font-medium"
+            >
+              WhatsApp +91-9971271291
+            </a>
             <button
               onClick={() => onNavigate("privacy", "/privacy")}
               className="hover:text-zinc-200 transition-colors cursor-pointer"
@@ -1766,8 +1751,8 @@ function Footer({ onNavigate }) {
               href="mailto:contact@refinzi.com"
               className="hover:text-zinc-200 transition-colors font-medium flex items-center gap-1 text-zinc-300 hover:text-white"
             >
-              <span>Contact</span>
-              <span className="text-[10px] text-blue-400 font-mono">(contact@refinzi.com)</span>
+              <span>Email:</span>
+              <span className="text-[10px] text-blue-400 font-mono">contact@refinzi.com</span>
             </a>
           </nav>
           <p className="text-[10px] text-zinc-400">
@@ -1829,7 +1814,7 @@ export default function App() {
   const [osType, setOsType] = useState(() => detectClientOS());
   const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
   const [isPaypalModalOpen, setIsPaypalModalOpen] = useState(false);
-  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+  const [isDownloadToastOpen, setIsDownloadToastOpen] = useState(false);
   const [isNonWindowsModalOpen, setIsNonWindowsModalOpen] = useState(false);
   const [showStickyBar, setShowStickyBar] = useState(false);
 
@@ -1870,19 +1855,6 @@ export default function App() {
       }
     });
   }, []);
-
-  // Auto show lifetime offer popup once after 7 seconds for desktop Windows visitors
-  useEffect(() => {
-    const hasSeenPopup = sessionStorage.getItem("refinzi_offer_seen");
-    if (!hasSeenPopup && osType === "windows") {
-      const timer = setTimeout(() => {
-        setIsOfferModalOpen(true);
-        sessionStorage.setItem("refinzi_offer_seen", "true");
-        trackEvent("offer_popup_auto_triggered");
-      }, 7000);
-      return () => clearTimeout(timer);
-    }
-  }, [osType]);
 
   // Analytics & Core Web Vitals Performance Monitoring on Mount
   useEffect(() => {
@@ -1936,13 +1908,8 @@ export default function App() {
   const DOWNLOAD_URL = "https://github.com/papada1472/Promptsmith/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe";
 
   const handleTriggerDownload = (source = "unknown") => {
-    if (osType !== "windows") {
-      setIsNonWindowsModalOpen(true);
-      trackEvent("non_windows_prompt_opened", { os: osType, source });
-      return;
-    }
-    setIsDownloadModalOpen(true);
-    trackEvent("download_initiated", { platform: "windows", source });
+    setIsDownloadToastOpen(true);
+    trackEvent("download_initiated", { platform: "windows", source, os: osType });
     const link = document.createElement("a");
     link.href = DOWNLOAD_URL;
     link.setAttribute("download", "Refinzi-Setup-v2.0.0.exe");
@@ -1952,14 +1919,7 @@ export default function App() {
   };
 
   const handleForceWindowsDownload = () => {
-    setIsDownloadModalOpen(true);
-    trackEvent("force_windows_download", { platform: "windows", originalOS: osType });
-    const link = document.createElement("a");
-    link.href = DOWNLOAD_URL;
-    link.setAttribute("download", "Refinzi-Setup-v2.0.0.exe");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    handleTriggerDownload("non_windows_modal_override");
   };
 
   const handleOpenCheckout = (source = "unknown") => {
@@ -2026,6 +1986,7 @@ export default function App() {
           onDownload={() => handleTriggerDownload("pricing")}
         />
         <FAQ />
+        <ContactFeedbackSection />
         <FinalCTA
           currency={currency}
           osType={osType}
@@ -2036,12 +1997,15 @@ export default function App() {
       </main>
       <Footer onNavigate={handleNavigate} />
 
-      {/* Social Proof Live Activity Toast (Clean bottom-left, no corner fighting) */}
+      {/* Social Proof Live Activity Toast */}
       {!showStickyBar && (
         <SocialProofToast onOpenOffer={() => handleOpenCheckout("social_proof_toast")} />
       )}
 
-      {/* Modals */}
+      {/* Floating Speed Dial Contact Widget */}
+      <FloatingContactWidget />
+
+      {/* Modals & Toasts */}
       <NonWindowsModal
         isOpen={isNonWindowsModalOpen}
         osType={osType}
@@ -2066,9 +2030,9 @@ export default function App() {
         onDownload={() => handleTriggerDownload("checkout_modal")}
       />
 
-      <DownloadSuccessModal
-        isOpen={isDownloadModalOpen}
-        onClose={() => setIsDownloadModalOpen(false)}
+      <DownloadToast
+        isOpen={isDownloadToastOpen}
+        onClose={() => setIsDownloadToastOpen(false)}
       />
 
       {/* Sticky Bottom Bar on scroll */}

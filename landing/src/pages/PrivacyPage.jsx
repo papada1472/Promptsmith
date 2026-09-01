@@ -94,20 +94,38 @@ export function PrivacyPage({ onNavigateHome }) {
             </p>
           </section>
 
-          <section className="rounded-2xl border border-white/[0.08] bg-zinc-900/60 p-5 space-y-2">
+          <section className="rounded-2xl border border-white/[0.08] bg-zinc-900/60 p-5 space-y-3">
             <div className="flex items-center gap-2 text-white font-bold">
               <Mail className="h-4 w-4 text-blue-400" />
-              <span>Contact Privacy Officer</span>
+              <span>Contact Privacy Officer & Founder</span>
             </div>
             <p className="text-xs text-zinc-400">
-              For any questions regarding privacy or data rights, please reach out to our team:
+              For any questions regarding privacy, data rights, or architecture verification, reach out to Rahul directly:
             </p>
-            <a
-              href="mailto:contact@refinzi.com"
-              className="text-xs font-mono text-blue-400 hover:text-blue-300 underline block"
-            >
-              contact@refinzi.com
-            </a>
+            <div className="flex flex-wrap items-center gap-3 pt-1">
+              <a
+                href="https://wa.me/919971271291?text=Hi%20Rahul,%20I'm%20reaching%20out%20about%20Refinzi%20Privacy!"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-bold text-emerald-300 bg-emerald-950/60 border border-emerald-500/30 px-3 py-1.5 rounded-xl hover:bg-emerald-900/60 transition-colors"
+              >
+                💬 WhatsApp +91-9971271291
+              </a>
+              <a
+                href="https://cal.com/rahul-mangla-ub8se9/30min"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded-xl transition-colors"
+              >
+                📅 Schedule 30-Min Call
+              </a>
+              <a
+                href="mailto:contact@refinzi.com"
+                className="text-xs font-mono text-blue-400 hover:text-blue-300 underline"
+              >
+                contact@refinzi.com
+              </a>
+            </div>
           </section>
         </div>
       </main>

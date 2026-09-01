@@ -20,14 +20,14 @@ describe("Launch Readiness & Core Loop Validation", () => {
     expect(html).toContain("Product Feedback");
   });
 
-  it("Output index.html contains target format selector pills and Usage Limit Reached", () => {
+  it("Output index.html contains target format selector pills and included usage copy", () => {
     const outputHtmlPath = path.resolve(process.cwd(), "src/renderer/output/index.html");
     const html = fs.readFileSync(outputHtmlPath, "utf8");
     expect(html).toContain("format-toolbar");
     expect(html).toContain("data-format=\"cursor\"");
     expect(html).toContain("data-format=\"claude\"");
     expect(html).toContain("data-format=\"markdown\"");
-    expect(html).toContain("Usage Limit Reached");
+    expect(html).toContain("included usage");
     expect(html).not.toContain("Beta Limit Reached");
   });
 

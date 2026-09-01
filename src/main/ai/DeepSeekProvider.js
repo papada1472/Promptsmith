@@ -40,7 +40,8 @@ export class DeepSeekProvider extends AIProvider {
       "deepseek-v4-vision": "deepseek-v4-flash-vision-exp",
       "deepseek-v4-flash-vision-exp": "deepseek-v4-flash-vision-exp"
     };
-    this.model = MODEL_ALIASES[rawModel] || rawModel;
+    this.model = MODEL_ALIASES[rawModel] || (typeof rawModel === "string" && rawModel.startsWith("deepseek-") ? rawModel : DeepSeekProvider.DEFAULT_MODEL);
+    this.apiKey = (this.apiKey || "").trim();
     log.debug("Initializing with model:", this.model);
   }
 

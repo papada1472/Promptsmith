@@ -34,6 +34,7 @@ if (__isVitest) {
   }
 
   const schema = {
+    deepSeekApiKey: { type: "string", default: "" },
     geminiApiKey: { type: "string", default: "" },
     openRouterApiKey: { type: "string", default: "" },
     hotkey: { type: "string", default: DEFAULT_HOTKEY },
@@ -62,8 +63,8 @@ if (__isVitest) {
     },
     userName: { type: "string", default: "User" },
     theme: { type: "string", default: "system" },
-    activeProvider: { type: "string", default: "gemini" },
-    activeModel: { type: "string", default: "gemini-flash-latest" },
+    activeProvider: { type: "string", default: "deepseek" },
+    activeModel: { type: "string", default: "deepseek-chat" },
     installedAt: { type: "number", default: 0 },
     reminder1Shown: { type: "boolean", default: false },
     reminder2Shown: { type: "boolean", default: false },

@@ -67,7 +67,7 @@ export function NonWindowsModal({ isOpen, onClose, osType = "mac", onDownloadWin
 
             <p className="mt-1.5 text-xs text-zinc-400 leading-relaxed">
               {isMac
-                ? "Refinzi 2.0 is currently native on Windows 10 & 11. Drop your email to join the VIP macOS beta list and get early access."
+                ? "Refinzi 2.0 is currently native on Windows 10 & 11. Drop your email to join the VIP macOS waitlist and get early access."
                 : isMobile
                 ? "Send the direct Windows installer (.exe) link to your inbox so you can set it up when you're back at your desk."
                 : "Join the Linux preview list and get notified the moment builds are available."}

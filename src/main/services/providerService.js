@@ -14,7 +14,7 @@ export class ProviderService {
    */
   async verifyApiKey(key, targetProvider) {
     try {
-      const providerId = targetProvider || store.get("activeProvider") || "gemini";
+      const providerId = targetProvider || store.get("activeProvider") || "deepseek";
       let actualKey = key ? String(key).trim() : "";
       
       if (actualKey.startsWith("••••") || !actualKey) {
@@ -39,7 +39,11 @@ export class ProviderService {
         return { ok: false, error: `Please enter a valid ${name} API key` };
       }
       
-      const model = store.get("activeModel") || ProviderManager.getDefaultModel(providerId);
+      const rawModel = store.get("activeModel");
+      const availableModels = ProviderManager.getAvailableModels(providerId);
+      const model = (rawModel && (availableModels.includes(rawModel) || (providerId === "openrouter" && rawModel.includes("/")))) 
+        ? rawModel 
+        : ProviderManager.getDefaultModel(providerId);
       
       const provider = ProviderManager.createProvider(providerId, {
         apiKey: actualKey,
@@ -61,7 +65,7 @@ export class ProviderService {
    * @returns {string}
    */
   getDefaultModel() {
-    return store.get("activeModel") || ProviderManager.getDefaultModel("gemini");
+    return store.get("activeModel") || ProviderManager.getDefaultModel("deepseek");
   }
 }
 

@@ -177,7 +177,7 @@ export async function refineSelectedText({ notifySuccess, notifyError, notifyWar
     // Record provider call failure + telemetry in a single batched write
     // (was 2 separate full-store disk writes)
     try {
-      const failedProvider = store.get("activeProvider") || "gemini";
+      const failedProvider = store.get("activeProvider") || "deepseek";
       const failLabel = failedProvider.charAt(0).toUpperCase() + failedProvider.slice(1);
       const errorDuration = Date.now() - startTime;
       const providerDelta = metricsService._computeProviderCallDelta(
@@ -199,7 +199,13 @@ export async function refineSelectedText({ notifySuccess, notifyError, notifyWar
     } catch (_) { /* never let metrics recording break the error path */ }
 
     if (notifyError) {
-      notifyError("Couldn't refine this selection.", errMsg, 3000);
+      if (e?.code === "MISSING_API_KEY" || errMsg.toLowerCase().includes("api key required")) {
+        notifyError("API Key Required", "DeepSeek API key is required. Right-click Refinzi Tray > Settings to add your key.", 5000);
+      } else if (e?.code === "RATE_LIMITED" || errMsg.toLowerCase().includes("rate limit") || errMsg.includes("429")) {
+        notifyError("Rate Limit Reached", "AI provider is currently busy. Try again in 10s or switch model in Settings.", 4500);
+      } else {
+        notifyError("Couldn't Refine Selection", errMsg, 4500);
+      }
     }
     return { ok: false, error: errMsg };
 

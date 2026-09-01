@@ -190,6 +190,41 @@ export function DocsPage({ onNavigateHome, onDownload }) {
                 <li>Click <strong>Activate License</strong>. All managed Claude & GPT models will immediately unlock!</li>
               </ol>
             </section>
+
+            {/* Section 6: Direct Support & Contact */}
+            <section id="support" className="space-y-4 rounded-2xl border border-blue-500/20 bg-blue-950/20 p-5 sm:p-6">
+              <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                <Zap className="h-4 w-4 text-amber-400" />
+                6. Need Help or Have Feedback? Reach Out to Rahul
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-300">
+                Need guidance setting up your custom prompt presets, BYOK keys, or want to suggest a new feature? Connect directly:
+              </p>
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                <a
+                  href="https://cal.com/rahul-mangla-ub8se9/30min"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 px-3.5 py-2 rounded-xl transition-all shadow-md shadow-blue-500/20"
+                >
+                  <span>📅 Book 30-Min Call with Rahul</span>
+                </a>
+                <a
+                  href="https://wa.me/919971271291?text=Hi%20Rahul,%20I'm%20reaching%20out%20about%20Refinzi%20documentation!"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-300 bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-500/30 px-3.5 py-2 rounded-xl transition-all"
+                >
+                  <span>💬 WhatsApp +91-9971271291</span>
+                </a>
+                <a
+                  href="mailto:contact@refinzi.com"
+                  className="inline-flex items-center gap-1.5 text-xs font-mono text-zinc-300 hover:text-white bg-zinc-900 px-3 py-2 rounded-xl border border-white/10 transition-colors"
+                >
+                  <span>contact@refinzi.com</span>
+                </a>
+              </div>
+            </section>
           </div>
         </div>
       </main>

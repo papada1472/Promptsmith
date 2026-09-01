@@ -6,41 +6,50 @@ let remainingTime = 0;
 let dismissStartTime = 0;
 
 function createToast(opts) {
+  const type = opts.type || "success";
   const el = document.createElement("div");
-  el.className = "toast " + (opts.type || "success");
+  el.className = "toast " + type;
 
-  const msgContainer = document.createElement("div");
-  msgContainer.className = "toast-message-container";
-  msgContainer.style.display = "flex";
-  msgContainer.style.flexDirection = "column";
-  msgContainer.style.alignItems = "center";
-  msgContainer.style.justifyContent = "center";
+  // Icon wrap
+  const iconWrap = document.createElement("div");
+  iconWrap.className = "toast-icon-wrap";
+  let iconEmoji = "✨";
+  if (type === "error") iconEmoji = "❌";
+  else if (type === "warning" || type === "processing") iconEmoji = "⚡";
+  if (opts.message?.toLowerCase().includes("key")) iconEmoji = "🔑";
+  iconWrap.textContent = iconEmoji;
+  el.appendChild(iconWrap);
 
-  if (opts.title) {
-    const title = document.createElement("div");
-    title.className = "toast-title";
-    title.style.fontSize = "11.5px";
-    title.style.fontWeight = "700";
-    title.style.color = "#ffffff";
-    title.textContent = opts.title;
-    msgContainer.appendChild(title);
-  }
+  const content = document.createElement("div");
+  content.className = "toast-content";
+
+  const titleRow = document.createElement("div");
+  titleRow.className = "toast-title-row";
+
+  const title = document.createElement("div");
+  title.className = "toast-title";
+  title.textContent = opts.title || (type === "error" ? "Refinement Issue" : type === "warning" ? "Notice" : "Success");
+  titleRow.appendChild(title);
+  content.appendChild(titleRow);
 
   const msg = document.createElement("div");
   msg.className = "toast-message";
   msg.textContent = opts.message || "";
-  if (opts.title) {
-    msg.style.fontSize = "9.5px";
-    msg.style.opacity = "0.75";
-    msg.style.fontWeight = "500";
-    msg.style.marginTop = "2px";
-  }
-  msgContainer.appendChild(msg);
-  el.appendChild(msgContainer);
+  content.appendChild(msg);
 
-  // Allow clicking on toasts to dismiss or open settings
+  // If error or key issue, add clickable hint
+  if (type === "error" || type === "warning" || opts.message?.toLowerCase().includes("key")) {
+    const hint = document.createElement("div");
+    hint.className = "toast-hint";
+    hint.innerHTML = "Click to open Settings &rarr;";
+    content.appendChild(hint);
+  }
+
+  el.appendChild(content);
+
+  // Allow clicking on toasts to open settings if actionable, or dismiss
   el.addEventListener("click", () => {
-    if (opts.type === "processing" && window.refinzi?.app?.openSettings) {
+    if ((type === "error" || type === "warning" || opts.message?.toLowerCase().includes("key")) && window.refinzi?.app?.openSettings) {
       window.refinzi.app.openSettings().catch(() => {});
     }
     dismissToast(el, () => {

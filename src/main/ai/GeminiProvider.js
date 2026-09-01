@@ -13,25 +13,31 @@ import https from "https";
 
 export class GeminiProvider extends AIProvider {
   // Canonical stable model verified live against Google Generative Language API
-  static MODEL = "gemini-flash-latest";
+  static MODEL = "gemini-1.5-flash";
 
   constructor(opts) {
     super(opts);
     const rawModel = opts?.model || GeminiProvider.MODEL;
     // Map UI model selections & legacy names to active Google Generative AI API endpoints
     const MODEL_ALIASES = {
-      "gemini-2.0-flash": "gemini-flash-latest",
-      "gemini-2.5-flash": "gemini-flash-latest",
-      "gemini-3.6-flash": "gemini-flash-latest",
-      "gemini-3.7-flash": "gemini-flash-latest",
-      "gemini-flash-latest": "gemini-flash-latest",
-      "gemini-1.5-flash": "gemini-flash-latest",
-      "gemini-1.5-flash-latest": "gemini-flash-latest",
-      "gemini-2.5-pro": "gemini-pro-latest",
-      "gemini-1.5-pro": "gemini-pro-latest",
-      "gemini-1.5-pro-latest": "gemini-pro-latest"
+      "gemini-2.0-flash": "gemini-2.0-flash",
+      "gemini-2.5-flash": "gemini-2.5-flash",
+      "gemini-3.6-flash": "gemini-2.5-flash",
+      "gemini-3.7-flash": "gemini-2.5-flash",
+      "gemini-flash-latest": "gemini-1.5-flash",
+      "gemini-1.5-flash": "gemini-1.5-flash",
+      "gemini-1.5-flash-latest": "gemini-1.5-flash",
+      "gemini-2.5-pro": "gemini-1.5-pro",
+      "gemini-1.5-pro": "gemini-1.5-pro",
+      "gemini-1.5-pro-latest": "gemini-1.5-pro"
     };
-    this.model = MODEL_ALIASES[rawModel] || rawModel;
+    if (MODEL_ALIASES[rawModel]) {
+      this.model = MODEL_ALIASES[rawModel];
+    } else if (typeof rawModel === "string" && rawModel.startsWith("gemini-")) {
+      this.model = rawModel;
+    } else {
+      this.model = GeminiProvider.MODEL;
+    }
     log.debug("GeminiProvider model set to:", this.model);
   }
 

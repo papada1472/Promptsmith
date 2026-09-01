@@ -8,12 +8,18 @@ const log = createLogger("OpenRouterProvider");
  * Uses standard fetch to call the OpenRouter API.
  */
 export class OpenRouterProvider extends AIProvider {
-  static DEFAULT_MODEL = "openrouter/free"; // ⭐ OpenRouter Free Model Router
+  static DEFAULT_MODEL = "nvidia/nemotron-3-super-120b-a12b:free";
   static BASE_URL = "https://openrouter.ai/api/v1/chat/completions";
 
   constructor(opts) {
     super(opts);
-    this.model = opts?.model || OpenRouterProvider.DEFAULT_MODEL;
+    const raw = opts?.model;
+    if (typeof raw === "string" && raw.includes("/")) {
+      this.model = raw;
+    } else {
+      this.model = OpenRouterProvider.DEFAULT_MODEL;
+    }
+    this.apiKey = (this.apiKey || "").trim();
     log.debug("Initializing with model:", this.model);
   }
 

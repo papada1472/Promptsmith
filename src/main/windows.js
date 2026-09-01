@@ -144,8 +144,8 @@ export function showToast(window, opts) {
 export function createToastWindow() {
   log.debug("createToastWindow()");
   const win = new BrowserWindow({
-    width: 320,
-    height: 80,
+    width: 520,
+    height: 135,
     show: false,
     frame: false,
     transparent: true,

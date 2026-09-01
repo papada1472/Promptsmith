@@ -3,7 +3,7 @@ html, body {
   height: 100%;
   margin: 0;
   background: transparent;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   overflow: hidden;
   user-select: none;
   pointer-events: none;
@@ -16,50 +16,53 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px;
+  padding: 6px;
   box-sizing: border-box;
   pointer-events: none;
 }
 
 .toast {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(14, 14, 24, 0.96);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 215, 0, 0.35);
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.65), 0 0 18px rgba(255, 215, 0, 0.18);
-  min-height: 38px;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(10, 12, 18, 0.94);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 20px rgba(59, 130, 246, 0.15);
+  width: 100%;
+  max-width: 500px;
+  min-height: 48px;
   height: auto;
   box-sizing: border-box;
-  padding: 8px 22px;
+  padding: 12px 18px;
   pointer-events: auto;
-  cursor: default;
+  cursor: pointer;
   opacity: 0;
-  transform: translateY(-16px) scale(0.94);
-  transition: opacity 0.22s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+  transform: translateY(-14px) scale(0.96);
+  transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .toast:hover {
-  box-shadow: 0 12px 38px rgba(0, 0, 0, 0.75), 0 0 24px rgba(255, 215, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85), 0 0 28px rgba(59, 130, 246, 0.25);
 }
 
 .toast.success {
-  border-color: rgba(52, 211, 153, 0.45);
-  box-shadow: 0 0 20px rgba(52, 211, 153, 0.2), 0 10px 32px rgba(0, 0, 0, 0.65);
+  border-color: rgba(34, 197, 94, 0.45);
+  box-shadow: 0 0 24px rgba(34, 197, 94, 0.18), 0 16px 40px rgba(0, 0, 0, 0.75);
 }
 
 .toast.error {
-  border-color: rgba(255, 80, 70, 0.5);
-  box-shadow: 0 0 22px rgba(255, 80, 70, 0.22), 0 10px 32px rgba(0, 0, 0, 0.65);
+  border-color: rgba(239, 68, 68, 0.55);
+  box-shadow: 0 0 28px rgba(239, 68, 68, 0.22), 0 16px 40px rgba(0, 0, 0, 0.75);
 }
 
 .toast.warning,
 .toast.processing {
-  border-color: rgba(255, 215, 0, 0.45);
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.2), 0 10px 32px rgba(0, 0, 0, 0.65);
+  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.2), 0 16px 40px rgba(0, 0, 0, 0.75);
 }
 
 .toast.visible {
@@ -69,24 +72,85 @@ html, body {
 
 .toast.hiding {
   opacity: 0;
-  transform: translateY(-10px) scale(0.95);
+  transform: translateY(-8px) scale(0.96);
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.toast-message {
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
-  line-height: 1.35;
-  text-align: center;
-  white-space: nowrap;
+.toast-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+.toast.success .toast-icon-wrap {
+  background: rgba(34, 197, 94, 0.16);
+}
+
+.toast.error .toast-icon-wrap {
+  background: rgba(239, 68, 68, 0.18);
+}
+
+.toast.warning .toast-icon-wrap,
+.toast.processing .toast-icon-wrap {
+  background: rgba(245, 158, 11, 0.16);
+}
+
+.toast-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.toast-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.toast-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #ffffff;
   letter-spacing: -0.01em;
 }
 
-.toast.success .toast-message {
-  color: rgba(255, 255, 255, 0.98);
+.toast.success .toast-title {
+  color: #4ade80;
 }
 
-.toast.error .toast-message {
-  color: #ff7065;
+.toast.error .toast-title {
+  color: #f87171;
+}
+
+.toast.warning .toast-title,
+.toast.processing .toast-title {
+  color: #fbbf24;
+}
+
+.toast-message {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #d1d5db;
+  line-height: 1.45;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.toast-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #60a5fa;
+  margin-top: 2px;
 }
