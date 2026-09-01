@@ -49,6 +49,7 @@ import { DocsPage } from "./pages/DocsPage.jsx";
 import { FounderSection } from "./components/FounderSection.jsx";
 import { RefinziComparison } from "./components/RefinziComparison.jsx";
 import { ThemeToggle } from "./components/ThemeToggle.jsx";
+import { CookieBanner } from "./components/CookieBanner.jsx";
 import { initAnalytics, trackEvent } from "./utils/analytics.js";
 import { initPerformanceMonitoring } from "./utils/performance.js";
 import {
@@ -1465,17 +1466,22 @@ function Pricing({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD,
               </p>
 
               {/* Anti-Subscription Price Anchor */}
-              <div className="mt-2.5 rounded-lg bg-blue-950/30 border border-blue-500/25 px-2.5 py-1.5 text-[10px] text-zinc-300 flex items-center justify-between">
-                <span>vs Monthly SaaS Tools:</span>
-                <span className="font-bold text-amber-300 line-through">~{currency.symbol}240/yr</span>
-                <span className="font-bold text-emerald-400">Save {currency.symbol}{currency.saveAmount}+</span>
+              <div className="mt-2.5 rounded-lg bg-blue-950/40 border border-blue-500/30 px-3 py-2 text-[11px] text-zinc-200 space-y-1">
+                <div className="flex items-center justify-between font-semibold">
+                  <span>vs Annual SaaS Tools ($20/mo):</span>
+                  <span className="line-through text-red-400 font-mono">~{currency.symbol}{currency.code === "INR" ? "19,999" : "240"}/yr</span>
+                </div>
+                <div className="flex items-center justify-between text-emerald-400 font-extrabold text-xs">
+                  <span>Your Net Savings:</span>
+                  <span>Save {currency.symbol}{currency.code === "INR" ? "19,000" : "228"}/year!</span>
+                </div>
               </div>
 
               <div className="my-3 border-t border-blue-500/20" />
               <FeatureList items={PRO_FEATURES} />
             </div>
 
-            <div className="mt-5">
+            <div className="mt-5 space-y-3">
               <Button
                 variant="deal"
                 size="default"
@@ -1485,11 +1491,39 @@ function Pricing({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD,
                 <Sparkles className="h-3.5 w-3.5" />
                 Claim Lifetime Pro — {currency.formattedPrice}
               </Button>
-              <p className="mt-2 text-center text-[10px] text-zinc-400">
-                🛡️ 14-Day Money-Back Guarantee · Instant License Key
+
+              {/* Supported Payment Methods Trust Bar */}
+              <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px] text-zinc-400">
+                <span className="font-semibold text-zinc-300">Accepted Payments:</span>
+                <span className="font-mono text-zinc-300">UPI · GPay · Visa · Mastercard · PayPal</span>
+              </div>
+
+              <p className="text-center text-[10px] text-zinc-300">
+                🛡️ <strong>14-Day Money-Back Guarantee</strong> · Instant License Key
               </p>
             </div>
           </Card>
+        </div>
+
+        {/* Post-Purchase 3-Step Trust Card */}
+        <div className="mt-10 max-w-3xl mx-auto rounded-2xl border border-white/[0.08] bg-zinc-900/40 p-5 backdrop-blur-md">
+          <h4 className="text-xs uppercase font-bold tracking-wider text-blue-400 text-center mb-3">
+            What Happens Immediately After You Order:
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center sm:text-left text-xs text-zinc-300">
+            <div className="p-2.5 rounded-xl bg-zinc-950/60 border border-white/[0.04] space-y-1">
+              <span className="font-bold text-white text-xs block">1. Instant Key Delivery</span>
+              <p className="text-[11px] text-zinc-400">Your Pro license key displays on screen & arrives in your email inbox within 5 seconds.</p>
+            </div>
+            <div className="p-2.5 rounded-xl bg-zinc-950/60 border border-white/[0.04] space-y-1">
+              <span className="font-bold text-white text-xs block">2. Zero Configuration</span>
+              <p className="text-[11px] text-zinc-400">Paste your key into Refinzi for Windows to unlock unlimited managed AI routing.</p>
+            </div>
+            <div className="p-2.5 rounded-xl bg-zinc-950/60 border border-white/[0.04] space-y-1">
+              <span className="font-bold text-white text-xs block">3. 100% Risk-Free Guarantee</span>
+              <p className="text-[11px] text-zinc-400">If Refinzi doesn't save you hours every week, email contact@refinzi.com for a 100% instant refund.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1939,6 +1973,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#08090c] font-sans text-zinc-50 selection:bg-blue-500/30 selection:text-white pb-10 sm:pb-0">
       <OrbCursor />
+      <CookieBanner />
       <Navbar
         currency={currency}
         osType={osType}
