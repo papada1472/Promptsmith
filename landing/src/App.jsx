@@ -875,18 +875,18 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
           </div>
 
           {/* Clear Primary vs Secondary Interaction & Free vs Paid Value Gap */}
-          <div className="mt-4 space-y-1.5 text-xs text-zinc-400 font-medium">
+          <div className="mt-4 space-y-1.5 text-xs text-zinc-300 font-medium">
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-blue-500/20 text-blue-400 text-[10px] font-bold">1</span>
-              <span><strong className="text-zinc-200">Primary (1-Click on Orb)</strong> — Instant in-place prompt transformation (or press <code className="text-blue-300 font-mono text-[11px]">Ctrl+Alt+Space</code>)</span>
+              <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-blue-500/30 text-blue-200 text-[10px] font-bold">1</span>
+              <span><strong className="text-white">Primary (1-Click on Orb)</strong> — Instant in-place prompt transformation (or press <code className="text-blue-300 font-mono text-[11px]">Ctrl+Alt+Space</code>)</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-purple-500/20 text-purple-400 text-[10px] font-bold">2</span>
-              <span><strong className="text-zinc-200">Secondary (Hold 300ms)</strong> — Opens 5-Block Blueprint Scaffolding & Context Architect</span>
+              <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-purple-500/30 text-purple-200 text-[10px] font-bold">2</span>
+              <span><strong className="text-white">Secondary (Hold 300ms)</strong> — Opens 5-Block Blueprint Scaffolding & Context Architect</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-              <span><strong className="text-zinc-200">Free BYOK Mode</strong> — use your own API keys, 0% markup forever</span>
+              <span><strong className="text-white">Free BYOK Mode</strong> — use your own API keys, 0% markup forever</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-3.5 w-3.5 text-purple-400 shrink-0" />
@@ -906,9 +906,11 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
               <span>VirusTotal Verified Clean (0/72 Detections)</span>
             </a>
             <a
-              href="https://github.com/papada1472/Promptsmith"
+              href="https://github.com/papada1472/Promptsmith/releases/tag/v2.0.0"
               target="_blank"
               rel="noopener noreferrer"
+              title="GitHub Verified Build v2.0.0 (opens in a new tab)"
+              aria-label="GitHub Verified Build v2.0.0 (opens in a new tab)"
               className="inline-flex items-center gap-1.5 rounded-full bg-zinc-900 border border-white/10 px-3 py-1 text-[11px] font-mono text-zinc-300 hover:text-white transition-colors"
             >
               <span>GitHub Verified Build v2.0.0</span>
@@ -917,40 +919,67 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
         </div>
 
         {/* Right column with Live Video Demo */}
-        <div className="relative lg:justify-self-end w-full max-w-lg">
-          <div className="rounded-2xl border border-white/[0.1] bg-zinc-950/80 p-2 sm:p-3 shadow-2xl shadow-blue-500/10 backdrop-blur-xl">
-            {/* Video Player Header */}
-            <div className="mb-2 flex items-center justify-between px-2 py-1">
-              <div className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-red-500/80" />
-                <span className="h-2 w-2 rounded-full bg-amber-500/80" />
-                <span className="h-2 w-2 rounded-full bg-emerald-500/80" />
-                <span className="ml-2 text-[10px] font-mono text-zinc-400">Refinzi Live Demo · Windows</span>
-              </div>
-              <span className="text-[10px] text-blue-400 font-semibold bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
-                10s Live Recording
-              </span>
-            </div>
-
-            {/* Video Container */}
-            <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-black border border-white/[0.06]">
-              <video
-                src="/refinzi-demo.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="h-full w-full object-cover"
-                title="Refinzi Live Workflow Demo in Windows"
-              />
-            </div>
-            <p className="mt-2 text-center text-[10px] text-zinc-400">
-              <strong className="text-blue-300">1-Click the Orb</strong> for instant in-place rebuild · <span className="text-zinc-400">(Or press Ctrl+Alt+Space · Hold 300ms for Blueprint)</span>
-            </p>
-          </div>
-        </div>
+        <HeroVideoPlayer />
       </div>
     </section>
+  );
+}
+
+function HeroVideoPlayer() {
+  const [isPlaying, setIsPlaying] = useState(true);
+  const videoRef = useRef(null);
+
+  const togglePlay = () => {
+    if (!videoRef.current) return;
+    if (isPlaying) {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      videoRef.current.play();
+      setIsPlaying(true);
+    }
+  };
+
+  return (
+    <div className="relative lg:justify-self-end w-full max-w-lg">
+      <div className="rounded-2xl border border-white/[0.1] bg-zinc-950/80 p-2 sm:p-3 shadow-2xl shadow-blue-500/10 backdrop-blur-xl">
+        {/* Video Player Header */}
+        <div className="mb-2 flex items-center justify-between px-2 py-1">
+          <div className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-red-500/80" />
+            <span className="h-2 w-2 rounded-full bg-amber-500/80" />
+            <span className="h-2 w-2 rounded-full bg-emerald-500/80" />
+            <span className="ml-2 text-[10px] font-mono text-zinc-300">Refinzi Live Demo · Windows</span>
+          </div>
+          <button
+            onClick={togglePlay}
+            aria-label={isPlaying ? "Pause video demo" : "Play video demo"}
+            title={isPlaying ? "Pause video demo" : "Play video demo"}
+            className="text-[10px] text-blue-300 font-semibold bg-blue-500/20 hover:bg-blue-500/30 px-2.5 py-0.5 rounded-full border border-blue-500/30 transition-all flex items-center gap-1 cursor-pointer"
+          >
+            {isPlaying ? "⏸ Pause Demo" : "▶ Play Demo"}
+          </button>
+        </div>
+
+        {/* Video Container */}
+        <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-black border border-white/[0.06]">
+          <video
+            ref={videoRef}
+            src="/refinzi-demo.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            controls
+            className="h-full w-full object-cover"
+            title="Refinzi Live Workflow Demo in Windows"
+          />
+        </div>
+        <p className="mt-2 text-center text-[10px] text-zinc-300">
+          <strong className="text-blue-300">1-Click the Orb</strong> for instant in-place rebuild · <span className="text-zinc-300">(Or press Ctrl+Alt+Space · Hold 300ms for Blueprint)</span>
+        </p>
+      </div>
+    </div>
   );
 }
 
@@ -959,9 +988,9 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
 function TrustBar() {
   return (
     <Reveal>
-      <section className="border-y border-white/[0.06] bg-zinc-950/40 py-5 sm:py-6" id="workspaces">
-        <div className="mx-auto max-w-[1140px] px-4 sm:px-6 text-center">
-          <p className="mb-4 text-[11px] font-semibold uppercase tracking-widest text-zinc-500">
+      <section className="border-y border-white/[0.06] bg-zinc-950/70 py-6" id="integrations">
+        <div className="mx-auto max-w-[1140px] px-4 sm:px-6">
+          <p className="mb-4 text-center text-[11px] font-bold uppercase tracking-widest text-zinc-300">
             Engineered for top AI models & tools
           </p>
 

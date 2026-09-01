@@ -116,6 +116,16 @@ html.light {
   ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
 
   ::selection { background: rgba(59, 130, 246, 0.30); color: var(--text-heading); }
+
+  /* Accessibility WCAG AA/AAA Focus Indicators */
+  a:focus-visible,
+  button:focus-visible,
+  select:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--accent-blue) !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25) !important;
+  }
 }
 
 /* ============================================================

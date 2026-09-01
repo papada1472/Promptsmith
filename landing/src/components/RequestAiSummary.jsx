@@ -52,8 +52,8 @@ export function RequestAiSummary({ className = "" }) {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => handleClick(name)}
-            title={`Ask ${name} to explain Refinzi`}
-            aria-label={`Ask ${name} to explain Refinzi`}
+            title={`Ask ${name} to explain Refinzi (opens in a new tab)`}
+            aria-label={`Ask ${name} to explain Refinzi (opens in a new tab)`}
             className={`flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08] bg-zinc-900/90 text-zinc-400 transition-all hover:bg-zinc-800 ${hoverClass}`}
           >
             <Logo className="h-4 w-4" />

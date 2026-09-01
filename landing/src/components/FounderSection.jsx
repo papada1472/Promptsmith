@@ -35,7 +35,9 @@ export function FounderSection() {
                       href="https://github.com/papada1472/Promptsmith"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-[11px] font-mono text-zinc-400 hover:text-white bg-zinc-900 border border-white/10 px-2.5 py-1 rounded-lg transition-colors"
+                      title="GitHub Repository (opens in a new tab)"
+                      aria-label="GitHub Repository (opens in a new tab)"
+                      className="flex items-center gap-1 text-[11px] font-mono text-zinc-300 hover:text-white bg-zinc-900 border border-white/10 px-2.5 py-1 rounded-lg transition-colors"
                     >
                       <Github className="h-3 w-3" />
                       <span>GitHub</span>
