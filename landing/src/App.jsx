@@ -30,6 +30,7 @@ import {
   ChevronRight,
   Apple,
   Smartphone,
+  ArrowUp,
 } from "lucide-react";
 import { Button } from "./components/ui/button.jsx";
 import { Card } from "./components/ui/card.jsx";
@@ -1561,9 +1562,43 @@ function StickyConversionBar({ show, onOpenOffer, onDownload, currency = SUPPORT
   );
 }
 
+function ScrollToTopButton() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const toggleVisible = () => {
+      setVisible(window.scrollY > 300);
+    };
+    window.addEventListener("scroll", toggleVisible, { passive: true });
+    return () => window.removeEventListener("scroll", toggleVisible);
+  }, []);
+
+  const scrollToTop = () => {
+    trackEvent("scroll_to_top_clicked");
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  if (!visible) return null;
+
+  return (
+    <button
+      type="button"
+      onClick={scrollToTop}
+      aria-label="Scroll to top of page"
+      title="Back to Top"
+      className="fixed bottom-14 right-4 sm:bottom-14 sm:right-6 z-40 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-zinc-900/90 text-white shadow-xl backdrop-blur-md transition-all hover:scale-110 hover:border-blue-500/50 hover:bg-blue-600/30 active:scale-95 cursor-pointer"
+    >
+      <ArrowUp className="h-4 w-4 text-blue-400" />
+    </button>
+  );
+}
+
 function Footer() {
   return (
-    <footer className="border-t border-white/[0.06] py-8 bg-[#08090c] text-zinc-400 text-[11px]">
+    <footer className="border-t border-white/[0.06] pt-8 pb-28 sm:pb-24 bg-[#08090c] text-zinc-400 text-[11px]">
       <div className="mx-auto flex max-w-[1140px] flex-col justify-between gap-6 px-4 sm:px-6 md:flex-row md:items-end">
         <div className="flex flex-col items-start gap-3">
           <div className="flex items-center gap-2">
@@ -1814,6 +1849,9 @@ export default function App() {
         onDownload={() => handleTriggerDownload("sticky_bar")}
         onOpenNonWindows={() => setIsNonWindowsModalOpen(true)}
       />
+
+      {/* Floating Instant Go to Top Button */}
+      <ScrollToTopButton />
     </div>
   );
 }
