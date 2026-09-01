@@ -1698,28 +1698,6 @@ function Footer({ onNavigate }) {
         </div>
         <div className="flex flex-col items-start md:items-end gap-2">
           <nav aria-label="Footer Navigation" className="flex flex-wrap items-center gap-4 text-zinc-400">
-            <a
-              href="#contact"
-              className="hover:text-blue-300 transition-colors font-medium text-zinc-300"
-            >
-              Contact & Feedback
-            </a>
-            <a
-              href="https://cal.com/rahul-mangla-ub8se9/30min"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-blue-300 transition-colors text-zinc-300"
-            >
-              Book 30-Min Call (Cal.com)
-            </a>
-            <a
-              href="https://wa.me/919971271291?text=Hi%20Rahul,%20I'm%20reaching%20out%20about%20Refinzi!"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-emerald-300 transition-colors text-emerald-400 font-medium"
-            >
-              WhatsApp +91-9971271291
-            </a>
             <button
               onClick={() => onNavigate("privacy", "/privacy")}
               className="hover:text-zinc-200 transition-colors cursor-pointer"
