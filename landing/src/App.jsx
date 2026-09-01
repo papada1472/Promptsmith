@@ -821,15 +821,14 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
             </span>
           </h1>
 
-          {/* Plain English Subheadline */}
-          <div className="mt-4 max-w-xl leading-relaxed">
-            <p className="text-sm sm:text-base text-zinc-100 font-normal">
-              Select any text and <strong className="text-white font-semibold">1-Click the floating Orb</strong> to instantly rebuild it into a production-grade prompt directly in-place.
-            </p>
-            <p className="mt-2 text-xs sm:text-sm text-zinc-300">
-              Hold the Orb for 300ms anytime for full 5-Block Blueprint architecture. Works across ChatGPT, Midjourney, Cursor & Discord with zero copy-pasting.
-            </p>
-          </div>
+          {/* Punchy, High-Contrast Subheadline */}
+          <p className="mt-4 max-w-lg text-base sm:text-lg font-medium text-zinc-100 leading-relaxed">
+            Highlight text anywhere in Windows. <strong className="text-white font-bold">1-Click the floating Orb</strong> to rebuild your prompt in 2 seconds.
+          </p>
+
+          <p className="mt-2 text-xs sm:text-sm text-purple-300 font-medium flex items-center gap-1.5">
+            <span>🧠 Hold 300ms anytime for 5-Block Blueprint architecture.</span>
+          </p>
 
           {/* Primary CTA + Secondary Link */}
           <div className="mt-6 flex flex-wrap items-center gap-4">
