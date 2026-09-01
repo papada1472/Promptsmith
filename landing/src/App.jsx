@@ -268,34 +268,44 @@ const TESTIMONIALS = [
 
 const FAQS = [
   {
-    question: "How does Refinzi work in Windows?",
+    question: "How does the button appear?",
     answer:
-      "Refinzi runs quietly as an ambient Windows companion. 1-Click on the floating Orb is your primary action — it captures your active text highlight and instantly rebuilds it into a production-grade prompt directly in-place. Power users can also use the global Ctrl+Alt+Space shortcut, or hold for 300ms to open the interactive 5-Block Blueprint scaffolding engine.",
+      "When you select text in any Windows app, Refinzi detects it and shows a floating button next to your selection. One click does the rest.",
   },
   {
-    question: "What is the difference between Free BYOK and Lifetime Pro?",
+    question: "What if I don't like clicking?",
     answer:
-      "Refinzi Free (BYOK) allows you to bring your own API keys (Gemini, OpenRouter, etc.) forever with 0% markup and zero monthly subscriptions. Refinzi Lifetime Pro unlocks instant zero-setup managed high-speed routing via Claude 3.5 Sonnet and GPT-4o, unlimited 5-Block Blueprint synthesis, cloud preset sync, and all future updates for a single one-time payment.",
+      "Ctrl + Alt + Space does the same thing without moving your mouse.",
   },
   {
-    question: "How is Refinzi different from ChatGPT's Custom Instructions or Projects?",
+    question: "Is this a subscription?",
     answer:
-      "ChatGPT Custom Instructions only apply inside ChatGPT. Refinzi works globally across your entire OS — Midjourney Discord, Higgsfield AI, Cursor IDE, Figma, Terminal, and web browsers. Furthermore, Refinzi dynamically formats model-specific camera physics for image models and 5-block UI token blueprints for code editors in real-time.",
+      "No. Pro is a one-time payment. Pay once, own it forever.",
   },
   {
-    question: "Is my data private? What happens to my API keys?",
+    question: "Do you store my prompts?",
     answer:
-      "100% private and local-first. Refinzi never stores, logs, or trains on your highlighted text. In BYOK mode, your API keys are stored exclusively on your local machine using Windows DPAPI encryption. Requests route directly between your PC and your chosen AI provider.",
+      "No. Everything runs locally on your machine. Zero logging, zero prompt storage.",
   },
   {
-    question: "Does it work with Cursor, VS Code, Discord, and Figma?",
+    question: "What AI models does Pro use?",
     answer:
-      "Yes. Refinzi hooks into the Windows native input system. Any application that allows text selection and typing supports Refinzi with zero configuration required.",
+      "Claude 3.5 Sonnet and GPT-4o, routed through our managed high-speed API pool.",
   },
   {
-    question: "What is your refund policy?",
+    question: "Is there a Mac version?",
     answer:
-      "We offer an unconditional 14-day money-back guarantee. If Refinzi doesn't save you hours of prompt trial-and-error every day, email contact@refinzi.com for a full, instant refund.",
+      "Not yet. Windows 10/11 only. You can join the Mac waitlist at the top of the page.",
+  },
+  {
+    question: "What if I don't like it?",
+    answer:
+      "Email contact@refinzi.com within 14 days for a full, instant refund. No questions asked.",
+  },
+  {
+    question: "Is the app safe?",
+    answer:
+      "It's a standard Windows executable. Clean 0/72 on VirusTotal and built in public on GitHub. If you're cautious, run it in a sandbox first.",
   },
 ];
 
