@@ -75,10 +75,8 @@ import {
 const NAV_LINKS = [
   { label: "Features", href: "#features" },
   { label: "AI Demo", href: "#demo" },
-  { label: "5-Block Blueprint", href: "#blueprint" },
   { label: "Pricing", href: "#pricing" },
   { label: "FAQ", href: "#faq" },
-  { label: "Contact & Feedback", href: "#contact" },
 ];
 
 const WORKSPACES = [
@@ -566,16 +564,6 @@ function Navbar({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, 
 
         <div className="hidden items-center gap-3 md:flex">
           <ThemeToggle theme={theme} onToggleTheme={onToggleTheme} />
-          <a
-            href="#pricing"
-            onClick={(e) => {
-              e.preventDefault();
-              onOpenOffer();
-            }}
-            className="text-xs font-semibold text-zinc-400 hover:text-amber-300 transition-colors"
-          >
-            Lifetime {currency.formattedPrice}
-          </a>
           <Button
             variant="primary"
             size="xs"
@@ -1734,7 +1722,7 @@ function Footer({ onNavigate }) {
             </a>
           </nav>
           <p className="text-[10px] text-zinc-400">
-            © 2026 Refinzi. Built by Rahul Mangla · New Delhi, India. All rights reserved.
+            © 2026 Refinzi. All rights reserved.
           </p>
         </div>
       </div>
