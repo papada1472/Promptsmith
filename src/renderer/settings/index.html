@@ -96,18 +96,17 @@
             <span>Settings</span>
           </button>
         </nav>
-
         <!-- Upgrade Action in Sidebar -->
-        <div class="sidebar-bottom">
+        <div class="sidebar-footer">
           <button type="button" class="sidebar-upgrade-card" data-tab="upgrade" id="tabNavUpgrade">
             <div class="upgrade-card-glow"></div>
             <div class="upgrade-card-content">
               <div class="upgrade-header-row">
-                <span class="upgrade-icon">💎</span>
+                <span class="upgrade-icon">☕</span>
                 <span class="upgrade-badge">PRO</span>
               </div>
-              <strong class="upgrade-title">Lifetime Access</strong>
-              <p class="upgrade-desc">Unlimited Blueprints & Models</p>
+              <strong class="upgrade-title">Supporter Pro</strong>
+              <p class="upgrade-desc">₹999 / $12 · Lifetime Access</p>
             </div>
           </button>
         </div>
@@ -231,28 +230,195 @@
             <div class="provider-card-surface">
               <!-- Quick Model Switcher Strip -->
               <div class="quick-models-strip">
-                <span class="quick-models-label">⚡ Fast Switch:</span>
+                <span class="quick-models-label">⚡ Top 10 LLM Fast Switch:</span>
                 <div class="quick-models-pills" id="quickModelPills">
-                  <button type="button" class="btn-model-chip active" data-provider="deepseek" data-model="deepseek-chat" title="DeepSeek V3 - Default Production Fast Model">
-                    <span class="chip-badge">DeepSeek V3</span>
-                    <span class="chip-sub">⚡ Fast</span>
-                  </button>
-                  <button type="button" class="btn-model-chip" data-provider="deepseek" data-model="deepseek-reasoner" title="DeepSeek R1 - Frontier Chain of Thought">
+                  <button type="button" class="btn-model-chip active" data-provider="deepseek" data-model="deepseek-reasoner" title="DeepSeek R1 - Frontier Chain of Thought">
                     <span class="chip-badge">DeepSeek R1</span>
                     <span class="chip-sub">🧠 Reasoning</span>
                   </button>
-                  <button type="button" class="btn-model-chip" data-provider="gemini" data-model="gemini-1.5-flash" title="Google Gemini 1.5 Flash">
-                    <span class="chip-badge">Gemini 1.5 Flash</span>
-                    <span class="chip-sub">🚀 Fast</span>
+                  <button type="button" class="btn-model-chip" data-provider="deepseek" data-model="deepseek-chat" title="DeepSeek V3 - Production Default Fast Model">
+                    <span class="chip-badge">DeepSeek V3</span>
+                    <span class="chip-sub">⚡ Fast</span>
                   </button>
-                  <button type="button" class="btn-model-chip" data-provider="openrouter" data-model="nvidia/nemotron-3-super-120b-a12b:free" title="Nvidia Nemotron 120B Free Tier">
-                    <span class="chip-badge">Nemotron 120B</span>
+                  <button type="button" class="btn-model-chip" data-provider="openrouter" data-model="anthropic/claude-sonnet-5" title="Anthropic Claude Sonnet 5">
+                    <span class="chip-badge">Claude Sonnet 5</span>
+                    <span class="chip-sub">👑 Coding</span>
+                  </button>
+                  <button type="button" class="btn-model-chip" data-provider="openrouter" data-model="openai/gpt-5.6-terra" title="OpenAI GPT-5.6 Terra Flagship">
+                    <span class="chip-badge">GPT-5.6 Terra</span>
+                    <span class="chip-sub">🌐 OpenAI</span>
+                  </button>
+                  <button type="button" class="btn-model-chip" data-provider="openrouter" data-model="openai/o3-mini" title="OpenAI o3-mini Deep Step-by-Step Logic">
+                    <span class="chip-badge">o3-mini</span>
+                    <span class="chip-sub">🔬 Logic</span>
+                  </button>
+                  <button type="button" class="btn-model-chip" data-provider="gemini" data-model="gemini-3.7-flash" title="Google Gemini 3.7 Flash">
+                    <span class="chip-badge">Gemini 3.7 Flash</span>
+                    <span class="chip-sub">🚀 Next-Gen</span>
+                  </button>
+                  <button type="button" class="btn-model-chip" data-provider="gemini" data-model="gemini-3.6-flash" title="Google Gemini 3.6 Flash">
+                    <span class="chip-badge">Gemini 3.6 Flash</span>
+                    <span class="chip-sub">⚡ Sub-Sec</span>
+                  </button>
+                  <button type="button" class="btn-model-chip" data-provider="openrouter" data-model="meta-llama/llama-3.3-70b-instruct:free" title="Meta Llama 3.3 70B">
+                    <span class="chip-badge">Llama 3.3 70B</span>
+                    <span class="chip-sub">🦙 Meta</span>
+                  </button>
+                  <button type="button" class="btn-model-chip" data-provider="openrouter" data-model="qwen/qwen3-coder:free" title="Qwen 3 Coder Free">
+                    <span class="chip-badge">Qwen 3 Coder</span>
+                    <span class="chip-sub">💻 Coder</span>
+                  </button>
+                  <button type="button" class="btn-model-chip" data-provider="openrouter" data-model="nvidia/nemotron-3.5-lightning:free" title="Nvidia Nemotron 3.5 Lightning Free Tier">
+                    <span class="chip-badge">Nemotron 3.5</span>
                     <span class="chip-sub">🆓 Free</span>
                   </button>
-                  <button type="button" class="btn-model-chip" data-provider="openrouter" data-model="deepseek/deepseek-r1:free" title="DeepSeek R1 Free via OpenRouter">
-                    <span class="chip-badge">DeepSeek R1 (OR)</span>
-                    <span class="chip-sub">🆓 Free</span>
+                </div>
+              </div>
+
+              <!-- Quick Provider Templates Grid (Matching Quick Templates Mockup) -->
+              <div class="provider-templates-container">
+                <div class="provider-templates-header" id="toggleProviderTemplates">
+                  <div class="templates-header-title">
+                    <span class="templates-main-title">Quick provider templates</span>
+                    <span class="templates-sub-title">12 templates available</span>
+                  </div>
+                  <button type="button" class="btn-toggle-templates" aria-label="Toggle templates">
+                    <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"></polyline></svg>
                   </button>
+                </div>
+
+                <div class="provider-templates-grid" id="providerTemplatesGrid">
+                  <!-- 1. ChatGPT (OpenAI) -->
+                  <div class="provider-template-card" data-provider="openai" data-model="gpt-5.6-terra">
+                    <div class="template-card-left">
+                      <div class="template-icon openai-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.475 4.475 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1683a.071.071 0 0 1 .038.052v5.5826a4.5045 4.5045 0 0 1-4.4945 4.4947zm-9.66-4.1254a4.47 4.47 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4997 4.4997 0 0 1-6.1401-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1683a.0757.0757 0 0 1-.071 0l-4.8303-2.7866A4.4997 4.4997 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1239 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4947 4.4947 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.4116-.667zM20.1472 6.0673l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L8.609 6.5688V4.2364a.0804.0804 0 0 1 .0332-.0615L13.52 1.4883a4.5093 4.5093 0 0 1 6.6272 4.579zM12.015 13.9103l-2.8277-1.6325 2.8277-1.6325 2.8277 1.6325z"/></svg>
+                      </div>
+                      <span class="template-name">ChatGPT (GPT-5.6)</span>
+                    </div>
+                    <button type="button" class="btn-template-use" data-provider="openai" data-model="gpt-5.6-terra">USE</button>
+                  </div>
+
+                  <!-- 2. Claude Code / Anthropic -->
+                  <div class="provider-template-card" data-provider="anthropic" data-model="claude-sonnet-5">
+                    <div class="template-card-left">
+                      <div class="template-icon claude-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.4 8.6L21 11L14.4 13.4L12 20L9.6 13.4L3 11L9.6 8.6L12 2Z"/></svg>
+                      </div>
+                      <span class="template-name">Claude Sonnet 5</span>
+                    </div>
+                    <button type="button" class="btn-template-use" data-provider="anthropic" data-model="claude-sonnet-5">USE</button>
+                  </div>
+
+                  <!-- 3. DeepSeek -->
+                  <div class="provider-template-card active" data-provider="deepseek" data-model="deepseek-reasoner">
+                    <div class="template-card-left">
+                      <div class="template-icon deepseek-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+                      </div>
+                      <span class="template-name">DeepSeek R1</span>
+                    </div>
+                    <button type="button" class="btn-template-use" data-provider="deepseek" data-model="deepseek-reasoner">USE</button>
+                  </div>
+
+                  <!-- 4. Google Gemini -->
+                  <div class="provider-template-card" data-provider="gemini" data-model="gemini-3.7-flash">
+                    <div class="template-card-left">
+                      <div class="template-icon gemini-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z"/></svg>
+                      </div>
+                      <span class="template-name">Google Gemini 3.7</span>
+                    </div>
+                    <button type="button" class="btn-template-use" data-provider="gemini" data-model="gemini-3.7-flash">USE</button>
+                  </div>
+
+                  <!-- 5. OpenRouter -->
+                  <div class="provider-template-card" data-provider="openrouter" data-model="nvidia/nemotron-3.5-lightning:free">
+                    <div class="template-card-left">
+                      <div class="template-icon openrouter-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                      </div>
+                      <span class="template-name">OpenRouter</span>
+                    </div>
+                    <button type="button" class="btn-template-use" data-provider="openrouter" data-model="nvidia/nemotron-3.5-lightning:free">USE</button>
+                  </div>
+
+                  <!-- 6. Ollama Local -->
+                  <div class="provider-template-card" data-provider="ollama" data-model="deepseek-r1:latest">
+                    <div class="template-card-left">
+                      <div class="template-icon ollama-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                      </div>
+                      <span class="template-name">Ollama (Local)</span>
+                    </div>
+                    <button type="button" class="btn-template-use" data-provider="ollama" data-model="deepseek-r1:latest">USE</button>
+                  </div>
+
+                  <!-- 7. LM Studio -->
+                  <div class="provider-template-card" data-provider="lmstudio" data-model="local-model">
+                    <div class="template-card-left">
+                      <div class="template-icon lmstudio-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="4"/></svg>
+                      </div>
+                      <span class="template-name">LM Studio</span>
+                    </div>
+                    <button type="button" class="btn-template-use" data-provider="lmstudio" data-model="local-model">USE</button>
+                  </div>
+
+                  <!-- 8. GroqCloud -->
+                  <div class="provider-template-card" data-provider="groq" data-model="llama-3.3-70b-versatile">
+                    <div class="template-card-left">
+                      <div class="template-icon groq-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                      </div>
+                      <span class="template-name">GroqCloud</span>
+                    </div>
+                    <button type="button" class="btn-template-use" data-provider="groq" data-model="llama-3.3-70b-versatile">USE</button>
+                  </div>
+
+                  <!-- 9. Mistral AI -->
+                  <div class="provider-template-card" data-provider="mistral" data-model="codestral-latest">
+                    <div class="template-card-left">
+                      <div class="template-icon mistral-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h4v16H4zm12 0h4v16h-4z"/></svg>
+                      </div>
+                      <span class="template-name">Mistral AI</span>
+                    </div>
+                    <button type="button" class="btn-template-use" data-provider="mistral" data-model="codestral-latest">USE</button>
+                  </div>
+
+                  <!-- 10. xAI / Grok -->
+                  <div class="provider-template-card" data-provider="xai" data-model="grok-4.6">
+                    <div class="template-card-left">
+                      <div class="template-icon xai-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                      </div>
+                      <span class="template-name">xAI / Grok 4.6</span>
+                    </div>
+                    <button type="button" class="btn-template-use" data-provider="xai" data-model="grok-4.6">USE</button>
+                  </div>
+
+                  <!-- 11. OpenAI Compatible -->
+                  <div class="provider-template-card" data-provider="custom" data-model="custom">
+                    <div class="template-card-left">
+                      <div class="template-icon custom-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                      </div>
+                      <span class="template-name">OpenAI Compatible</span>
+                    </div>
+                    <button type="button" class="btn-template-use" data-provider="custom" data-model="custom">USE</button>
+                  </div>
+
+                  <!-- 12. Refinzi Gateway -->
+                  <div class="provider-template-card" data-provider="gateway" data-model="gateway-default">
+                    <div class="template-card-left">
+                      <div class="template-icon gateway-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                      </div>
+                      <span class="template-name">Refinzi Gateway</span>
+                    </div>
+                    <button type="button" class="btn-template-use" data-provider="gateway" data-model="gateway-default">USE</button>
+                  </div>
                 </div>
               </div>
 
@@ -260,10 +426,26 @@
                 <div class="form-group">
                   <label for="homeProviderSelect">Active Provider</label>
                   <select id="homeProviderSelect" class="form-select">
-                    <option value="deepseek">DeepSeek (BYOK)</option>
-                    <option value="gemini">Google AI Studio (BYOK)</option>
-                    <option value="openrouter">OpenRouter (BYOK)</option>
-                    <option value="gateway">Refinzi Gateway (Free Tier)</option>
+                    <optgroup label="⭐ Top Frontier Providers">
+                      <option value="deepseek">DeepSeek (R1 / V3 / V4)</option>
+                      <option value="anthropic">Anthropic (Claude 5 / 3.7)</option>
+                      <option value="openai">OpenAI (ChatGPT / GPT-5.6 / o3)</option>
+                      <option value="gemini">Google AI Studio (Gemini 3.7 / 3.6 / 3.5)</option>
+                      <option value="openrouter">OpenRouter (300+ Models)</option>
+                    </optgroup>
+                    <optgroup label="⚡ High-Speed & Open Weights">
+                      <option value="groq">GroqCloud (Ultra-Fast Llama / GPT-OSS)</option>
+                      <option value="mistral">Mistral AI (Codestral / Large)</option>
+                      <option value="xai">xAI (Grok 4.6 / Grok Beta)</option>
+                    </optgroup>
+                    <optgroup label="💻 Local & Offline LLMs">
+                      <option value="ollama">Ollama (Localhost 11434)</option>
+                      <option value="lmstudio">LM Studio (Localhost 1234)</option>
+                    </optgroup>
+                    <optgroup label="🛠️ Custom & Managed">
+                      <option value="custom">OpenAI-Compatible Custom Endpoint</option>
+                      <option value="gateway">Refinzi Free Gateway (Failover)</option>
+                    </optgroup>
                   </select>
                 </div>
 
@@ -617,31 +799,33 @@
         </div><!-- /pageSettings -->
 
         <!-- ============================================================
-             PAGE 5: UPGRADE (LIFETIME ACCESS)
+             PAGE 5: UPGRADE (SUPPORTER PRO)
              ============================================================ -->
         <div class="tab-page" id="pageUpgrade">
           <section class="upgrade-hero-section">
-            <div class="upgrade-badge-pill">💎 LIFETIME LICENSE</div>
-            <h1 class="upgrade-hero-title">Own Refinzi 2.0 Forever</h1>
-            <p class="upgrade-hero-subtitle">One-time payment. Zero recurring subscriptions. All future updates included.</p>
+            <div class="upgrade-badge-pill">☕ SUPPORTER PRO · ONE-TIME COFFEE</div>
+            <h1 class="upgrade-hero-title">Support Development. Own It for Life.</h1>
+            <p class="upgrade-hero-subtitle">Refinzi is 100% free with BYOK. Support independent development with a one-time coffee price ($12 / ₹999) to unlock community perks & lifetime updates.</p>
 
             <div class="pricing-card-container">
               <!-- Plan 1: Current BYOK -->
               <div class="plan-card plan-current">
                 <div class="plan-header">
-                  <span class="plan-name">Free BYOK Mode</span>
+                  <span class="plan-name">Free / BYOK</span>
                   <span class="plan-current-tag">ACTIVE</span>
                 </div>
                 <div class="plan-price">
                   <span class="price-val">₹0</span>
                   <span class="price-sub">/ forever</span>
                 </div>
-                <p class="plan-desc">Unlimited prompt rebuilding using your own free or paid API keys.</p>
+                <p class="plan-desc">Bring your own Gemini, DeepSeek, Claude, or OpenRouter API keys. 0% markup forever.</p>
                 <ul class="plan-features">
-                  <li><span class="feat-check">✓</span> Ctrl+Alt+Space Ambient Windows Layer</li>
-                  <li><span class="feat-check">✓</span> DeepSeek V4, Gemini, OpenRouter BYOK</li>
-                  <li><span class="feat-check">✓</span> Encrypted Local History (Last 50)</li>
-                  <li><span class="feat-check">✓</span> 100% On-Device Privacy</li>
+                  <li><span class="feat-check">✓</span> Bring your own API keys (DeepSeek, Gemini, Claude, OpenAI)</li>
+                  <li><span class="feat-check">✓</span> 1-Click switch across Top 10 LLMs (DeepSeek R1, GPT-5.6, Claude 5)</li>
+                  <li><span class="feat-check">✓</span> Direct API routing with 0% markup forever</li>
+                  <li><span class="feat-check">✓</span> Full 5-Block Blueprint architecture engine</li>
+                  <li><span class="feat-check">✓</span> 100% On-device privacy (Windows DPAPI AES-256)</li>
+                  <li><span class="feat-check">✓</span> Windows 10/11 ambient Orb integration</li>
                 </ul>
                 <button type="button" class="btn-secondary plan-btn" disabled>Current Active Plan</button>
               </div>
@@ -650,30 +834,31 @@
               <div class="plan-card plan-pro">
                 <div class="plan-pro-glow"></div>
                 <div class="plan-header">
-                  <span class="plan-name">Refinzi Pro Lifetime</span>
-                  <span class="plan-recommended-tag">BEST VALUE</span>
+                  <span class="plan-name">Refinzi Supporter Pro</span>
+                  <span class="plan-recommended-tag">MOST POPULAR</span>
                 </div>
                 <div class="plan-price">
-                  <span class="price-val">₹1,499</span>
-                  <span class="price-sub">one-time payment</span>
+                  <span class="price-val">₹999</span>
+                  <span class="price-sub">one-time payment ($12)</span>
                 </div>
-                <p class="plan-desc">The ultimate superpower for engineers, researchers, and creators.</p>
+                <p class="plan-desc">~Cost of 2 coffees. Zero recurring subscriptions. Full access to VIP community & prompt newsletter.</p>
                 <ul class="plan-features">
-                  <li><span class="feat-check">✓</span> <strong>Everything in Free BYOK</strong></li>
-                  <li><span class="feat-check">✓</span> Unlimited Pinned Blueprints & Architecture Specs</li>
-                  <li><span class="feat-check">✓</span> Target-ready IDE Presets (Cursor, v0, Claude Artifacts)</li>
-                  <li><span class="feat-check">✓</span> Multi-Monitor Ambient Floating Orbs</li>
-                  <li><span class="feat-check">✓</span> Instant CSV & JSON Vault Data Export</li>
-                  <li><span class="feat-check">✓</span> All Future 2.x & 3.x Feature Updates Included</li>
+                  <li><span class="feat-check">✓</span> <strong>Everything in Free / BYOK</strong></li>
+                  <li><span class="feat-check">✓</span> Access to VIP Community & Prompt Engineering Newsletter</li>
+                  <li><span class="feat-check">✓</span> Zero API setup or configuration required</li>
+                  <li><span class="feat-check">✓</span> Cloud sync custom prompt presets</li>
+                  <li><span class="feat-check">✓</span> Priority-Direct support (WhatsApp & Founder line)</li>
+                  <li><span class="feat-check">✓</span> Lifetime free updates (No subscription forever)</li>
+                  <li><span class="feat-check">✓</span> Early access to upcoming Mac & Linux builds</li>
                 </ul>
                 <button type="button" class="btn-primary plan-btn plan-btn-pro" id="upgradeCheckoutBtn">
-                  <span>Upgrade to Lifetime — ₹1,499</span>
+                  <span>☕ Buy Me a Coffee & Get Pro — ₹999 ($12)</span>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                     <polyline points="12 5 19 12 12 19"></polyline>
                   </svg>
                 </button>
-                <span class="guarantee-text">🔒 14-day money-back guarantee • No subscription</span>
+                <span class="guarantee-text">🛡️ 14-day money-back guarantee • Instant License Key</span>
               </div>
             </div>
           </section>

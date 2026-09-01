@@ -371,3 +371,46 @@ body.orb-cursor-active * {
   .orb-cursor-shine,
   .orb-cursor-trail { display: none; }
 }
+
+/* ============================================================
+   SEOptimer & Google Mobile-First Usability Enhancements
+   ============================================================ */
+
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Eliminate 300ms mobile tap delay and prevent accidental double-tap zoom on buttons */
+button,
+a,
+input,
+select,
+textarea,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+/* Mobile Touch Target Standards: minimum 44px - 48px height on phone screens */
+@media (max-width: 640px) {
+  button:not(.chip-inline),
+  .btn,
+  a[role="button"] {
+    min-height: 44px;
+  }
+
+  /* Prevent text smaller than 12px from being illegible on high-DPI phone screens */
+  .text-\[10px\],
+  .text-\[9px\],
+  .text-\[11px\] {
+    font-size: 11.5px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Smooth momentum scrolling on overflow containers */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+}

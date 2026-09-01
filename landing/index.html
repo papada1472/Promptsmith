@@ -2,26 +2,61 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Refinzi 2.0 — 1-Click AI Prompt Transformation in Windows</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="theme-color" content="#08090c" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Refinzi 2.0" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>Refinzi 2.0 — 1-Click AI Prompt Builder & Engineer for Windows</title>
     <meta
       name="description"
-      content="Refinzi is an ambient Windows app that rebuilds any prompt in 2 seconds. 1-Click on the floating Orb (or press Ctrl+Alt+Space) for instant in-place prompt synthesis, or Hold 300ms for 5-Block Blueprint architecture. Free download."
+      content="Refinzi is an ambient Windows app that transforms vague prompts into production-grade prompts in 2 seconds. 1-Click on floating Orb or Ctrl+Alt+Space. Built for ChatGPT, Claude, Midjourney & Cursor. Free BYOK."
     />
-    <meta name="keywords" content="1-click prompt builder, prompt engineering, ChatGPT prompt tool, Midjourney prompt generator, Cursor rules, Claude prompts, Higgsfield AI, Windows AI tool, Refinzi" />
+    <meta
+      name="keywords"
+      content="prompt engineering tool, Windows 11 AI companion, prompt generator, ChatGPT prompt builder, Claude prompt enhancer, Cursor rules builder, Midjourney v6 prompts, 5-block prompt blueprint, BYOK AI desktop, ambient AI Orb, prompt synthesis, DeepSeek R1 prompt tool"
+    />
     <meta name="author" content="Refinzi" />
-    <meta property="og:title" content="Refinzi 2.0 — 1-Click AI Prompt Transformation in Windows" />
-    <meta property="og:description" content="An ambient Windows execution layer. 1-Click on the floating Orb (or press Ctrl+Alt+Space) to rebuild prompts in-place for ChatGPT, Gemini, Midjourney, Higgsfield AI, Cursor & Claude. Hold 300ms for 5-Block Blueprint." />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+    <!-- Favicon & App Icons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png" />
+    <link rel="icon" type="image/png" sizes="128x128" href="/icons/icon-128.png" />
+    <link rel="apple-touch-icon" href="/icons/icon-256.png" />
+    
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://refinzi.com" />
+    <meta property="og:site_name" content="Refinzi 2.0" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="Refinzi 2.0 — 1-Click AI Prompt Builder for Windows" />
+    <meta property="og:description" content="An ambient Windows execution layer. 1-Click on the floating Orb (or press Ctrl+Alt+Space) to rebuild prompts in-place for ChatGPT, Gemini, Midjourney, Higgsfield AI, Cursor & Claude. Hold 300ms for 5-Block Blueprint." />
+    <meta property="og:image" content="https://refinzi.com/branding/Refinzi-logo.png" />
+    <meta property="og:image:alt" content="Refinzi 2.0 Windows Ambient Prompt Engine" />
+
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Refinzi 2.0 — 1-Click AI Prompt Transformation in Windows" />
-    <meta name="twitter:description" content="An ambient Windows app that rebuilds any AI prompt in 2 seconds via 1-Click on the Orb (or Ctrl+Alt+Space). Works with ChatGPT, Gemini, Midjourney, Higgsfield AI, Cursor & Claude." />
-    <link rel="canonical" href="https://refinzi.com" />
-    <link rel="alternate" type="text/plain" href="https://refinzi.com/llms.txt" title="LLM Summary" />
+    <meta name="twitter:site" content="@refinzi" />
+    <meta name="twitter:creator" content="@refinzi" />
+    <meta name="twitter:title" content="Refinzi 2.0 — 1-Click AI Prompt Builder for Windows" />
+    <meta name="twitter:description" content="Rebuild any prompt in 2 seconds via 1-Click on the Orb (or Ctrl+Alt+Space). Works with ChatGPT, Claude, Midjourney, Cursor & DeepSeek." />
+    <meta name="twitter:image" content="https://refinzi.com/branding/Refinzi-logo.png" />
+
+    <!-- Canonical & Alternates -->
+    <link rel="canonical" href="https://refinzi.com/" />
+    <link rel="alternate" type="text/plain" href="https://refinzi.com/llms.txt" title="LLM Summary (llms.txt)" />
+    <link rel="alternate" type="text/plain" href="https://refinzi.com/llms-full.txt" title="Full LLM Documentation (llms-full.txt)" />
+
     <!-- AI Search & Generative Engine Optimization (GEO) -->
     <meta name="ai-agent" content="enabled" />
-    <meta name="ai-content-declaration" content="Refinzi is an ambient Windows desktop companion that rebuilds prompts in 2 seconds via 1-Click on the floating Orb (or Ctrl+Alt+Space) for ChatGPT, Claude, Midjourney, Cursor, and Higgsfield AI." />
+    <meta
+      name="ai-content-declaration"
+      content="Refinzi is a native Windows desktop companion that rebuilds vague prompts into 5-block architectural prompts in 2 seconds via 1-Click on the floating Orb or Ctrl+Alt+Space for ChatGPT, Claude, Midjourney, Cursor, and DeepSeek."
+    />
+    
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -36,70 +71,158 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       />
     </noscript>
-    <!-- Schema.org JSON-LD Structured Data for Google Rich Snippets -->
+
+    <!-- Schema.org JSON-LD Structured Data for Google Rich Snippets & Knowledge Graph -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@graph": [
           {
-            "@type": "SoftwareApplication",
+            "@type": "WebSite",
+            "@id": "https://refinzi.com/#website",
+            "url": "https://refinzi.com/",
             "name": "Refinzi",
-            "operatingSystem": "Windows 10, Windows 11",
-            "applicationCategory": "UtilitiesApplication",
+            "description": "1-Click AI Prompt Transformation in Windows",
+            "inLanguage": "en-US"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://refinzi.com/#organization",
+            "name": "Refinzi",
+            "url": "https://refinzi.com/",
+            "logo": "https://refinzi.com/branding/logo-mark.png",
+            "sameAs": [
+              "https://github.com/papada1472/Promptsmith"
+            ]
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://refinzi.com/#software",
+            "name": "Refinzi 2.0",
+            "operatingSystem": "Windows 10, Windows 11 (64-bit)",
+            "applicationCategory": "DeveloperApplication",
+            "applicationSubCategory": "AI Prompt Engineering",
+            "downloadUrl": "https://github.com/papada1472/Promptsmith/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe",
+            "softwareVersion": "2.0.0",
             "offers": [
               {
                 "@type": "Offer",
+                "name": "Refinzi Free BYOK",
                 "price": "0",
                 "priceCurrency": "USD",
-                "name": "Refinzi Free BYOK"
+                "availability": "https://schema.org/InStock",
+                "description": "Unlimited prompt rebuilding using your own Gemini, DeepSeek or OpenRouter API keys with 0% markup."
               },
               {
                 "@type": "Offer",
+                "name": "Refinzi Lifetime Pro",
                 "price": "12.00",
                 "priceCurrency": "USD",
-                "name": "Refinzi Lifetime Pro"
+                "availability": "https://schema.org/InStock",
+                "description": "Lifetime license with built-in managed Claude 3.5 Sonnet & GPT-4o routing, cloud sync, and lifetime updates."
               }
             ],
             "aggregateRating": {
               "@type": "AggregateRating",
               "ratingValue": "4.9",
+              "bestRating": "5",
+              "worstRating": "1",
               "ratingCount": "148"
             },
-            "description": "An ambient Windows desktop app that rebuilds any AI prompt in 2 seconds. 1-Click (Tap Ctrl+Alt+Space) to engineer production prompts in-place for ChatGPT, Gemini, Midjourney, Higgsfield, Cursor & Claude."
+            "description": "An ambient Windows desktop app that rebuilds any AI prompt in 2 seconds. 1-Click on floating Orb or Ctrl+Alt+Space to engineer production prompts in-place for ChatGPT, Gemini, Midjourney, Higgsfield, Cursor & Claude."
+          },
+          {
+            "@type": "HowTo",
+            "@id": "https://refinzi.com/#howto",
+            "name": "How to Rebuild Any Prompt in 2 Seconds on Windows",
+            "description": "Transform any rough idea into a structured production-grade prompt using Refinzi 2.0.",
+            "step": [
+              {
+                "@type": "HowToStep",
+                "position": 1,
+                "name": "Highlight your rough prompt",
+                "text": "Select your rough prompt text in any Windows application (Discord, Slack, VS Code, Browser, Cursor)."
+              },
+              {
+                "@type": "HowToStep",
+                "position": 2,
+                "name": "Trigger Refinzi 1-Click or Hotkey",
+                "text": "Click the ambient floating Orb next to your selection, or press Ctrl+Alt+Space."
+              },
+              {
+                "@type": "HowToStep",
+                "position": 3,
+                "name": "Get 5-Block Blueprint Synthesis",
+                "text": "Refinzi analyzes the context and replaces or copies an optimized 5-block prompt calibrated for ChatGPT, Claude, Midjourney, or Cursor in 2 seconds."
+              }
+            ]
           },
           {
             "@type": "FAQPage",
+            "@id": "https://refinzi.com/#faq",
             "mainEntity": [
               {
                 "@type": "Question",
-                "name": "How does the button appear?",
+                "name": "How does Refinzi actually work?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "When you select text in any Windows app, Refinzi detects it and shows a floating button next to your selection. One click does the rest."
+                  "text": "Refinzi uses an Ambient Orb that lives near your cursor without interrupting your workflow. Highlight text in any Windows app (or press Ctrl + Alt + Space), and the Orb instantly drops in, analyzes the context, and lets you rebuild it in 2 seconds."
                 }
               },
               {
                 "@type": "Question",
-                "name": "What if I don't like clicking?",
+                "name": "What exactly do I get when I Rebuild?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Ctrl + Alt + Space does the same thing without moving your mouse."
+                  "text": "You don't just get a wall of text. Refinzi outputs a structured Rebuild Pack containing 5 architectural sections: Structure & Layout, Component Assets, Creative Copy & Hooks, Motion & Interactions, and an Implementation Prompt Pack specifically formatted for Cursor, Claude, or v0."
                 }
               },
               {
                 "@type": "Question",
-                "name": "Is this a subscription?",
+                "name": "Which AI models power the rebuilds?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "No. Pro is a one-time payment. Pay once, own it forever."
+                  "text": "Refinzi 2.0 features a fast model-switcher with 1-click access to DeepSeek V3, DeepSeek R1, Gemini 1.5 Flash, Claude 3.5 Sonnet, and Nemotron 120B."
                 }
               },
               {
                 "@type": "Question",
-                "name": "Do you store my prompts?",
+                "name": "What happens when my included usage runs out?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "No. Everything runs locally on your machine. Zero logging, zero prompt storage."
+                  "text": "We don't hit you with a hard paywall. You can instantly switch to BYOK (Bring Your Own Key). Just add your DeepSeek, Gemini, or OpenRouter key to keep rebuilding indefinitely."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do you store my API keys or my prompts?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Zero logging, zero prompt storage. If you use BYOK, your API keys are encrypted locally on your machine using Windows DPAPI / AES-256. They never touch our servers."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is it a subscription?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Pro is a one-time payment of $12 (or ₹999 in India). Pay once, own it forever with lifetime updates."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is it safe? Will my antivirus flag it?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "It is a clean, standard Windows executable (0/72 on VirusTotal) and built in public on GitHub. Diagnostic logs automatically mask sensitive data."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is it available on Mac?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Not yet. Refinzi 2.0 is native to Windows 10/11. Mac and Linux builds are in active development."
                 }
               }
             ]
@@ -144,5 +267,8 @@
       Cal.ns["30min"]("ui", { "hideEventTypeDetails": false, "layout": "month_view" });
     </script>
     <script type="module" src="/src/main.jsx"></script>
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d434469361874705bd59d8eb1310d192"}'></script>
+    <!-- End Cloudflare Web Analytics -->
   </body>
 </html>

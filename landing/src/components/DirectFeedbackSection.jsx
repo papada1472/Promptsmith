@@ -104,14 +104,14 @@ export function DirectFeedbackSection() {
                 </div>
 
                 {/* Category Pills */}
-                <div className="mt-3 flex gap-1">
+                <div className="mt-3 flex gap-1.5">
                   <button
                     type="button"
                     onClick={() => setFeedbackType("feature")}
-                    className={`flex-1 py-1 px-1.5 rounded-lg text-[10px] font-semibold transition-all ${
+                    className={`flex-1 min-h-[38px] py-2 px-2 rounded-xl text-[11px] font-semibold transition-all touch-manipulation cursor-pointer ${
                       feedbackType === "feature"
                         ? "bg-blue-600 text-white shadow-sm"
-                        : "bg-zinc-900 text-zinc-400 hover:text-zinc-200"
+                        : "bg-zinc-900 text-zinc-300 hover:text-white"
                     }`}
                   >
                     💡 Feature
@@ -119,10 +119,10 @@ export function DirectFeedbackSection() {
                   <button
                     type="button"
                     onClick={() => setFeedbackType("bug")}
-                    className={`flex-1 py-1 px-1.5 rounded-lg text-[10px] font-semibold transition-all ${
+                    className={`flex-1 min-h-[38px] py-2 px-2 rounded-xl text-[11px] font-semibold transition-all touch-manipulation cursor-pointer ${
                       feedbackType === "bug"
                         ? "bg-purple-600 text-white shadow-sm"
-                        : "bg-zinc-900 text-zinc-400 hover:text-zinc-200"
+                        : "bg-zinc-900 text-zinc-300 hover:text-white"
                     }`}
                   >
                     🐛 Bug
@@ -130,17 +130,17 @@ export function DirectFeedbackSection() {
                   <button
                     type="button"
                     onClick={() => setFeedbackType("general")}
-                    className={`flex-1 py-1 px-1.5 rounded-lg text-[10px] font-semibold transition-all ${
+                    className={`flex-1 min-h-[38px] py-2 px-2 rounded-xl text-[11px] font-semibold transition-all touch-manipulation cursor-pointer ${
                       feedbackType === "general"
                         ? "bg-emerald-600 text-white shadow-sm"
-                        : "bg-zinc-900 text-zinc-400 hover:text-zinc-200"
+                        : "bg-zinc-900 text-zinc-300 hover:text-white"
                     }`}
                   >
                     💬 Idea
                   </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="mt-2.5 space-y-2">
+                <form onSubmit={handleSubmit} className="mt-3 space-y-2.5">
                   <textarea
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
@@ -152,7 +152,7 @@ export function DirectFeedbackSection() {
                         ? "What went wrong? Tell us..."
                         : "Share any setup or feature ideas..."
                     }
-                    className="w-full rounded-xl bg-zinc-950/80 border border-white/[0.08] p-2.5 text-xs text-zinc-200 placeholder-zinc-500 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/50 resize-none font-sans"
+                    className="w-full rounded-xl bg-zinc-950/80 border border-white/[0.08] p-3 text-xs sm:text-sm text-zinc-200 placeholder-zinc-500 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/50 resize-none font-sans"
                     required
                   />
                   <input
@@ -160,13 +160,13 @@ export function DirectFeedbackSection() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Your email (optional, for reply)"
-                    className="w-full rounded-xl bg-zinc-950/80 border border-white/[0.08] px-2.5 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:border-blue-500/50 focus:outline-none font-sans"
+                    className="w-full rounded-xl bg-zinc-950/80 border border-white/[0.08] px-3 py-2 text-xs sm:text-sm text-zinc-200 placeholder-zinc-500 focus:border-blue-500/50 focus:outline-none font-sans"
                   />
 
                   <button
                     type="submit"
                     disabled={isSubmitting || submitted || !message.trim()}
-                    className={`w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                    className={`w-full min-h-[44px] flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer touch-manipulation ${
                       submitted
                         ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
                         : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white shadow-md shadow-blue-500/20 border border-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -174,12 +174,12 @@ export function DirectFeedbackSection() {
                   >
                     {submitted ? (
                       <>
-                        <CheckCircle2 className="h-3 w-3 text-emerald-400" />
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                         <span>Received! Thank you.</span>
                       </>
                     ) : (
                       <>
-                        <Send className="h-3 w-3" />
+                        <Send className="h-3.5 w-3.5" />
                         <span>{isSubmitting ? "Sending..." : "Submit to Engineering"}</span>
                       </>
                     )}
@@ -222,10 +222,10 @@ export function DirectFeedbackSection() {
                   href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl text-xs font-semibold bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 transition-all"
+                  className="w-full min-h-[44px] flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 transition-all touch-manipulation cursor-pointer"
                 >
                   <span>Chat on WhatsApp</span>
-                  <ExternalLink className="h-3 w-3" />
+                  <ExternalLink className="h-3.5 w-3.5" />
                 </a>
               </div>
             </div>
@@ -265,10 +265,10 @@ export function DirectFeedbackSection() {
                 <button
                   type="button"
                   onClick={handleOpenCal}
-                  className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl text-xs font-semibold bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 transition-all cursor-pointer"
+                  className="w-full min-h-[44px] flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 transition-all cursor-pointer touch-manipulation"
                 >
                   <span>Book 30-Min Call</span>
-                  <ExternalLink className="h-3 w-3" />
+                  <ExternalLink className="h-3.5 w-3.5" />
                 </button>
               </div>
             </div>

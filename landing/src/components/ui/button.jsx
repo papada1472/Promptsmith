@@ -14,11 +14,11 @@ const variantClasses = {
 };
 
 const sizeClasses = {
-  xs: "px-2.5 py-1 text-xs rounded-lg gap-1.5",
-  sm: "px-3.5 py-1.5 text-xs rounded-lg gap-1.5 font-medium",
-  default: "px-4 py-2 text-xs sm:text-sm rounded-xl gap-2",
-  lg: "px-5 py-2.5 text-sm rounded-xl gap-2 font-semibold",
-  xl: "px-6 py-3 text-sm sm:text-base rounded-xl gap-2.5 font-semibold",
+  xs: "px-3 py-1.5 min-h-[38px] sm:min-h-[32px] text-xs rounded-lg gap-1.5",
+  sm: "px-3.5 py-2 min-h-[44px] sm:min-h-[36px] text-xs rounded-lg gap-1.5 font-medium",
+  default: "px-4 py-2.5 min-h-[44px] sm:min-h-[40px] text-xs sm:text-sm rounded-xl gap-2",
+  lg: "px-5 py-3 min-h-[48px] sm:min-h-[44px] text-sm rounded-xl gap-2 font-semibold",
+  xl: "px-6 py-3.5 min-h-[52px] sm:min-h-[48px] text-sm sm:text-base rounded-xl gap-2.5 font-semibold",
 };
 
 export function Button({

@@ -47,23 +47,23 @@ export function FounderSection() {
                     <h3 className="text-lg font-bold text-white">Rahul Mangla</h3>
                     <p className="text-xs text-blue-400 font-medium">Creator & Lead Architect of Refinzi</p>
                   </div>
-                  <div className="flex flex-wrap items-center justify-center gap-1.5">
+                  <div className="flex flex-wrap items-center justify-center gap-2">
                     <a
                       href="https://github.com/papada1472/Promptsmith"
                       target="_blank"
                       rel="noopener noreferrer"
                       title="GitHub Repository (opens in a new tab)"
                       aria-label="GitHub Repository (opens in a new tab)"
-                      className="flex items-center gap-1 text-[11px] font-mono text-zinc-300 hover:text-white bg-zinc-900 border border-white/10 px-2.5 py-1 rounded-lg transition-colors"
+                      className="min-h-[44px] inline-flex items-center gap-1.5 text-xs font-mono text-zinc-200 hover:text-white bg-zinc-900 border border-white/10 px-3 py-2 rounded-xl transition-colors touch-manipulation"
                     >
-                      <Github className="h-3 w-3" />
+                      <Github className="h-3.5 w-3.5" />
                       <span>GitHub</span>
                     </a>
                     <a
                       href="mailto:contact@refinzi.com"
-                      className="flex items-center gap-1 text-[11px] font-mono text-zinc-300 hover:text-white bg-zinc-900 border border-white/10 px-2.5 py-1 rounded-lg transition-colors"
+                      className="min-h-[44px] inline-flex items-center gap-1.5 text-xs font-mono text-zinc-200 hover:text-white bg-zinc-900 border border-white/10 px-3 py-2 rounded-xl transition-colors touch-manipulation"
                     >
-                      <Mail className="h-3 w-3 text-blue-400" />
+                      <Mail className="h-3.5 w-3.5 text-blue-400" />
                       <span>contact@refinzi.com</span>
                     </a>
                   </div>
@@ -77,22 +77,22 @@ export function FounderSection() {
                 </p>
 
                 {/* Direct Action Hub for Founder */}
-                <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+                <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-3">
                   <button
                     type="button"
                     onClick={handleOpenCal}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded-xl transition-all shadow-md shadow-blue-500/20 cursor-pointer"
+                    className="min-h-[44px] inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 px-4 py-2.5 rounded-xl transition-all shadow-md shadow-blue-500/20 cursor-pointer touch-manipulation"
                   >
-                    <Calendar className="h-3.5 w-3.5" />
+                    <Calendar className="h-4 w-4" />
                     <span>Book 30-Min Call with Rahul</span>
                   </button>
                   <a
                     href={WHATSAPP_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-300 bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-500/30 px-3 py-1.5 rounded-xl transition-all cursor-pointer"
+                    className="min-h-[44px] inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-emerald-300 bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-500/30 px-4 py-2.5 rounded-xl transition-all cursor-pointer touch-manipulation"
                   >
-                    <Phone className="h-3.5 w-3.5 text-emerald-400" />
+                    <Phone className="h-4 w-4 text-emerald-400" />
                     <span>WhatsApp {WHATSAPP_NUMBER}</span>
                   </a>
                 </div>

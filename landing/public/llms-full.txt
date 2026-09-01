@@ -1,0 +1,33 @@
+# Refinzi 2.0 Full Product & Architecture Specification
+
+## Overview
+Refinzi 2.0 is an ambient Windows desktop application built to eliminate prompt engineering friction and trial-and-error re-prompting. Unlike browser extensions that are trapped in Chrome, Refinzi operates at the Windows OS layer, enabling 1-click in-place text transformation inside Discord, Slack, VS Code, Cursor, Notion, Obsidian, Chrome, and any other desktop software.
+
+## Primary Workflows
+
+### 1. In-Place 1-Click Prompt Rebuilding
+- **Trigger**: Selecting any text anywhere in Windows causes the ambient Refinzi Orb to anchor near the cursor. Clicking the Orb (or pressing `Ctrl+Alt+Space`) triggers instant synthesis.
+- **Latency**: ~2.0 seconds.
+- **Output**: The selected text is replaced in-place with a calibrated, context-aware prompt tailored to the target model.
+
+### 2. 5-Block Architectural Blueprint (300ms Hold)
+Holding the Orb for 300ms activates deep synthesis for complex development, design, and research workflows:
+1. **Block 1: Structure & Hierarchy** — Complete layout grid, component tree, and DOM flow.
+2. **Block 2: Design Tokens & Visual Specs** — Curated color palettes, spacing units, elevation levels, and typography tokens.
+3. **Block 3: Copy, Messaging & CTAs** — High-converting headlines, micro-copy, trust anchors, and value propositions.
+4. **Block 4: Motion & Micro-Interactions** — CSS transitions, spring timings, hover states, and accessibility focus styles.
+5. **Block 5: Master Production Prompt Pack** — Formatted instructions ready for direct execution in Cursor, Claude Code, ChatGPT, or v0.
+
+## Security & Privacy Architecture
+- **Local-First Execution**: User prompts and rebuild outputs are never stored, logged, or trained on.
+- **Encryption**: Bring-Your-Own-Key (BYOK) API credentials are encrypted locally on the user's device using Windows Data Protection API (DPAPI) and AES-256 GCM.
+- **0/72 Clean**: Standard verified Windows binary passing all major antivirus scanners.
+
+## Pricing Architecture
+- **Free / BYOK Tier**: $0 forever. Includes full access to the ambient Orb, 5-block Blueprint engine, hotkey shortcuts, and unlimited usage with your own Gemini, DeepSeek, or OpenRouter API keys (0% markup).
+- **Refinzi Lifetime Pro Tier**: $12 USD one-time purchase (or ₹999 INR). Includes built-in managed Claude 3.5 Sonnet & GPT-4o routing without configuring API keys, cloud preset syncing, priority support, and lifetime free updates.
+
+## Technical Requirements
+- **Operating System**: Windows 10 (64-bit) or Windows 11 (64-bit).
+- **RAM**: < 85 MB ambient memory footprint.
+- **Hotkeys**: Customizable (Default: `Ctrl + Alt + Space`).

@@ -6,7 +6,22 @@ import { ANALYTICS_CONFIG } from "../config/analyticsConfig.js";
 export function initAnalytics() {
   if (typeof window === "undefined" || !ANALYTICS_CONFIG.enabled) return;
 
-  // Initialize GA4 if valid measurement ID is provided
+  // 1. Initialize Cloudflare Web Analytics if token is provided
+  const cfToken = ANALYTICS_CONFIG.cloudflareToken;
+  if (cfToken && cfToken.trim() !== "" && !document.getElementById("cf-beacon")) {
+    const cfScript = document.createElement("script");
+    cfScript.id = "cf-beacon";
+    cfScript.defer = true;
+    cfScript.src = "https://static.cloudflareinsights.com/beacon.min.js";
+    cfScript.setAttribute("data-cf-beacon", JSON.stringify({ token: cfToken.trim() }));
+    document.body.appendChild(cfScript);
+
+    if (ANALYTICS_CONFIG.debugConsole) {
+      console.log(`[Analytics] Cloudflare Web Analytics initialized (token: ${cfToken.slice(0, 6)}...)`);
+    }
+  }
+
+  // 2. Initialize GA4 if valid measurement ID is provided
   const gaId = ANALYTICS_CONFIG.gaMeasurementId;
   if (gaId && gaId.startsWith("G-") && gaId !== "G-YOUR_MEASUREMENT_ID") {
     // Avoid double injection

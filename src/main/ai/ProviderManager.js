@@ -2,6 +2,8 @@ import { GeminiProvider } from "./GeminiProvider.js";
 import { OpenRouterProvider } from "./OpenRouterProvider.js";
 import { DeepSeekProvider } from "./DeepSeekProvider.js";
 import { GatewayProvider } from "./GatewayProvider.js";
+import { AnthropicProvider } from "./AnthropicProvider.js";
+import { OpenAICompatibleProvider, PRESET_ENDPOINTS } from "./OpenAICompatibleProvider.js";
 import { ByokVault } from "./ByokVault.js";
 import { store } from "../store.js";
 import { metricsService } from "../services/metricsService.js";
@@ -25,7 +27,15 @@ export class ProviderManager {
     "gemini": GeminiProvider,
     "openrouter": OpenRouterProvider,
     "deepseek": DeepSeekProvider,
-    "gateway": GatewayProvider
+    "gateway": GatewayProvider,
+    "anthropic": AnthropicProvider,
+    "openai": OpenAICompatibleProvider,
+    "groq": OpenAICompatibleProvider,
+    "mistral": OpenAICompatibleProvider,
+    "xai": OpenAICompatibleProvider,
+    "ollama": OpenAICompatibleProvider,
+    "lmstudio": OpenAICompatibleProvider,
+    "custom": OpenAICompatibleProvider
   };
 
   static lastCallDiagnostic = {
@@ -61,6 +71,27 @@ export class ProviderManager {
     if (opts?.openRouterApiKey && opts?.activeProvider === "openrouter") {
       return "openrouter";
     }
+    if (opts?.openAiApiKey && opts?.activeProvider === "openai") {
+      return "openai";
+    }
+    if (opts?.anthropicApiKey && opts?.activeProvider === "anthropic") {
+      return "anthropic";
+    }
+    if (opts?.groqApiKey && opts?.activeProvider === "groq") {
+      return "groq";
+    }
+    if (opts?.mistralApiKey && opts?.activeProvider === "mistral") {
+      return "mistral";
+    }
+    if (opts?.xaiApiKey && opts?.activeProvider === "xai") {
+      return "xai";
+    }
+    if (opts?.customApiKey && opts?.activeProvider === "custom") {
+      return "custom";
+    }
+    if (opts?.activeProvider === "ollama" || opts?.activeProvider === "lmstudio") {
+      return opts.activeProvider;
+    }
     // Backward compatibility if activeProvider is not passed
     if (opts?.deepSeekApiKey && !opts?.activeProvider) {
       return "deepseek";
@@ -76,16 +107,18 @@ export class ProviderManager {
    * 
    * @param {string} providerId - The unique identifier of the provider (e.g., "deepseek").
    * @param {Object} opts - The initialization options for the provider.
-   * @param {string} opts.apiKey - The API credential.
-   * @param {string} opts.systemPrompt - The core instruction set.
-   * @param {number} opts.timeoutMs - Maximum duration of request before cancellation.
    * @returns {import("./AIProvider.js").AIProvider} An instance of a concrete AIProvider.
    * @throws {Error} Throws if the provider is unknown or unregistered.
    */
-  static createProvider(providerId, opts) {
-    const ProviderClass = this.#registry[providerId?.toLowerCase()];
+  static createProvider(providerId, opts = {}) {
+    const id = providerId?.toLowerCase();
+    const ProviderClass = this.#registry[id];
     if (!ProviderClass) {
       throw new Error(`Unknown or unregistered AI provider: "${providerId}"`);
+    }
+    if (["openai", "groq", "mistral", "xai", "ollama", "lmstudio", "custom"].includes(id)) {
+      const customUrl = id === "custom" ? (opts.baseUrl || store.get("customApiBaseUrl")) : undefined;
+      return new OpenAICompatibleProvider({ ...opts, providerType: id, baseUrl: customUrl });
     }
     return new ProviderClass(opts);
   }
@@ -98,61 +131,72 @@ export class ProviderManager {
    */
   static getDefaultModel(providerId) {
     const id = providerId?.toLowerCase();
-    if (id === "deepseek") {
-      return DeepSeekProvider.DEFAULT_MODEL;
-    }
-    if (id === "gemini") {
-      return GeminiProvider.getModelName();
-    }
-    if (id === "openrouter") {
-      return OpenRouterProvider.DEFAULT_MODEL;
-    }
-    if (id === "gateway") {
-      return "gateway-default";
-    }
+    if (id === "deepseek") return DeepSeekProvider.DEFAULT_MODEL;
+    if (id === "gemini") return GeminiProvider.getModelName();
+    if (id === "openrouter") return OpenRouterProvider.DEFAULT_MODEL;
+    if (id === "anthropic") return AnthropicProvider.DEFAULT_MODEL;
+    if (id === "openai") return "gpt-5.6-terra";
+    if (id === "groq") return "llama-3.3-70b-versatile";
+    if (id === "mistral") return "codestral-latest";
+    if (id === "xai") return "grok-4.6";
+    if (id === "ollama") return "deepseek-r1:latest";
+    if (id === "lmstudio") return "local-model";
+    if (id === "gateway") return "gateway-default";
     return "deepseek-chat";
   }
 
   /**
    * Returns the optimal model for a given provider and interaction mode.
    *
-   * Modes:
-   *   "sparkle" — fast single-tap prompt improvement (DeepSeek V4 Flash / Gemini 1.5 Flash)
-   *   "expert"  — long-press deep-reasoning reconstruction (DeepSeek V4 Pro / Gemini 1.5 Pro)
-   *   "drop"    — artifact drag-and-drop → structured prompt angles
-   *
-   * @param {string} providerId - The provider identifier (e.g. "deepseek").
+   * @param {string} providerId - The provider identifier.
    * @param {string} mode - The interaction mode.
    * @returns {string} The recommended model identifier.
    */
   static getRecommendedModel(providerId, mode) {
     const id = providerId?.toLowerCase();
     if (id === "deepseek") {
-      if (mode === "expert" || mode === "hold") {
-        return "deepseek-v4-pro";
-      }
-      if (mode === "drop") {
-        return "deepseek-v4-flash-vision-exp";
-      }
+      if (mode === "expert" || mode === "hold") return "deepseek-v4-pro";
+      if (mode === "drop") return "deepseek-v4-flash-vision-exp";
       return "deepseek-v4-flash";
     }
     if (id === "gemini") {
-      if (mode === "expert" || mode === "hold") {
-        return "gemini-1.5-pro";
-      }
-      return "gemini-1.5-flash";
+      if (mode === "expert" || mode === "hold") return "gemini-3.7-flash";
+      if (mode === "drop") return "gemini-3.6-flash";
+      return "gemini-3.6-flash";
+    }
+    if (id === "anthropic") {
+      if (mode === "expert" || mode === "hold") return "claude-opus-5";
+      return "claude-sonnet-5";
+    }
+    if (id === "openai") {
+      if (mode === "expert" || mode === "hold") return "gpt-5.6-sol";
+      return "gpt-5.6-terra";
+    }
+    if (id === "groq") {
+      if (mode === "expert" || mode === "hold") return "openai/gpt-oss-120b";
+      return "llama-3.3-70b-versatile";
+    }
+    if (id === "mistral") {
+      if (mode === "expert" || mode === "hold") return "mistral-large-latest";
+      return "codestral-latest";
+    }
+    if (id === "xai") {
+      return "grok-4.6";
+    }
+    if (id === "ollama") {
+      return "deepseek-r1:latest";
     }
     if (id !== "openrouter") {
       return this.getDefaultModel(providerId);
     }
     switch (mode) {
       case "expert":
-        return "nvidia/nemotron-3-ultra-550b-a55b:free";
+        return "anthropic/claude-opus-5";
       case "drop":
         return "qwen/qwen3-coder:free";
       case "sparkle":
       default:
-        return "nvidia/nemotron-3-super-120b-a12b:free";
+        return "nvidia/nemotron-3.5-lightning:free";
     }
   }
 
@@ -175,48 +219,94 @@ export class ProviderManager {
     const id = providerId?.toLowerCase();
     if (id === "gemini") {
       return [
-        "gemini-1.5-flash",
-        "gemini-2.0-flash",
-        "gemini-2.5-flash",
-        "gemini-1.5-pro",
-        "gemini-2.5-pro",
+        "gemini-3.7-flash",
+        "gemini-3.6-flash",
+        "gemini-3.5-flash",
+        "gemini-3.5-flash-lite",
+        "gemini-3.1-flash-lite",
         "gemini-flash-latest"
       ];
     }
     if (id === "deepseek") {
       return [
+        "deepseek-reasoner",
+        "deepseek-chat",
         "deepseek-v4-flash",
         "deepseek-v4-pro",
-        "deepseek-v4-flash-vision-exp",
-        "deepseek-chat",
-        "deepseek-reasoner"
+        "deepseek-v4-flash-vision-exp"
+      ];
+    }
+    if (id === "anthropic") {
+      return [
+        "claude-opus-5",
+        "claude-sonnet-5",
+        "claude-haiku-4-5-20251001",
+        "claude-3-7-sonnet-20250219",
+        "claude-3-5-sonnet-20241022"
+      ];
+    }
+    if (id === "openai") {
+      return [
+        "gpt-5.6-sol",
+        "gpt-5.6-terra",
+        "gpt-5.6-luna",
+        "gpt-5.6",
+        "o3-mini",
+        "gpt-4o"
+      ];
+    }
+    if (id === "groq") {
+      return [
+        "llama-3.3-70b-versatile",
+        "llama-3.1-8b-instant",
+        "openai/gpt-oss-120b",
+        "openai/gpt-oss-20b",
+        "qwen/qwen3.8-27b",
+        "deepseek-r1-distill-llama-70b"
+      ];
+    }
+    if (id === "mistral") {
+      return [
+        "codestral-latest",
+        "mistral-large-latest",
+        "pixtral-large-latest",
+        "mistral-small-latest"
+      ];
+    }
+    if (id === "xai") {
+      return [
+        "grok-4.6",
+        "grok-2-latest",
+        "grok-beta"
+      ];
+    }
+    if (id === "ollama") {
+      return [
+        "deepseek-r1:latest",
+        "llama3.3:latest",
+        "qwen2.5-coder:latest",
+        "mistral:latest",
+        "gemma2:latest"
+      ];
+    }
+    if (id === "lmstudio") {
+      return [
+        "local-model"
       ];
     }
     if (id === "openrouter") {
       return [
-        // ── Sparkle Mode — Fast Prompt Refinement ──────────────────────────────
-        "nvidia/nemotron-3-super-120b-a12b:free",   // ⭐ Primary Sparkle  (coding 37.7, agentic 8.7)
-        "qwen/qwen3-next-80b-a3b-instruct:free",    // ⭐ Secondary Sparkle (262K ctx, tool use, Sep-25 cutoff)
-        "google/gemma-4-26b-a4b-it:free",           // Sparkle alt         (multimodal, coding 39.3)
-        "poolside/laguna-xs.2:free",                 // Sparkle compact     (262K ctx, agentic coder)
-        "meta-llama/llama-3.3-70b-instruct:free",   // Sparkle fallback    (proven, tool use)
-
-        // ── Hold / Expert Mode — Deep Reasoning ────────────────────────────────
-        "nvidia/nemotron-3-ultra-550b-a55b:free",   // ⭐ Primary Hold   (coding 49.3, agentic 27.4, 1M ctx)
-        "openai/gpt-oss-120b:free",                 // ⭐ Secondary Hold (reasoning mandatory, moderated)
-        "poolside/laguna-m.1:free",                 // Hold alt          (flagship agentic, 262K ctx)
-        "nousresearch/hermes-3-llama-3.1-405b:free",// Hold fallback     (multi-turn, 131K ctx)
-
-        // ── Drop Mode — Artifact Analysis & Prompt Generation ──────────────────
-        "qwen/qwen3-coder:free",                    // ⭐ Primary Drop   (1M ctx, tool use, code rank #54)
-        "google/gemma-4-31b-it:free",              // ⭐ Secondary Drop (image+video input, coding 43.4)
-        "cohere/north-mini-code:free",              // Drop alt          (256K ctx, agentic coding, fast)
-        "openrouter/owl-alpha",                     // Drop alt          (1M ctx, agentic, tool use)
-
-        // ── Premium (paid) ─────────────────────────────────────────────────────
-        "openai/gpt-4o-mini",
-        "anthropic/claude-3.5-sonnet",
-        "google/gemini-flash-1.5"
+        "anthropic/claude-sonnet-5",
+        "anthropic/claude-opus-5",
+        "openai/gpt-5.6-terra",
+        "google/gemini-3.7-flash",
+        "google/gemini-3.6-flash",
+        "deepseek/deepseek-v4-pro-0813",
+        "deepseek/deepseek-r1",
+        "nvidia/nemotron-3.5-lightning:free",
+        "meta-llama/llama-3.3-70b-instruct:free",
+        "qwen/qwen3-coder:free",
+        "deepseek/deepseek-r1:free"
       ];
     }
     if (id === "gateway") {
@@ -233,12 +323,19 @@ export class ProviderManager {
     gemini: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 },
     openrouter: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 },
     deepseek: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 },
-    gateway: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 }
+    gateway: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 },
+    openai: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 },
+    anthropic: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 },
+    groq: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 },
+    mistral: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 },
+    xai: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 },
+    ollama: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 },
+    lmstudio: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 },
+    custom: { healthy: true, state: "CLOSED", lastFailure: null, retryAfter: 0, failures: 0, averageLatency: 0 }
   };
 
   /**
    * Resets circuit breaker state for a specific provider or all providers.
-   * Called when the user updates an API key or changes active settings.
    */
   static resetCircuitBreaker(providerId) {
     if (!providerId || providerId === "all") {
@@ -256,12 +353,7 @@ export class ProviderManager {
   }
 
   static getCircuitBreakerStatus() {
-    return {
-      gemini: { ...this.#healthState.gemini },
-      openrouter: { ...this.#healthState.openrouter },
-      deepseek: { ...this.#healthState.deepseek },
-      gateway: { ...this.#healthState.gateway }
-    };
+    return { ...this.#healthState };
   }
 
   /**
@@ -270,12 +362,11 @@ export class ProviderManager {
   static isProviderHealthy(providerId) {
     const id = providerId?.toLowerCase();
     const state = this.#healthState[id];
-    if (!state) return true; // default to true if unknown
+    if (!state) return true;
 
     if (state.state === "CLOSED") return true;
 
     if (state.state === "OPEN") {
-      // Check if cooldown expired
       if (state.retryAfter && Date.now() > state.retryAfter) {
         log.info(`[CircuitBreaker] Cooldown expired for ${id}. Transitioning to HALF-OPEN.`);
         state.state = "HALF-OPEN";
@@ -285,7 +376,6 @@ export class ProviderManager {
     }
 
     if (state.state === "HALF-OPEN") {
-      // Allow the test request
       return true;
     }
 
@@ -293,7 +383,7 @@ export class ProviderManager {
   }
 
   /**
-   * Mark a provider as failed, setting a cooldown period (e.g., 5 minutes for 429).
+   * Mark a provider as failed, setting a cooldown period.
    */
   static markProviderFailed(providerId, error) {
     const id = providerId?.toLowerCase();
@@ -309,7 +399,6 @@ export class ProviderManager {
     if (state.state === "HALF-OPEN" || state.failures >= threshold || is429) {
       state.state = "OPEN";
       state.healthy = false;
-      // 5 minutes for 429/rate-limit, 30 seconds for other transient errors to prevent deskop starvation
       const cooldownMs = is429 ? 5 * 60 * 1000 : 30 * 1000;
       state.retryAfter = Date.now() + cooldownMs;
       log.warn(`[CircuitBreaker] Provider ${id} tripped to OPEN. Cooldown: ${cooldownMs / 1000}s. Reason: ${error?.message || error}`);
@@ -338,30 +427,28 @@ export class ProviderManager {
     if (state.averageLatency === 0) {
       state.averageLatency = latencyMs;
     } else {
-      // Exponential moving average
       state.averageLatency = (state.averageLatency * 0.8) + (latencyMs * 0.2);
     }
   }
 
   /**
    * Refines text with automatic provider failover, health tracking, and circuit breaker.
-   * Runs validation and deterministic output repair on the final output before returning.
-   *
-   * @param {string} text
-   * @param {Object} opts
-   * @param {string} [opts.mode] - "sparkle", "expert", "preserve", "drop"
-   * @param {string} [opts.systemPrompt] - System prompt override
-   * @param {Object} [opts.media] - Image data and mime type
-   * @param {string} [opts.responseMimeType] - Response mime type format
-   * @param {number} [opts.timeoutMs] - Request timeout
-   * @returns {Promise<{ output: string, providerId: string, model: string }>}
    */
   static async refineWithFailover(text, opts = {}) {
     const mode = opts.mode || "sparkle";
-    const activeProvider = store.get("activeProvider") || "deepseek";
-    const geminiApiKey = ByokVault.decrypt(store.get("geminiApiKey")) || process.env.GEMINI_API_KEY || process.env.GEMINI_KEY || "";
-    const openRouterApiKey = ByokVault.decrypt(store.get("openRouterApiKey")) || process.env.OPENROUTER_API_KEY || "";
-    const deepSeekApiKey = ByokVault.decrypt(store.get("deepSeekApiKey")) || process.env.DEEPSEEK_API_KEY || "";
+    const activeProvider = (store.get("activeProvider") || "deepseek").toLowerCase();
+    
+    const keys = {
+      deepseek: ByokVault.decrypt(store.get("deepSeekApiKey")) || process.env.DEEPSEEK_API_KEY || "",
+      gemini: ByokVault.decrypt(store.get("geminiApiKey")) || process.env.GEMINI_API_KEY || process.env.GEMINI_KEY || "",
+      openrouter: ByokVault.decrypt(store.get("openRouterApiKey")) || process.env.OPENROUTER_API_KEY || "",
+      openai: ByokVault.decrypt(store.get("openAiApiKey")) || process.env.OPENAI_API_KEY || "",
+      anthropic: ByokVault.decrypt(store.get("anthropicApiKey")) || process.env.ANTHROPIC_API_KEY || "",
+      groq: ByokVault.decrypt(store.get("groqApiKey")) || process.env.GROQ_API_KEY || "",
+      mistral: ByokVault.decrypt(store.get("mistralApiKey")) || process.env.MISTRAL_API_KEY || "",
+      xai: ByokVault.decrypt(store.get("xaiApiKey")) || process.env.XAI_API_KEY || "",
+      custom: ByokVault.decrypt(store.get("customApiKey")) || ""
+    };
 
     // Initialize diagnostic report for the request
     this.lastCallDiagnostic = {
@@ -379,31 +466,22 @@ export class ProviderManager {
 
     // 1. Resolve fallback chain
     const providersToTry = [];
-    const hasValidGeminiKey = Boolean(geminiApiKey && (geminiApiKey.startsWith("AIza") || geminiApiKey.startsWith("AQ.") || geminiApiKey.length >= 10));
-    const hasValidOpenRouterKey = Boolean(openRouterApiKey && (openRouterApiKey.startsWith("sk-or-") || openRouterApiKey.startsWith("sk-") || openRouterApiKey.length >= 10));
-    const hasValidDeepSeekKey = Boolean(deepSeekApiKey && (deepSeekApiKey.startsWith("sk-") || deepSeekApiKey.length >= 10));
+    const isValidKey = (k) => Boolean(k && k.length >= 8);
 
-    if (activeProvider === "deepseek") {
-      if (hasValidDeepSeekKey && !opts.media) providersToTry.push("deepseek");
-      if (hasValidGeminiKey) providersToTry.push("gemini");
-      if (hasValidOpenRouterKey) providersToTry.push("openrouter");
-    } else if (activeProvider === "gemini") {
-      if (hasValidGeminiKey) providersToTry.push("gemini");
-      if (hasValidDeepSeekKey && !opts.media) providersToTry.push("deepseek");
-      if (hasValidOpenRouterKey) providersToTry.push("openrouter");
-    } else if (activeProvider === "openrouter") {
-      if (hasValidOpenRouterKey) providersToTry.push("openrouter");
-      if (hasValidDeepSeekKey && !opts.media) providersToTry.push("deepseek");
-      if (hasValidGeminiKey) providersToTry.push("gemini");
-    } else if (activeProvider === "gateway") {
-      providersToTry.push("gateway");
-      if (hasValidDeepSeekKey && !opts.media) providersToTry.push("deepseek");
-      if (hasValidGeminiKey) providersToTry.push("gemini");
-      if (hasValidOpenRouterKey) providersToTry.push("openrouter");
-    } else {
-      if (hasValidDeepSeekKey && !opts.media) providersToTry.push("deepseek");
-      if (hasValidGeminiKey) providersToTry.push("gemini");
-      if (hasValidOpenRouterKey) providersToTry.push("openrouter");
+    // Always try active provider first if configured
+    if (["ollama", "lmstudio"].includes(activeProvider)) {
+      providersToTry.push(activeProvider);
+    } else if (keys[activeProvider] && isValidKey(keys[activeProvider])) {
+      providersToTry.push(activeProvider);
+    }
+
+    // Add other available configured providers as failovers
+    for (const [pId, pKey] of Object.entries(keys)) {
+      if (pId !== activeProvider && isValidKey(pKey) && !providersToTry.includes(pId)) {
+        if (!opts.media || pId !== "deepseek") {
+          providersToTry.push(pId);
+        }
+      }
     }
     
     if (!providersToTry.includes("gateway")) {
@@ -415,13 +493,11 @@ export class ProviderManager {
     let lastError = null;
 
     for (const providerId of providersToTry) {
-      // 2. Check Circuit Breaker
       if (!this.isProviderHealthy(providerId)) {
         log.warn(`[ProviderManager] Skipping provider ${providerId} due to active Circuit Breaker.`);
         continue;
       }
 
-      // 3. Resolve Model
       let model = this.getRecommendedModel(providerId, mode);
       if (providerId === activeProvider) {
         const configuredModel = store.get("activeModel");
@@ -435,10 +511,7 @@ export class ProviderManager {
       this.lastCallDiagnostic.model = model;
       this.lastCallDiagnostic.fallbackUsed = (providerId !== activeProvider);
 
-      // 4. Instantiate Provider
-      let apiKey = geminiApiKey;
-      if (providerId === "openrouter") apiKey = openRouterApiKey;
-      else if (providerId === "deepseek") apiKey = deepSeekApiKey;
+      const apiKey = keys[providerId] || "";
       const attemptTimeout = opts.timeoutMs ? Math.max(opts.timeoutMs, 25000) : 25000;
       
       let provider;
@@ -455,7 +528,6 @@ export class ProviderManager {
         continue;
       }
 
-      // 5. Call Provider exactly once (Zero duplicate provider retries)
       const start = Date.now();
       try {
         log.info(`[ProviderManager] Executing refine on provider: ${providerId}, model: ${model}`);
@@ -470,7 +542,6 @@ export class ProviderManager {
 
         this.lastCallDiagnostic.generationTimeMs = latency;
 
-        // 6. Validation and Repair (No LLM recall/regeneration)
         let output = rawOutput;
         const inputPrompt = text;
 
@@ -524,8 +595,9 @@ export class ProviderManager {
       }
     }
 
-    if (!hasValidDeepSeekKey && !hasValidGeminiKey && !hasValidOpenRouterKey) {
-      const err = new Error("DeepSeek API key required. Right-click Refinzi Tray > Settings to add your key (get one at platform.deepseek.com).");
+    const hasAnyKey = Object.values(keys).some(k => k && k.length >= 8) || ["ollama", "lmstudio"].includes(activeProvider);
+    if (!hasAnyKey) {
+      const err = new Error("AI provider API key required. Right-click Refinzi Tray > Settings to add your key.");
       err.code = "MISSING_API_KEY";
       throw err;
     }

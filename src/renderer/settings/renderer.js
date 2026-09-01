@@ -5,30 +5,88 @@
 // ── Provider Models Configuration ──
 const PROVIDER_MODELS = {
   deepseek: [
+    { value: "deepseek-reasoner", label: "DeepSeek R1 (deepseek-reasoner) 🧠 Frontier Reasoning & CoT" },
     { value: "deepseek-chat", label: "DeepSeek V3 (deepseek-chat) ⚡ Fast & Production Default" },
-    { value: "deepseek-reasoner", label: "DeepSeek R1 (deepseek-reasoner) 🧠 Frontier Reasoning" },
     { value: "deepseek-v4-pro", label: "DeepSeek V4 Pro (deepseek-v4-pro) 🚀 Flagship 1M Context" },
     { value: "deepseek-v4-flash", label: "DeepSeek V4 Flash (deepseek-v4-flash) ⚡ Sub-Second" },
     { value: "deepseek-v4-flash-vision-exp", label: "DeepSeek V4 Vision (deepseek-v4-flash-vision-exp) 👁️ Image/OCR" },
     { value: "custom", label: "Custom Model..." }
   ],
+  anthropic: [
+    { value: "claude-sonnet-5", label: "Anthropic Claude Sonnet 5 👑 Top Code & Scaffolding (Default)" },
+    { value: "claude-opus-5", label: "Anthropic Claude Opus 5 🧠 Flagship Deep Nuance & Logic" },
+    { value: "claude-haiku-4-5-20251001", label: "Anthropic Claude Haiku 4.5 ⚡ Sub-Second Fast & Smart" },
+    { value: "claude-3-7-sonnet-20250219", label: "Anthropic Claude 3.7 Sonnet 🚀 Hybrid Reasoning & CoT" },
+    { value: "claude-3-5-sonnet-20241022", label: "Anthropic Claude 3.5 Sonnet 📚 Legacy" },
+    { value: "custom", label: "Custom Model..." }
+  ],
+  openai: [
+    { value: "gpt-5.6-terra", label: "OpenAI GPT-5.6 Terra 🌐 Flagship Multimodal Workhorse (Default)" },
+    { value: "gpt-5.6-sol", label: "OpenAI GPT-5.6 Sol 🧠 Frontier Deep STEM Reasoning" },
+    { value: "gpt-5.6-luna", label: "OpenAI GPT-5.6 Luna ⚡ Sub-Second Lightweight" },
+    { value: "gpt-5.6", label: "OpenAI GPT-5.6 (Auto-Alias)" },
+    { value: "o3-mini", label: "OpenAI o3-mini 🔬 Deep Step-by-Step Logic" },
+    { value: "gpt-4o", label: "OpenAI GPT-4o 📚 Legacy Flagship" },
+    { value: "custom", label: "Custom Model..." }
+  ],
   gemini: [
-    { value: "gemini-1.5-flash", label: "Google Gemini 1.5 Flash ⚡ Free Tier & Fast" },
-    { value: "gemini-2.0-flash", label: "Google Gemini 2.0 Flash 🚀 Next-Gen Fast" },
-    { value: "gemini-2.5-flash", label: "Google Gemini 2.5 Flash ⚡ Ultra-Fast" },
-    { value: "gemini-1.5-pro", label: "Google Gemini 1.5 Pro 🧠 Deep Logic & Reasoning" },
-    { value: "gemini-flash-latest", label: "Gemini Flash Latest (Auto-Updating)" },
+    { value: "gemini-3.7-flash", label: "Google Gemini 3.7 Flash ⚡ Flagship Next-Gen (Default)" },
+    { value: "gemini-3.6-flash", label: "Google Gemini 3.6 Flash 🚀 Sub-Second Production" },
+    { value: "gemini-3.5-flash", label: "Google Gemini 3.5 Flash 🧠 High-Throughput Reasoning" },
+    { value: "gemini-3.5-flash-lite", label: "Google Gemini 3.5 Flash Lite ⚡ Ultra-Efficient" },
+    { value: "gemini-3.1-flash-lite", label: "Google Gemini 3.1 Flash Lite 💨 Lightweight" },
+    { value: "gemini-flash-latest", label: "Google Gemini Flash Latest (Auto-Updating)" },
     { value: "custom", label: "Custom Model..." }
   ],
   openrouter: [
-    { value: "nvidia/nemotron-3-super-120b-a12b:free", label: "Nvidia Nemotron 120B 🆓 Free Tier (Recommended)" },
-    { value: "deepseek/deepseek-r1:free", label: "DeepSeek R1 via OpenRouter 🆓 Free Tier" },
+    { value: "anthropic/claude-sonnet-5", label: "Anthropic Claude Sonnet 5 👑 Top Code & Scaffolding" },
+    { value: "anthropic/claude-opus-5", label: "Anthropic Claude Opus 5 🧠 Frontier Deep Logic" },
+    { value: "openai/gpt-5.6-terra", label: "OpenAI GPT-5.6 Terra 🌐 Multimodal Flagship" },
+    { value: "google/gemini-3.7-flash", label: "Google Gemini 3.7 Flash 🚀 Flagship Speed" },
+    { value: "google/gemini-3.6-flash", label: "Google Gemini 3.6 Flash ⚡ Ultra-Fast" },
+    { value: "deepseek/deepseek-v4-pro-0813", label: "DeepSeek V4 Pro (OpenRouter) 🚀 Flagship 1M Context" },
+    { value: "deepseek/deepseek-r1", label: "DeepSeek R1 (OpenRouter) 🧠 Frontier CoT" },
+    { value: "nvidia/nemotron-3.5-lightning:free", label: "Nvidia Nemotron 3.5 Lightning 🆓 Free Tier (Recommended)" },
     { value: "meta-llama/llama-3.3-70b-instruct:free", label: "Meta Llama 3.3 70B 🆓 Free Tier" },
     { value: "qwen/qwen3-coder:free", label: "Qwen 3 Coder 🆓 Free Coding" },
-    { value: "google/gemma-4-26b-a4b-it:free", label: "Google Gemma 4 🆓 Free Tier" },
-    { value: "anthropic/claude-3.5-sonnet", label: "Claude 3.5 Sonnet (BYOK)" },
-    { value: "openai/gpt-4o-mini", label: "GPT-4o Mini (BYOK)" },
+    { value: "deepseek/deepseek-r1:free", label: "DeepSeek R1 via OpenRouter 🆓 Free Tier" },
     { value: "custom", label: "Custom Model..." }
+  ],
+  groq: [
+    { value: "llama-3.3-70b-versatile", label: "Meta Llama 3.3 70B Versatile ⚡ Ultra-Fast 300+ t/s (Default)" },
+    { value: "llama-3.1-8b-instant", label: "Meta Llama 3.1 8B Instant 💨 750+ tokens/sec" },
+    { value: "openai/gpt-oss-120b", label: "OpenAI GPT-OSS 120B on Groq 🧠 Massive Open Weights" },
+    { value: "openai/gpt-oss-20b", label: "OpenAI GPT-OSS 20B on Groq ⚡ Fast Reasoning" },
+    { value: "qwen/qwen3.8-27b", label: "Qwen 3.8 27B on Groq 💻 Elite Programming" },
+    { value: "deepseek-r1-distill-llama-70b", label: "DeepSeek R1 Distill 70B 🧠 Fast CoT Reasoning" },
+    { value: "custom", label: "Custom Model..." }
+  ],
+  mistral: [
+    { value: "codestral-latest", label: "Mistral Codestral 💻 Elite Code & Architecture (Default)" },
+    { value: "mistral-large-latest", label: "Mistral Large 🧠 Frontier Multilingual Reasoning" },
+    { value: "pixtral-large-latest", label: "Mistral Pixtral Large 👁️ Vision & Multimodal" },
+    { value: "mistral-small-latest", label: "Mistral Small ⚡ Fast & Lightweight" },
+    { value: "custom", label: "Custom Model..." }
+  ],
+  xai: [
+    { value: "grok-4.6", label: "xAI Grok 4.6 🚀 Frontier Realtime Reasoning (Default)" },
+    { value: "grok-2-latest", label: "xAI Grok 2 Latest 🌐 Direct Logic" },
+    { value: "grok-beta", label: "xAI Grok Beta 🌐 Unfiltered Reasoning" },
+    { value: "custom", label: "Custom Model..." }
+  ],
+  ollama: [
+    { value: "deepseek-r1:latest", label: "DeepSeek R1 (Localhost:11434) 🧠 100% Private Offline" },
+    { value: "llama3.3:latest", label: "Llama 3.3 (Localhost:11434) 🦙 Meta Local" },
+    { value: "qwen2.5-coder:latest", label: "Qwen 2.5 Coder (Localhost:11434) 💻 Local Coding" },
+    { value: "mistral:latest", label: "Mistral (Localhost:11434) ⚡ Fast Local" },
+    { value: "custom", label: "Custom Local Model..." }
+  ],
+  lmstudio: [
+    { value: "local-model", label: "LM Studio Currently Loaded Model (Localhost:1234)" },
+    { value: "custom", label: "Custom Model..." }
+  ],
+  custom: [
+    { value: "custom", label: "Custom OpenAI-Compatible Model Identifier..." }
   ],
   gateway: [
     { value: "gateway-default", label: "Refinzi Free Gateway (Auto Failover)" },
@@ -40,8 +98,16 @@ const PROVIDER_MODELS = {
 
 const PROVIDER_PORTALS = {
   deepseek: { name: "DeepSeek Platform", url: "https://platform.deepseek.com/api_keys", placeholder: "Paste your DeepSeek API key (sk-...)" },
+  anthropic: { name: "Anthropic Console", url: "https://console.anthropic.com/settings/keys", placeholder: "Paste your Anthropic Claude API key (sk-ant-...)" },
+  openai: { name: "OpenAI Platform", url: "https://platform.openai.com/api-keys", placeholder: "Paste your OpenAI API key (sk-...)" },
   gemini: { name: "Google AI Studio", url: "https://aistudio.google.com/app/apikey", placeholder: "Paste your Gemini API key (AIzaSy...)" },
   openrouter: { name: "OpenRouter Console", url: "https://openrouter.ai/keys", placeholder: "Paste your OpenRouter API key (sk-or-...)" },
+  groq: { name: "GroqCloud Console", url: "https://console.groq.com/keys", placeholder: "Paste your Groq API key (gsk_...)" },
+  mistral: { name: "Mistral Console", url: "https://console.mistral.ai/api-keys", placeholder: "Paste your Mistral API key" },
+  xai: { name: "xAI Console", url: "https://console.x.ai/", placeholder: "Paste your xAI API key (xai-...)" },
+  ollama: { name: "Ollama (Localhost 11434)", url: "https://ollama.com", placeholder: "http://localhost:11434/v1/chat/completions (No key needed)" },
+  lmstudio: { name: "LM Studio (Localhost 1234)", url: "https://lmstudio.ai", placeholder: "http://localhost:1234/v1/chat/completions (No key needed)" },
+  custom: { name: "Custom Endpoint", url: "https://platform.openai.com/docs/api-reference", placeholder: "Paste custom API key (or leave empty if local)" },
   gateway: { name: "Refinzi Gateway", url: "https://refinzi.app", placeholder: "No API key required (Free Gateway active)" }
 };
 
@@ -368,7 +434,7 @@ function updateProviderModelsDropdown(provider, selectedModel) {
     elements.homeModelSelect.appendChild(opt);
   });
 
-  const defaultModel = selectedModel || (provider === "deepseek" ? "deepseek-chat" : provider === "gemini" ? "gemini-1.5-flash" : provider === "gateway" ? "gateway-default" : "nvidia/nemotron-3-super-120b-a12b:free");
+  const defaultModel = selectedModel || (PROVIDER_MODELS[provider]?.[0]?.value || (provider === "deepseek" ? "deepseek-chat" : provider === "gemini" ? "gemini-3.7-flash" : "gateway-default"));
   const hasModel = models.some(m => m.value === defaultModel);
   
   if (hasModel) {
@@ -400,7 +466,7 @@ function syncProviderUI() {
   }
 
   if (elements.homeApiKeyHelpLink) {
-    elements.homeApiKeyHelpLink.style.display = provider === "gateway" ? "none" : "inline";
+    elements.homeApiKeyHelpLink.style.display = (provider === "gateway" || provider === "ollama" || provider === "lmstudio") ? "none" : "inline";
   }
 
   if (elements.homeApiKeyInput) {
@@ -408,8 +474,14 @@ function syncProviderUI() {
     elements.homeApiKeyInput.disabled = provider === "gateway";
     
     if (provider === "deepseek") elements.homeApiKeyInput.value = state.settings.deepSeekApiKey || "";
+    else if (provider === "anthropic") elements.homeApiKeyInput.value = state.settings.anthropicApiKey || "";
+    else if (provider === "openai") elements.homeApiKeyInput.value = state.settings.openAiApiKey || "";
     else if (provider === "gemini") elements.homeApiKeyInput.value = state.settings.geminiApiKey || "";
     else if (provider === "openrouter") elements.homeApiKeyInput.value = state.settings.openRouterApiKey || "";
+    else if (provider === "groq") elements.homeApiKeyInput.value = state.settings.groqApiKey || "";
+    else if (provider === "mistral") elements.homeApiKeyInput.value = state.settings.mistralApiKey || "";
+    else if (provider === "xai") elements.homeApiKeyInput.value = state.settings.xaiApiKey || "";
+    else if (provider === "custom") elements.homeApiKeyInput.value = state.settings.customApiKey || "";
     else elements.homeApiKeyInput.value = "";
   }
 
@@ -422,6 +494,17 @@ function syncProviderUI() {
       chip.classList.add("active");
     } else {
       chip.classList.remove("active");
+    }
+  });
+
+  // Sync Quick Provider Templates Active State
+  const templateCards = document.querySelectorAll(".provider-template-card");
+  templateCards.forEach(card => {
+    const cardProvider = card.getAttribute("data-provider");
+    if (cardProvider === provider) {
+      card.classList.add("active");
+    } else {
+      card.classList.remove("active");
     }
   });
 }
@@ -760,11 +843,7 @@ function setupEventListeners() {
   elements.homeProviderSelect?.addEventListener("change", (e) => {
     const provider = e.target.value;
     state.settings.activeProvider = provider;
-    const defaultModel = provider === "gemini" 
-      ? "gemini-1.5-flash" 
-      : (provider === "openrouter" 
-          ? "nvidia/nemotron-3-super-120b-a12b:free" 
-          : (provider === "deepseek" ? "deepseek-chat" : "gateway-default"));
+    const defaultModel = PROVIDER_MODELS[provider]?.[0]?.value || "deepseek-chat";
     state.settings.activeModel = defaultModel;
     syncProviderUI();
     
@@ -773,6 +852,49 @@ function setupEventListeners() {
       window.refinzi.settings.set({ activeProvider: provider, activeModel: defaultModel });
     }
     renderMetrics();
+  });
+
+  // Toggle Provider Templates Grid Collapse/Expand
+  const toggleTemplatesBtn = document.getElementById("toggleProviderTemplates");
+  const templatesGrid = document.getElementById("providerTemplatesGrid");
+  toggleTemplatesBtn?.addEventListener("click", () => {
+    if (templatesGrid) {
+      const isHidden = templatesGrid.style.display === "none";
+      templatesGrid.style.display = isHidden ? "grid" : "none";
+      const chevron = toggleTemplatesBtn.querySelector(".chevron-icon");
+      if (chevron) chevron.style.transform = isHidden ? "rotate(0deg)" : "rotate(180deg)";
+    }
+  });
+
+  // Quick Provider Templates "USE" and Card Click Handlers
+  const templateCardsList = document.querySelectorAll(".provider-template-card");
+  templateCardsList.forEach(card => {
+    const handleTemplateSelect = (e) => {
+      e.stopPropagation();
+      const provider = card.getAttribute("data-provider") || "deepseek";
+      const model = card.getAttribute("data-model") || (PROVIDER_MODELS[provider]?.[0]?.value || "deepseek-chat");
+      
+      state.settings.activeProvider = provider;
+      state.settings.activeModel = model;
+      
+      syncProviderUI();
+      if (window.refinzi?.settings?.set) {
+        window.refinzi.settings.set({ activeProvider: provider, activeModel: model });
+      }
+      renderMetrics();
+
+      const name = card.querySelector(".template-name")?.textContent || provider.toUpperCase();
+      showToast(`Active provider set to ${name}!`, "success", 2000);
+
+      // Focus API Key Input if not gateway/local
+      if (provider !== "gateway" && provider !== "ollama" && provider !== "lmstudio") {
+        elements.homeApiKeyInput?.focus();
+      }
+    };
+
+    const useBtn = card.querySelector(".btn-template-use");
+    useBtn?.addEventListener("click", handleTemplateSelect);
+    card.addEventListener("click", handleTemplateSelect);
   });
 
   // Quick Model Switcher Pills Click Handlers
@@ -831,8 +953,14 @@ function setupEventListeners() {
       if (key && !key.startsWith("••••") && window.refinzi?.settings?.setApiKey) {
         await window.refinzi.settings.setApiKey(key, provider);
         if (provider === "deepseek") state.settings.deepSeekApiKey = key;
+        else if (provider === "anthropic") state.settings.anthropicApiKey = key;
+        else if (provider === "openai") state.settings.openAiApiKey = key;
         else if (provider === "gemini") state.settings.geminiApiKey = key;
         else if (provider === "openrouter") state.settings.openRouterApiKey = key;
+        else if (provider === "groq") state.settings.groqApiKey = key;
+        else if (provider === "mistral") state.settings.mistralApiKey = key;
+        else if (provider === "xai") state.settings.xaiApiKey = key;
+        else if (provider === "custom") state.settings.customApiKey = key;
       }
 
       try {
@@ -845,7 +973,7 @@ function setupEventListeners() {
             return;
           } else {
             elements.homeConnectionDot.className = "status-indicator-dot";
-            elements.homeConnectionText.textContent = res?.error || "Connection failed. Please check API key.";
+            elements.homeConnectionText.textContent = res?.error || "Connection failed. Please check configuration.";
             showToast(res?.error || "Connection failed.", "warning");
             return;
           }
@@ -866,8 +994,14 @@ function setupEventListeners() {
     if (key.startsWith("••••")) return;
 
     if (provider === "deepseek") state.settings.deepSeekApiKey = key;
+    else if (provider === "anthropic") state.settings.anthropicApiKey = key;
+    else if (provider === "openai") state.settings.openAiApiKey = key;
     else if (provider === "gemini") state.settings.geminiApiKey = key;
     else if (provider === "openrouter") state.settings.openRouterApiKey = key;
+    else if (provider === "groq") state.settings.groqApiKey = key;
+    else if (provider === "mistral") state.settings.mistralApiKey = key;
+    else if (provider === "xai") state.settings.xaiApiKey = key;
+    else if (provider === "custom") state.settings.customApiKey = key;
 
     if (window.refinzi?.settings?.setApiKey) {
       await window.refinzi.settings.setApiKey(key, provider);

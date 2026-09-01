@@ -1,5 +1,7 @@
 import { REFINE_TIMEOUT_MS, SYSTEM_PROMPT } from "./constants.js";
 import { ProviderManager } from "./ai/ProviderManager.js";
+import { ByokVault } from "./ai/ByokVault.js";
+import { providerService } from "./services/providerService.js";
 import { checkActiveElementIsEditable, captureActivePrompt, captureActiveSelection, replaceActivePrompt, writeClipboardText, getActiveProcessId, isValidAIResponse } from "./clipboardFlow.js";
 import { store } from "./store.js";
 import { metricsService } from "./services/metricsService.js";
@@ -77,11 +79,24 @@ export async function refineSelectedText({ notifySuccess, notifyError, notifyWar
     }
 
     // Check quota (BYOK users bypass this limit)
-    const activeProvider = store.get("activeProvider") || "gemini";
-    const geminiApiKey = store.get("geminiApiKey") || process.env.GEMINI_API_KEY;
-    const openRouterApiKey = store.get("openRouterApiKey") || process.env.OPENROUTER_API_KEY;
-    const hasByok = (activeProvider === "gemini" && geminiApiKey) || 
-                    (activeProvider === "openrouter" && openRouterApiKey);
+    const activeProvider = (store.get("activeProvider") || "deepseek").toLowerCase();
+    const storeKey = providerService.getStoreKey(activeProvider);
+    const storedEnc = store.get(storeKey) || "";
+    const decryptedKey = ByokVault.decrypt(storedEnc);
+    const envKey = (
+      (activeProvider === "deepseek" && process.env.DEEPSEEK_API_KEY) ||
+      (activeProvider === "gemini" && (process.env.GEMINI_API_KEY || process.env.GEMINI_KEY)) ||
+      (activeProvider === "openrouter" && process.env.OPENROUTER_API_KEY) ||
+      (activeProvider === "openai" && process.env.OPENAI_API_KEY) ||
+      (activeProvider === "anthropic" && process.env.ANTHROPIC_API_KEY) ||
+      (activeProvider === "groq" && process.env.GROQ_API_KEY) ||
+      (activeProvider === "mistral" && process.env.MISTRAL_API_KEY) ||
+      (activeProvider === "xai" && process.env.XAI_API_KEY) ||
+      ""
+    );
+    const hasValidKey = Boolean((decryptedKey && decryptedKey.length >= 8) || (envKey && envKey.length >= 8));
+    const isKeylessProvider = ["ollama", "lmstudio"].includes(activeProvider);
+    const hasByok = (activeProvider !== "gateway") && (hasValidKey || isKeylessProvider);
 
     if (!hasByok) {
       const quota = metricsService.checkAndTrackQuota();

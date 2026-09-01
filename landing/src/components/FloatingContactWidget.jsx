@@ -148,7 +148,7 @@ export function FloatingContactWidget() {
           if (!isOpen) trackEvent("floating_contact_widget_opened");
         }}
         aria-label="Open contact and feedback channels"
-        className="group flex items-center gap-2 rounded-full border border-blue-500/30 bg-gradient-to-r from-blue-600 to-indigo-600 px-3.5 py-2.5 text-white shadow-xl shadow-blue-500/20 backdrop-blur-md transition-all hover:scale-105 hover:shadow-blue-500/30 active:scale-95 cursor-pointer"
+        className="group flex min-h-[48px] items-center gap-2 rounded-full border border-blue-500/30 bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2.5 text-white shadow-xl shadow-blue-500/20 backdrop-blur-md transition-all hover:scale-105 hover:shadow-blue-500/30 active:scale-95 cursor-pointer touch-manipulation"
       >
         <span className="relative flex h-2 w-2">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />

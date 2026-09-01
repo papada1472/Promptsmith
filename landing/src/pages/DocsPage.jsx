@@ -39,6 +39,7 @@ export function DocsPage({ onNavigateHome, onDownload }) {
             <span>Back to Home</span>
           </button>
           <div className="flex items-center gap-2">
+            <img src="/branding/logo-mark.png" alt="Refinzi" className="h-5 w-5 rounded object-contain hidden sm:inline" />
             <span className="text-xs font-bold text-white hidden sm:inline">Refinzi 2.0 Docs</span>
             <button
               onClick={onDownload}
@@ -159,20 +160,100 @@ export function DocsPage({ onNavigateHome, onDownload }) {
             </section>
 
             {/* Section 4: BYOK */}
-            <section id="byok" className="space-y-3 rounded-2xl border border-white/[0.08] bg-zinc-900/40 p-5 sm:p-6">
+            <section id="byok" className="space-y-4 rounded-2xl border border-white/[0.08] bg-zinc-900/40 p-5 sm:p-6">
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
                 <Key className="h-4 w-4 text-emerald-400" />
-                4. Bring Your Own Key (BYOK) Setup
+                4. Bring Your Own Key (BYOK) & Top 10 Supported Models
               </h2>
               <p className="text-xs sm:text-sm text-zinc-300">
-                Refinzi allows 100% free usage with your personal API keys with zero markup:
+                Refinzi allows 100% free usage with your personal API keys with zero markup. Switch between any of the Top 10 frontier LLMs with 1-click:
               </p>
-              <ul className="list-disc pl-5 space-y-1 text-xs text-zinc-300">
-                <li>Right click the Refinzi Tray icon &gt; click <strong>Settings</strong>.</li>
-                <li>Navigate to <strong>AI Providers</strong>.</li>
-                <li>Paste your free <strong>Google Gemini API Key</strong> (or OpenRouter Key).</li>
-                <li>Click <strong>Save & Test Connection</strong>.</li>
-              </ul>
+              
+              {/* Top 10 Models Table */}
+              <div className="overflow-x-auto rounded-xl border border-white/[0.06] bg-zinc-950/60">
+                <table className="w-full text-left text-xs text-zinc-300">
+                  <thead className="border-b border-white/[0.08] bg-zinc-900/80 text-[11px] font-bold uppercase text-zinc-400">
+                    <tr>
+                      <th className="px-3 py-2">Model</th>
+                      <th className="px-3 py-2">Provider</th>
+                      <th className="px-3 py-2">Superpower</th>
+                      <th className="px-3 py-2">Best For</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/[0.04] text-[11px]">
+                    <tr>
+                      <td className="px-3 py-2 font-bold text-white">1. DeepSeek R1</td>
+                      <td className="px-3 py-2 text-blue-400">DeepSeek / OpenRouter</td>
+                      <td className="px-3 py-2 text-purple-300">🧠 Frontier CoT Reasoning</td>
+                      <td className="px-3 py-2 text-zinc-400">Complex logic & system prompts</td>
+                    </tr>
+                    <tr>
+                      <td className="px-3 py-2 font-bold text-white">2. DeepSeek V3</td>
+                      <td className="px-3 py-2 text-blue-400">DeepSeek / OpenRouter</td>
+                      <td className="px-3 py-2 text-emerald-300">⚡ Sub-Second Speed</td>
+                      <td className="px-3 py-2 text-zinc-400">Everyday fast transformations</td>
+                    </tr>
+                    <tr>
+                      <td className="px-3 py-2 font-bold text-white">3. Claude Sonnet 5</td>
+                      <td className="px-3 py-2 text-blue-400">Anthropic / OpenRouter</td>
+                      <td className="px-3 py-2 text-amber-300">👑 Top Code Scaffolding</td>
+                      <td className="px-3 py-2 text-zinc-400">Cursor rules & full-stack architecture</td>
+                    </tr>
+                    <tr>
+                      <td className="px-3 py-2 font-bold text-white">4. Claude Opus 5</td>
+                      <td className="px-3 py-2 text-blue-400">Anthropic / OpenRouter</td>
+                      <td className="px-3 py-2 text-cyan-300">🧠 Frontier Logic & Nuance</td>
+                      <td className="px-3 py-2 text-zinc-400">Deep technical specifications</td>
+                    </tr>
+                    <tr>
+                      <td className="px-3 py-2 font-bold text-white">5. OpenAI GPT-5.6 Terra</td>
+                      <td className="px-3 py-2 text-blue-400">OpenAI / OpenRouter</td>
+                      <td className="px-3 py-2 text-emerald-300">🌐 Flagship Multimodal</td>
+                      <td className="px-3 py-2 text-zinc-400">Copywriting, design & creative</td>
+                    </tr>
+                    <tr>
+                      <td className="px-3 py-2 font-bold text-white">6. OpenAI o3-mini / o1</td>
+                      <td className="px-3 py-2 text-blue-400">OpenAI / OpenRouter</td>
+                      <td className="px-3 py-2 text-purple-300">🔬 Multi-Step Logic</td>
+                      <td className="px-3 py-2 text-zinc-400">Algorithm and workflow planning</td>
+                    </tr>
+                    <tr>
+                      <td className="px-3 py-2 font-bold text-white">7. Google Gemini 3.7 Flash</td>
+                      <td className="px-3 py-2 text-blue-400">Google AI Studio</td>
+                      <td className="px-3 py-2 text-cyan-300">🚀 Flagship Next-Gen Speed</td>
+                      <td className="px-3 py-2 text-zinc-400">Instant 1-click in-place prompts</td>
+                    </tr>
+                    <tr>
+                      <td className="px-3 py-2 font-bold text-white">8. Google Gemini 3.6 / 3.5 Flash</td>
+                      <td className="px-3 py-2 text-blue-400">Google AI Studio</td>
+                      <td className="px-3 py-2 text-indigo-300">⚡ Sub-Second Workhorse</td>
+                      <td className="px-3 py-2 text-zinc-400">High-throughput prompt synthesis</td>
+                    </tr>
+                    <tr>
+                      <td className="px-3 py-2 font-bold text-white">9. Meta Llama 3.3 70B</td>
+                      <td className="px-3 py-2 text-blue-400">OpenRouter (Free/Paid)</td>
+                      <td className="px-3 py-2 text-pink-300">🦙 Open-Weights King</td>
+                      <td className="px-3 py-2 text-zinc-400">Uncensored creative prompts</td>
+                    </tr>
+                    <tr>
+                      <td className="px-3 py-2 font-bold text-white">10. Qwen 2.5 Coder 32B</td>
+                      <td className="px-3 py-2 text-blue-400">OpenRouter (Free/Paid)</td>
+                      <td className="px-3 py-2 text-blue-300">💻 Elite Programming</td>
+                      <td className="px-3 py-2 text-zinc-400">Code generation & scripts</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="pt-2">
+                <p className="text-xs font-semibold text-white mb-1.5">How to Switch in Refinzi:</p>
+                <ul className="list-disc pl-5 space-y-1 text-xs text-zinc-300">
+                  <li>Right-click the Refinzi Tray icon &gt; click <strong>Settings</strong>.</li>
+                  <li>Click any model in the <strong>⚡ Top 10 LLM Fast Switch</strong> strip to activate it instantly.</li>
+                  <li>Enter your API key (encrypted locally with Windows DPAPI AES-256).</li>
+                  <li>Click <strong>Save & Test Connection</strong>. Refinzi will route all rebuilds through your chosen model!</li>
+                </ul>
+              </div>
             </section>
 
             {/* Section 5: License */}

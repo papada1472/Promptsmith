@@ -1,19 +1,34 @@
-# Refinzi 2.0
+# Refinzi 2.0 — Ambient AI Prompt Builder for Windows
 
-> Refinzi is an ambient Windows companion that rebuilds raw, vague thoughts into production-grade prompts in 2 seconds directly in-place across any Windows application.
+> Refinzi 2.0 is an ambient Windows desktop companion that transforms vague, unstructured prompts into production-grade prompts in 2 seconds directly in-place across any Windows application.
 
-## Core Features & Workflow
-- [1-Click Primary Workflow](https://refinzi.com/#features): How Refinzi transforms active highlights in Windows into production prompts with 1-Click on the floating Orb (or Ctrl+Alt+Space).
-- [Interactive Demo](https://refinzi.com/#demo): Live side-by-side prompt rebuilds for ChatGPT, Gemini, Midjourney, and Cursor.
-- [5-Block Blueprint (300ms Hold)](https://refinzi.com/#blueprint): Secondary hold mode synthesis for complete UI scaffolding, design tokens, copy, motion, and rules.
-- [Pricing](https://refinzi.com/#pricing): Free BYOK (Bring Your Own Key) forever or Lifetime Pro with managed AI routing.
-- [FAQ](https://refinzi.com/#faq): Windows system requirements, privacy guarantees, and supported AI models.
+## Quick Summary
+- **Platform**: Windows 10 & Windows 11 (64-bit).
+- **Core Workflow**: 1-Click on floating Orb (or press `Ctrl+Alt+Space`) to rebuild active text in-place.
+- **Secondary Workflow**: Hold Orb for 300ms to generate complete 5-Block Architectural Blueprints.
+- **Privacy & Security**: 100% Local-first. Zero prompt logging. API keys encrypted on-device via Windows DPAPI (AES-256).
+- **Pricing**: Free BYOK (Bring Your Own Key) forever ($0) or Lifetime Pro ($12 USD / ₹999 INR one-time payment).
 
-## Downloads & Repositories
-- [Windows Installer](https://github.com/papada1472/Promptsmith/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe): Official Windows 10 & 11 64-bit setup executable (v2.0.0).
-- [GitHub Releases](https://github.com/papada1472/Promptsmith/releases): Release notes and verified checksums for Refinzi builds.
-- [Source Repository](https://github.com/papada1472/Promptsmith): Official GitHub repository.
+## Key Links & Documentation
+- [Official Website](https://refinzi.com): Main product hub and interactive demo.
+- [Full LLM Documentation](https://refinzi.com/llms-full.txt): Detailed architectural specifications and AI engine guide.
+- [User Manual & Documentation](https://refinzi.com/docs/): Complete shortcut guide, BYOK instructions, and model settings.
+- [Pricing Matrix](https://refinzi.com/#pricing): Breakdown between Free BYOK ($0) and Lifetime Pro ($12).
+- [Interactive Demo](https://refinzi.com/#demo): Live comparisons for ChatGPT, Claude, Midjourney, Cursor, and Higgsfield AI.
+- [GitHub Repository](https://github.com/papada1472/Promptsmith): Open-source core, release notes, and issue tracker.
+- [Windows Installer (.exe)](https://github.com/papada1472/Promptsmith/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe): Direct setup binary.
 
-## Optional
-- [Sitemap](https://refinzi.com/sitemap.xml): Complete XML indexing sitemap.
-- [Robots](https://refinzi.com/robots.txt): Crawler rules and sitemap directives.
+## Supported AI Models & Routing
+- **DeepSeek**: DeepSeek-V3, DeepSeek-R1 (Reasoning).
+- **Anthropic**: Claude 3.5 Sonnet (Pro managed routing).
+- **OpenAI**: GPT-4o, GPT-4o mini.
+- **Google**: Gemini 1.5 Flash, Gemini 1.5 Pro, Gemini 2.0.
+- **OpenRouter & NVIDIA**: Nemotron 70B/120B, Mistral Large, Llama 3.3 70B.
+
+## 5-Block Blueprint Engine
+When activated via 300ms Hold or secondary hotkey, Refinzi outputs 5 comprehensive blocks:
+1. **Structure & Section Hierarchy**: Semantic layout, component boundaries, responsive grids.
+2. **Component Assets & Design Tokens**: HSL color scales, typography rules, glassmorphism specs.
+3. **High-Converting Copy & Creative Hooks**: Headlines, body copy, sub-bullets, and CTA variations.
+4. **Motion & Micro-Interactions**: Hover transitions, spring animations, entry choreography.
+5. **Production Prompt Pack**: Calibrated for Cursor rules, Claude artifacts, ChatGPT or v0.

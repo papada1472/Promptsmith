@@ -15,8 +15,11 @@ export const ANALYTICS_CONFIG = {
   // Set to true to activate live tracking
   enabled: true,
 
-  // Google Analytics 4 Measurement ID (Replace with your G-XXXXXXXXXX)
-  gaMeasurementId: "G-YOUR_MEASUREMENT_ID",
+  // Cloudflare Web Analytics Token
+  cloudflareToken: "d434469361874705bd59d8eb1310d192",
+
+  // Google Analytics 4 Measurement ID (Optional alternative)
+  gaMeasurementId: "",
 
   // Plausible Analytics domain (Optional)
   plausibleDomain: "",

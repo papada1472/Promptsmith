@@ -1,11 +1,28 @@
 import { ProviderManager } from "../ai/ProviderManager.js";
-import { GeminiProvider } from "../ai/GeminiProvider.js";
-import { OpenRouterProvider } from "../ai/OpenRouterProvider.js";
 import { ByokVault } from "../ai/ByokVault.js";
-import { SYSTEM_PROMPT, REFINE_TIMEOUT_MS } from "../constants.js";
 import { store } from "../store.js";
 
 export class ProviderService {
+  /**
+   * Helper to get the store key name for a given provider.
+   */
+  getStoreKey(providerId) {
+    const map = {
+      deepseek: "deepSeekApiKey",
+      gemini: "geminiApiKey",
+      openrouter: "openRouterApiKey",
+      openai: "openAiApiKey",
+      anthropic: "anthropicApiKey",
+      groq: "groqApiKey",
+      mistral: "mistralApiKey",
+      xai: "xaiApiKey",
+      custom: "customApiKey",
+      ollama: "ollamaBaseUrl",
+      lmstudio: "lmStudioBaseUrl"
+    };
+    return map[providerId?.toLowerCase()] || "deepSeekApiKey";
+  }
+
   /**
    * Verifies if the provided API key is valid for the current active provider.
    * @param {string} key 
@@ -14,14 +31,21 @@ export class ProviderService {
    */
   async verifyApiKey(key, targetProvider) {
     try {
-      const providerId = targetProvider || store.get("activeProvider") || "deepseek";
+      const providerId = (targetProvider || store.get("activeProvider") || "deepseek").toLowerCase();
       let actualKey = key ? String(key).trim() : "";
       
       if (actualKey.startsWith("••••") || !actualKey) {
-        const storeKey = providerId === "deepseek" ? "deepSeekApiKey" : (providerId === "openrouter" ? "openRouterApiKey" : "geminiApiKey");
-        const envKey = providerId === "deepseek" ? process.env.DEEPSEEK_API_KEY : (providerId === "gemini" ? (process.env.GEMINI_API_KEY || process.env.GEMINI_KEY || "") : (process.env.OPENROUTER_API_KEY || ""));
+        const storeKey = this.getStoreKey(providerId);
         const storedEnc = store.get(storeKey) || "";
-        actualKey = ByokVault.decrypt(storedEnc) || envKey || "";
+        actualKey = ByokVault.decrypt(storedEnc) || "";
+        if (!actualKey && providerId === "deepseek") actualKey = process.env.DEEPSEEK_API_KEY || "";
+        if (!actualKey && providerId === "gemini") actualKey = process.env.GEMINI_API_KEY || process.env.GEMINI_KEY || "";
+        if (!actualKey && providerId === "openrouter") actualKey = process.env.OPENROUTER_API_KEY || "";
+        if (!actualKey && providerId === "openai") actualKey = process.env.OPENAI_API_KEY || "";
+        if (!actualKey && providerId === "anthropic") actualKey = process.env.ANTHROPIC_API_KEY || "";
+        if (!actualKey && providerId === "groq") actualKey = process.env.GROQ_API_KEY || "";
+        if (!actualKey && providerId === "mistral") actualKey = process.env.MISTRAL_API_KEY || "";
+        if (!actualKey && providerId === "xai") actualKey = process.env.XAI_API_KEY || "";
       }
 
       if (providerId === "gateway") {
@@ -33,9 +57,25 @@ export class ProviderService {
         await provider.refine("Reply with OK");
         return { ok: true };
       }
+
+      const noKeyRequired = ["ollama", "lmstudio"].includes(providerId);
       
-      if (!actualKey) {
-        const name = providerId === "deepseek" ? "DeepSeek" : (providerId === "openrouter" ? "OpenRouter" : "Google Gemini");
+      if (!actualKey && !noKeyRequired) {
+        const names = {
+          deepseek: "DeepSeek",
+          gemini: "Google Gemini",
+          openrouter: "OpenRouter",
+          openai: "OpenAI / ChatGPT",
+          anthropic: "Anthropic Claude",
+          groq: "GroqCloud",
+          mistral: "Mistral AI",
+          xai: "xAI / Grok",
+          custom: "Custom Endpoint",
+          ollama: "Ollama (Local)",
+          lmstudio: "LM Studio (Local)",
+          gateway: "Refinzi Gateway"
+        };
+        const name = names[providerId] || providerId.toUpperCase();
         return { ok: false, error: `Please enter a valid ${name} API key` };
       }
       
@@ -56,7 +96,7 @@ export class ProviderService {
       return { ok: true };
     } catch (err) {
       console.error("[Refinzi][ProviderService] API Key verification failed", err);
-      return { ok: false, error: err?.message || "Connection failed. Please check your API key." };
+      return { ok: false, error: err?.message || "Connection failed. Please check your configuration." };
     }
   }
 

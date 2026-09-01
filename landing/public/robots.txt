@@ -1,4 +1,25 @@
-﻿User-agent: *
+# Robots.txt for Refinzi 2.0 (https://refinzi.com)
+
+User-agent: *
+Allow: /
+
+# Explicitly permit AI Search and Knowledge Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
 Allow: /
 
 Sitemap: https://refinzi.com/sitemap.xml

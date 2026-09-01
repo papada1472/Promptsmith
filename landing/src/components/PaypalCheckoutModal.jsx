@@ -124,7 +124,7 @@ export function PaypalCheckoutModal({ isOpen, onClose, onDownload, currency = SU
             <div className="flex items-center justify-between gap-2 pr-7">
               <div className="flex items-center gap-1.5 bg-blue-600 text-white font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider shadow-sm">
                 <Sparkles className="h-3 w-3 text-amber-300" />
-                <span>Lifetime License · Pay Once</span>
+                <span>☕ Supporter Pro · One-Time Coffee</span>
               </div>
               <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-950/40 border border-emerald-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
                 <ShieldCheck className="h-3 w-3" /> Instant License Key
@@ -133,21 +133,20 @@ export function PaypalCheckoutModal({ isOpen, onClose, onDownload, currency = SU
 
             <div className="mt-3">
               <h3 className="text-xl font-extrabold text-white leading-tight">
-                Refinzi Lifetime Pro
+                Refinzi Supporter Pro
               </h3>
-              <p className="mt-0.5 text-xs text-zinc-400">
-                Pay once. Own forever with lifetime updates & priority routing.
+              <p className="mt-0.5 text-xs text-zinc-300">
+                Support independent development with a one-time coffee ({currency.formattedPrice}). Includes VIP community & weekly newsletter.
               </p>
             </div>
 
             {/* Price Badge Banner */}
-            <div className="mt-3 flex items-center justify-between p-3 rounded-xl border border-white/[0.08] bg-zinc-900/60">
+            <div className="mt-3 flex items-center justify-between p-3 rounded-xl border border-blue-500/20 bg-blue-950/20">
               <div>
-                <span className="text-xs font-semibold text-white block">One-Time Payment</span>
-                <span className="text-[10px] text-zinc-400">Zero subscription fees forever</span>
+                <span className="text-xs font-semibold text-white block">☕ One-Time Supporter Payment</span>
+                <span className="text-[10px] text-zinc-400">Zero recurring subscription fees forever</span>
               </div>
               <div className="text-right">
-                <span className="text-zinc-500 line-through text-xs mr-1.5">{currency.formattedRegular}</span>
                 <span className="text-xl font-extrabold text-emerald-400">{currency.formattedPrice}</span>
               </div>
             </div>
@@ -352,6 +351,17 @@ export function PaypalCheckoutModal({ isOpen, onClose, onDownload, currency = SU
                 <span className="font-bold text-purple-400">2.</span>
                 <span>Click Settings &gt; License &gt; Paste your key.</span>
               </div>
+            </div>
+
+            {/* VIP Community & Newsletter Invite */}
+            <div className="mt-2.5 rounded-xl border border-emerald-500/30 bg-emerald-950/20 p-2.5 space-y-1 text-xs text-zinc-300">
+              <p className="font-semibold text-emerald-300 text-[10px] uppercase tracking-wider flex items-center gap-1">
+                <Sparkles className="h-3 w-3 text-emerald-400" />
+                <span>VIP Community & Newsletter Access Included:</span>
+              </p>
+              <p className="text-[11px] text-zinc-300">
+                Welcome to the supporter tier! You will receive weekly prompt architecture deep-dives and engineering breakdowns directly in your inbox.
+              </p>
             </div>
 
             <div className="mt-3">

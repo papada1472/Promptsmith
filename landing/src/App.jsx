@@ -296,7 +296,7 @@ const FAQS = [
   {
     question: "Is it a subscription?",
     answer:
-      "No. Pro is a one-time payment. Pay once, own it forever. (Any BYOK API usage is billed directly by your provider for pennies).",
+      "No. Supporter Pro is a one-time coffee purchase. Pay once, own it forever with lifetime updates, VIP Discord community access, and our weekly prompt engineering newsletter.",
   },
   {
     question: "Is it safe? Will my antivirus flag it?",
@@ -350,7 +350,7 @@ function LifetimeOfferModal({ isOpen, onClose, onDownload, onOpenCheckout, curre
         <div className="flex items-center justify-between gap-2 pr-7">
           <div className="flex items-center gap-1.5 bg-blue-600 text-white font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider shadow-sm">
             <Sparkles className="h-3 w-3 text-amber-300" />
-            <span>Lifetime License · Pay Once</span>
+            <span>☕ Supporter Pro · One-Time Coffee</span>
           </div>
           <div className="flex items-center gap-1 font-mono text-[10px] font-bold text-emerald-400 bg-emerald-950/40 border border-emerald-500/30 px-2 py-0.5 rounded-full">
             <ShieldCheck className="h-2.5 w-2.5" />
@@ -370,10 +370,10 @@ function LifetimeOfferModal({ isOpen, onClose, onDownload, onOpenCheckout, curre
         {/* Headline */}
         <div className="mt-3">
           <h3 className="text-xl font-extrabold tracking-tight text-white leading-tight">
-            Refinzi Lifetime Pro Access
+            Refinzi Supporter Pro Access
           </h3>
           <p className="mt-1 text-xs text-zinc-300">
-            Pay once, own forever. Zero recurring subscriptions.
+            One-time coffee purchase ({currency.formattedPrice}). Pay once, own forever with community & newsletter access.
           </p>
         </div>
 
@@ -381,32 +381,31 @@ function LifetimeOfferModal({ isOpen, onClose, onDownload, onOpenCheckout, curre
         <div className="mt-3 rounded-xl border border-white/[0.07] bg-zinc-900/60 p-3 space-y-1.5 text-xs text-zinc-200">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-3.5 w-3.5 text-blue-400 shrink-0" />
-            <span><strong>Managed Fast Routing:</strong> Built-in Claude & GPT, zero API setup.</span>
+            <span><strong>Everything in Free / BYOK:</strong> 1-click prompt engineering on all 12+ providers.</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-3.5 w-3.5 text-purple-400 shrink-0" />
-            <span><strong>5-Block Blueprint Engine:</strong> Complete architectural code & prompts.</span>
+            <span><strong>Community & Newsletter:</strong> Private Discord access & weekly prompt breakdowns.</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-            <span><strong>Lifetime Updates:</strong> All future Windows, Mac & Linux releases included.</span>
+            <span><strong>Lifetime Updates:</strong> Zero subscriptions. All future Windows, Mac & Linux releases.</span>
           </div>
         </div>
 
         {/* Pricing Box */}
-        <div className="mt-3 flex items-center justify-between rounded-xl border border-blue-500/25 bg-blue-950/20 px-3.5 py-2">
+        <div className="mt-3 flex items-center justify-between rounded-xl border border-blue-500/25 bg-blue-950/20 px-3.5 py-2.5">
           <div>
             <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400">
-              Refinzi Lifetime Pro {currency.flag}
+              ☕ One-Time Supporter License {currency.flag}
             </span>
             <div className="flex items-baseline gap-2 mt-0.5">
               <span className="text-xl font-extrabold text-white">{currency.formattedPrice}</span>
-              <span className="text-xs line-through text-zinc-500">{currency.formattedRegular}</span>
-              <span className="text-[11px] text-emerald-400 font-semibold">Save 73%</span>
+              <span className="text-xs text-zinc-400">one-time payment</span>
             </div>
           </div>
-          <span className="text-[10px] font-semibold text-amber-300 bg-amber-950/50 border border-amber-500/30 px-2 py-0.5 rounded-md">
-            🔥 28 spots left
+          <span className="text-[10px] font-semibold text-emerald-300 bg-emerald-950/50 border border-emerald-500/30 px-2 py-0.5 rounded-md">
+            ☕ ~Cost of 2 coffees
           </span>
         </div>
 
@@ -415,7 +414,7 @@ function LifetimeOfferModal({ isOpen, onClose, onDownload, onOpenCheckout, curre
           <Button
             size="default"
             variant="deal"
-            className="w-full font-semibold text-xs sm:text-sm py-2"
+            className="w-full font-semibold text-xs sm:text-sm py-2.5"
             onClick={() => {
               if (onOpenCheckout) {
                 onOpenCheckout();
@@ -425,13 +424,13 @@ function LifetimeOfferModal({ isOpen, onClose, onDownload, onOpenCheckout, curre
               }
             }}
           >
-            <Sparkles className="h-3.5 w-3.5 text-amber-300" />
-            Claim Lifetime Pro — {currency.formattedPrice}
+            <Sparkles className="h-3.5 w-3.5 text-amber-300 mr-1" />
+            ☕ Buy Me a Coffee & Get Pro — {currency.formattedPrice}
           </Button>
           <Button
             size="sm"
             variant="secondary"
-            className="w-full text-xs py-1.5"
+            className="w-full text-xs py-2"
             onClick={() => {
               onDownload();
               onClose();
@@ -542,10 +541,12 @@ function Navbar({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/[0.06] bg-[#08090c]/85 backdrop-blur-xl">
       <nav className="mx-auto flex h-14 max-w-[1140px] items-center justify-between px-4 sm:px-6">
-        <a href="#" className="flex items-center gap-2 text-base font-bold text-zinc-50 transition-colors hover:text-white">
-          <span className="relative flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 shadow-sm shadow-blue-500/30">
-            <span className="text-xs leading-none select-none">🧠</span>
-          </span>
+        <a href="#" className="flex items-center gap-2.5 text-base font-bold text-zinc-50 transition-colors hover:text-white">
+          <img
+            src="/branding/logo-mark.png"
+            alt="Refinzi 2.0"
+            className="h-7 w-7 rounded-lg object-contain shadow-sm shadow-blue-500/30"
+          />
           <span className="tracking-tight font-bold">Refinzi <span className="text-[10px] font-semibold text-blue-400 bg-blue-500/10 px-1.5 py-0.2 rounded border border-blue-500/20">2.0</span></span>
         </a>
 
@@ -583,7 +584,7 @@ function Navbar({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, 
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((prev) => !prev)}
-            className="rounded-lg border border-white/[0.08] p-1.5 text-zinc-300 hover:text-white"
+            className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/[0.08] text-zinc-300 hover:text-white transition-colors cursor-pointer touch-manipulation"
           >
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
@@ -591,14 +592,14 @@ function Navbar({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, 
       </nav>
 
       {open && (
-        <div className="border-t border-white/[0.06] bg-[#08090d]/95 backdrop-blur-xl md:hidden">
-          <ul className="mx-auto flex max-w-[1140px] flex-col gap-1 px-4 py-3">
+        <div className="border-t border-white/[0.06] bg-[#08090d]/95 backdrop-blur-xl md:hidden animate-in slide-in-from-top-2 duration-150">
+          <ul className="mx-auto flex max-w-[1140px] flex-col gap-1.5 px-4 py-4">
             {NAV_LINKS.map((link) => (
               <li key={link.label}>
                 <a
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-lg px-3 py-1.5 text-xs text-zinc-400 hover:bg-zinc-900 hover:text-zinc-50 font-medium"
+                  className="flex min-h-[44px] items-center rounded-lg px-3.5 text-sm text-zinc-300 hover:bg-zinc-900 hover:text-zinc-50 font-medium transition-colors touch-manipulation"
                 >
                   {link.label}
                 </a>
@@ -1350,20 +1351,20 @@ function Testimonials() {
 /* -------------------------------- pricing --------------------------------- */
 
 const FREE_FEATURES = [
-  "Bring your own API keys (Gemini / OpenRouter)",
-  "Direct routing with 0% markup",
-  "Daily Rebuild limit via Refinzi Gateway",
-  "Full 5-Block Blueprint engine",
-  "Tuned for ChatGPT, Midjourney, Higgsfield, Gemini & Cursor",
+  "Bring your own API keys (DeepSeek, Gemini, OpenRouter)",
+  "1-Click switch across Top 10 LLMs (DeepSeek R1, Claude, GPT-4o, Llama 3.3, Qwen)",
+  "Direct API routing with 0% markup forever",
+  "Full 5-Block Blueprint architecture engine",
+  "100% On-device privacy (Windows DPAPI AES-256)",
   "Windows 10/11 ambient Orb integration",
 ];
 
 const PRO_FEATURES = [
   "Everything in Free / BYOK",
-  "Built-in managed Claude 3.5 Sonnet & GPT-4o routing",
+  "Access to VIP Community & Prompt Engineering Newsletter",
   "Zero API setup or configuration required",
   "Cloud sync custom prompt presets",
-  "Priority 24/7 direct support",
+  "Priority-Direct support",
   "Lifetime free updates (No subscription forever)",
   "Early access to upcoming Mac & Linux builds",
 ];
@@ -1387,12 +1388,12 @@ function Pricing({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD,
       <div className="mx-auto max-w-[1140px] px-4 sm:px-6">
         <Reveal>
           <div className="text-center max-w-xl mx-auto flex flex-col items-center">
-            <Badge variant="outline" className="mb-2">Honest Pricing</Badge>
+            <Badge variant="outline" className="mb-2">☕ Supporter Tier</Badge>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-              Pay once. Own it forever.
+              Support development. Own it for life.
             </h2>
             <p className="mt-1 text-zinc-400 text-xs sm:text-sm">
-              Use Refinzi 100% free with your own API keys, or lock in the Lifetime Pro launch deal.
+              Refinzi is 100% free with your own API keys. Support independent development with a one-time coffee price to unlock community perks & lifetime updates.
             </p>
 
             {/* Currency Selector Badge */}
@@ -1417,7 +1418,7 @@ function Pricing({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD,
                 <span className="text-xs text-zinc-400">/ forever</span>
               </div>
               <p className="mt-1.5 text-xs text-zinc-400 leading-relaxed">
-                Bring your own Gemini or OpenRouter API keys. Zero subscription cost forever.
+                Bring your own Gemini, DeepSeek, Claude, or OpenRouter API keys. Zero subscription cost forever.
               </p>
 
               <div className="my-4 border-t border-white/[0.06]" />
@@ -1435,10 +1436,10 @@ function Pricing({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD,
             </Button>
           </Card>
 
-          {/* Card 2 — Pro Lifetime Deal */}
+          {/* Card 2 — Pro Supporter Deal */}
           <Card className="luxury-surface-glow relative flex flex-col justify-between p-5 sm:p-6">
             <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-blue-600 text-white font-extrabold px-3 py-0.5 text-[10px] shadow-md border border-blue-400/40">
-              ✨ EARLY ADOPTER LICENSE — PAY ONCE
+              ☕ SUPPORTER PRO
             </Badge>
 
             <div>
@@ -1448,52 +1449,53 @@ function Pricing({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD,
                   Pay Once, Own Forever
                 </Badge>
               </div>
-              <h3 className="mt-1.5 text-lg font-bold text-white">Refinzi Lifetime Pro</h3>
+              <h3 className="mt-1.5 text-lg font-bold text-white">Refinzi Supporter Pro</h3>
               <div className="mt-2 flex items-baseline gap-2">
                 <span className="text-3xl font-extrabold text-white">{currency.formattedPrice}</span>
-                <span className="text-sm line-through text-zinc-400">{currency.formattedRegular}</span>
-                <span className="text-xs text-emerald-400 font-semibold font-mono">One-Time License</span>
+                <span className="text-xs text-emerald-400 font-semibold font-mono">One-Time Coffee Price</span>
               </div>
               <p className="mt-1 text-xs text-zinc-300 leading-relaxed">
-                Zero API configuration. Built-in managed Claude & GPT models. Lifetime updates.
+                ~Cost of 2 coffees. Support development and get access to VIP community, prompt newsletter, and all future lifetime updates.
               </p>
 
-              {/* Anti-Subscription Price Anchor */}
-              <div className="mt-2.5 rounded-lg bg-blue-950/40 border border-blue-500/30 px-3 py-2 text-[11px] text-zinc-200 space-y-1">
-                <div className="flex items-center justify-between font-semibold">
-                  <span>vs Annual SaaS Tools ($20/mo):</span>
-                  <span className="line-through text-red-400 font-mono">~{currency.symbol}{currency.code === "INR" ? "19,999" : "240"}/yr</span>
+              {/* Supporter Notice */}
+              <div className="mt-2.5 rounded-lg bg-blue-950/40 border border-blue-500/30 px-3 py-2 text-[11px] text-zinc-200 space-y-0.5">
+                <div className="flex items-center justify-between font-semibold text-white">
+                  <span>☕ Support Independent Tooling:</span>
+                  <span className="text-emerald-400 font-mono font-bold">1-Time {currency.formattedPrice}</span>
                 </div>
-                <div className="flex items-center justify-between text-emerald-400 font-extrabold text-xs">
-                  <span>Your Net Savings:</span>
-                  <span>Save {currency.symbol}{currency.code === "INR" ? "19,000" : "228"}/year!</span>
-                </div>
+                <p className="text-[10px] text-zinc-400">Zero recurring fees · Instant license key & VIP Discord invite</p>
               </div>
 
               <div className="my-3 border-t border-blue-500/20" />
               <FeatureList items={PRO_FEATURES} />
             </div>
 
-            <div className="mt-5 space-y-3">
+            <div className="mt-5 space-y-2.5">
               <Button
                 variant="deal"
                 size="default"
                 onClick={onOpenOffer}
-                className="w-full"
+                className="w-full text-xs sm:text-sm font-bold shadow-md shadow-amber-500/20"
               >
-                <Sparkles className="h-3.5 w-3.5" />
-                Claim Lifetime Pro — {currency.formattedPrice}
+                <Sparkles className="h-3.5 w-3.5 mr-1" />
+                ☕ Buy Me a Coffee & Get Pro — {currency.formattedPrice}
               </Button>
 
-              {/* Supported Payment Methods Trust Bar */}
-              <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px] text-zinc-400">
-                <span className="font-semibold text-zinc-300">Accepted Payments:</span>
-                <span className="font-mono text-zinc-300">UPI · GPay · Visa · Mastercard · PayPal</span>
+              {/* Simplified Guarantee & Coffee Supporter CTA */}
+              <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-zinc-300">
+                <span className="flex items-center gap-1 text-emerald-400 font-medium">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  <span>14-Day Refund Guarantee</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={onOpenOffer}
+                  className="font-bold text-amber-300 hover:text-amber-200 transition-colors underline cursor-pointer"
+                >
+                  Buy me a coffee ☕
+                </button>
               </div>
-
-              <p className="text-center text-[10px] text-zinc-300">
-                🛡️ <strong>14-Day Money-Back Guarantee</strong> · Instant License Key
-              </p>
             </div>
           </Card>
         </div>
@@ -1608,9 +1610,11 @@ function StickyConversionBar({ show, onOpenOffer, onDownload, currency = SUPPORT
     <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-white/[0.08] bg-[#08090c]/90 backdrop-blur-xl px-4 py-2 shadow-2xl transition-all animate-in slide-in-from-bottom-3">
       <div className="mx-auto flex max-w-[1140px] items-center justify-between gap-4">
         <div className="hidden sm:flex items-center gap-2">
-          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-[10px] shadow-sm">
-            🧠
-          </span>
+          <img
+            src="/branding/logo-mark.png"
+            alt="Refinzi"
+            className="h-6 w-6 rounded-md object-contain shadow-sm"
+          />
           <div>
             <p className="text-xs font-bold text-white">Refinzi 2.0</p>
             <p className="text-[10px] text-zinc-400">Rebuild any prompt in &lt;2s (Ctrl+Alt+Space)</p>
@@ -1622,7 +1626,7 @@ function StickyConversionBar({ show, onOpenOffer, onDownload, currency = SUPPORT
             onClick={onOpenOffer}
             className="text-xs font-semibold text-zinc-300 hover:text-amber-300 px-2 py-1 transition-colors cursor-pointer"
           >
-            Lifetime {currency.formattedPrice}
+            ☕ Supporter {currency.formattedPrice}
           </button>
           <Button
             size="xs"
@@ -1679,7 +1683,11 @@ function Footer({ onNavigate }) {
       <div className="mx-auto flex max-w-[1140px] flex-col justify-between gap-6 px-4 sm:px-6 md:flex-row md:items-end">
         <div className="flex flex-col items-start gap-3">
           <div className="flex items-center gap-2">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-xs">🧠</span>
+            <img
+              src="/branding/logo-mark.png"
+              alt="Refinzi"
+              className="h-6 w-6 rounded-md object-contain shadow-sm"
+            />
             <span className="font-bold text-zinc-200 text-sm">Refinzi <span className="text-[10px] text-blue-400 font-semibold bg-blue-500/10 px-1 rounded">2.0</span></span>
             <span className="text-zinc-400 text-xs">— Ambient Windows prompt layer</span>
           </div>

@@ -13,23 +13,32 @@ import https from "https";
 
 export class GeminiProvider extends AIProvider {
   // Canonical stable model verified live against Google Generative Language API
-  static MODEL = "gemini-1.5-flash";
+  static MODEL = "gemini-3.7-flash";
 
   constructor(opts) {
     super(opts);
     const rawModel = opts?.model || GeminiProvider.MODEL;
-    // Map UI model selections & legacy names to active Google Generative AI API endpoints
+    // Map UI model selections & aliases to active Google Generative AI API endpoints
     const MODEL_ALIASES = {
-      "gemini-2.0-flash": "gemini-2.0-flash",
-      "gemini-2.5-flash": "gemini-2.5-flash",
-      "gemini-3.6-flash": "gemini-2.5-flash",
-      "gemini-3.7-flash": "gemini-2.5-flash",
-      "gemini-flash-latest": "gemini-1.5-flash",
-      "gemini-1.5-flash": "gemini-1.5-flash",
-      "gemini-1.5-flash-latest": "gemini-1.5-flash",
-      "gemini-2.5-pro": "gemini-1.5-pro",
-      "gemini-1.5-pro": "gemini-1.5-pro",
-      "gemini-1.5-pro-latest": "gemini-1.5-pro"
+      "gemini-3.7-flash": "gemini-3.7-flash",
+      "gemini-3.6-flash": "gemini-3.6-flash",
+      "gemini-3.5-flash": "gemini-3.5-flash",
+      "gemini-3.5-flash-lite": "gemini-3.5-flash-lite",
+      "gemini-3.1-flash-lite": "gemini-3.1-flash-lite",
+      "gemini-flash-latest": "gemini-flash-latest",
+      "gemini-2.5-pro": "gemini-3.7-flash",
+      "gemini-2.5-flash": "gemini-3.6-flash",
+      "gemini-2.0-flash": "gemini-3.6-flash",
+      "gemini-2.0-flash-lite": "gemini-3.5-flash-lite",
+      "gemini-2.0-flash-thinking-exp-01-21": "gemini-3.7-flash",
+      "gemini-2.0-flash-thinking-exp": "gemini-3.7-flash",
+      "gemini-2.0-pro-exp-02-05": "gemini-3.7-flash",
+      "gemini-2.0-pro-exp": "gemini-3.7-flash",
+      "gemini-1.5-pro": "gemini-3.7-flash",
+      "gemini-1.5-flash": "gemini-3.6-flash",
+      "gemini-1.5-flash-latest": "gemini-3.6-flash",
+      "gemini-1.5-pro-latest": "gemini-3.7-flash",
+      "gemini-pro-latest": "gemini-3.7-flash"
     };
     if (MODEL_ALIASES[rawModel]) {
       this.model = MODEL_ALIASES[rawModel];

@@ -15,7 +15,7 @@ export function PrivacyPage({ onNavigateHome }) {
             <span>Back to Home</span>
           </button>
           <div className="flex items-center gap-1.5 text-xs font-bold text-white">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-[10px]">🧠</span>
+            <img src="/branding/logo-mark.png" alt="Refinzi" className="h-5 w-5 rounded object-contain" />
             <span>Refinzi 2.0</span>
           </div>
         </div>
