@@ -47,7 +47,6 @@ import { PrivacyPage } from "./pages/PrivacyPage.jsx";
 import { TermsPage } from "./pages/TermsPage.jsx";
 import { DocsPage } from "./pages/DocsPage.jsx";
 import { FounderSection } from "./components/FounderSection.jsx";
-import { ContactFeedbackSection } from "./components/ContactFeedbackSection.jsx";
 import { FloatingContactWidget } from "./components/FloatingContactWidget.jsx";
 import { RefinziComparison } from "./components/RefinziComparison.jsx";
 import { ThemeToggle } from "./components/ThemeToggle.jsx";
@@ -1986,7 +1985,6 @@ export default function App() {
           onDownload={() => handleTriggerDownload("pricing")}
         />
         <FAQ />
-        <ContactFeedbackSection />
         <FinalCTA
           currency={currency}
           osType={osType}
