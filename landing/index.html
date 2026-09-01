@@ -24,6 +24,61 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    <!-- Schema.org JSON-LD Structured Data for Google Rich Snippets -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "SoftwareApplication",
+            "name": "Refinzi",
+            "operatingSystem": "Windows 10, Windows 11",
+            "applicationCategory": "UtilitiesApplication",
+            "offers": [
+              {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD",
+                "name": "Refinzi Free BYOK"
+              },
+              {
+                "@type": "Offer",
+                "price": "29.00",
+                "priceCurrency": "USD",
+                "name": "Refinzi Lifetime Pro"
+              }
+            ],
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "ratingCount": "148"
+            },
+            "description": "An ambient Windows desktop app that rebuilds any AI prompt in 2 seconds. Press Ctrl+Alt+Space to engineer production prompts for ChatGPT, Gemini, Midjourney, Higgsfield, Cursor & Claude."
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "How does Refinzi work in Windows?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Refinzi runs quietly as a lightweight Windows companion. Highlight text in ANY Windows app and press Ctrl+Alt+Space to rebuild active text directly in-place without copy-pasting."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What is the difference between Free BYOK and Lifetime Pro?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Refinzi Free (BYOK) allows you to bring your own API keys forever with zero subscription. Refinzi Lifetime Pro gives you instant managed high-speed AI routing, unlimited 5-Block Blueprint synthesis, cloud sync, and all future updates."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
