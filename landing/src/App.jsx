@@ -41,6 +41,7 @@ import { PaypalCheckoutModal } from "./components/PaypalCheckoutModal.jsx";
 import { NonWindowsModal } from "./components/NonWindowsModal.jsx";
 import { CurrencyBadge } from "./components/CurrencySelector.jsx";
 import { SocialProofToast } from "./components/SocialProofToast.jsx";
+import { RequestAiSummary } from "./components/RequestAiSummary.jsx";
 import { initAnalytics, trackEvent } from "./utils/analytics.js";
 import { initPerformanceMonitoring } from "./utils/performance.js";
 import {
@@ -922,6 +923,11 @@ function TrustBar() {
                 </span>
               </div>
             ))}
+          </div>
+
+          {/* AI Search & LLM Summary Interactive Selector */}
+          <div className="mt-4 pt-4 border-t border-white/[0.04]">
+            <RequestAiSummary />
           </div>
         </div>
       </section>
