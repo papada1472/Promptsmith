@@ -1652,6 +1652,8 @@ export default function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const DOWNLOAD_URL = "https://github.com/papada1472/Promptsmith/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe";
+
   const handleTriggerDownload = (source = "unknown") => {
     if (osType !== "windows") {
       setIsNonWindowsModalOpen(true);
@@ -1661,8 +1663,8 @@ export default function App() {
     setIsDownloadModalOpen(true);
     trackEvent("download_initiated", { platform: "windows", source });
     const link = document.createElement("a");
-    link.href = "#download-refinzi";
-    link.setAttribute("download", "Refinzi-Setup-2.0.0.exe");
+    link.href = DOWNLOAD_URL;
+    link.setAttribute("download", "Refinzi-Setup-v2.0.0.exe");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -1672,8 +1674,8 @@ export default function App() {
     setIsDownloadModalOpen(true);
     trackEvent("force_windows_download", { platform: "windows", originalOS: osType });
     const link = document.createElement("a");
-    link.href = "#download-refinzi";
-    link.setAttribute("download", "Refinzi-Setup-2.0.0.exe");
+    link.href = DOWNLOAD_URL;
+    link.setAttribute("download", "Refinzi-Setup-v2.0.0.exe");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

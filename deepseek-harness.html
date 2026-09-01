@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Refinzi — DeepSeek Model Test Harness</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --border: #1f293d;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.2);
+      --accent: #8b5cf6;
+      --success: #10b981;
+      --error: #ef4444;
+      --code-bg: #030712;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .header {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+    }
+
+    .badge {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-glow);
+    }
+
+    textarea {
+      min-height: 110px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      resize: vertical;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      filter: brightness(1.1);
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .output-box {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      min-height: 180px;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+
+    .metrics-bar {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 10px 14px;
+      background: var(--code-bg);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .metric-value {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .reasoning-box {
+      border-left: 3px solid var(--accent);
+      background: rgba(139, 92, 246, 0.05);
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: #c4b5fd;
+      display: none;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+    }
+    .status-indicator.running { background: #f59e0b; animation: pulse 1s infinite; }
+    .status-indicator.success { background: var(--success); }
+    .status-indicator.error { background: var(--error); }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="title">
+        <span>⚡ DeepSeek Execution Harness</span>
+        <span class="badge">Refinzi 2.0 Bench</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted);">
+        <span id="statusDot" class="status-indicator"></span>
+        <span id="statusText">Ready</span>
+      </div>
+    </header>
+
+    <!-- LEFT COLUMN: Configuration -->
+    <div class="card">
+      <h3 style="font-size: 15px; color: #fff;">⚙️ Configuration</h3>
+
+      <div class="form-group">
+        <label>API Endpoint Provider</label>
+        <select id="endpointSelect">
+          <option value="openrouter">OpenRouter (openrouter.ai/api/v1)</option>
+          <option value="deepseek">Direct DeepSeek API (api.deepseek.com)</option>
+          <option value="gateway">Refinzi Vercel Gateway</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>DeepSeek Model</label>
+        <select id="modelSelect">
+          <option value="deepseek/deepseek-r1:free">deepseek/deepseek-r1:free (OpenRouter Free Tier)</option>
+          <option value="deepseek/deepseek-r1">deepseek/deepseek-r1 (Full R1 Reasoning)</option>
+          <option value="deepseek/deepseek-chat">deepseek/deepseek-chat (DeepSeek V3 Chat)</option>
+          <option value="deepseek/deepseek-r1-distill-llama-70b">deepseek/deepseek-r1-distill-llama-70b</option>
+          <option value="deepseek/deepseek-r1-distill-qwen-32b">deepseek/deepseek-r1-distill-qwen-32b</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>API Key</label>
+        <input type="password" id="apiKeyInput" placeholder="sk-or-v1-... or sk-...">
+      </div>
+
+      <div class="form-group">
+        <label>System Directive</label>
+        <textarea id="systemPrompt" rows="3">You are a Senior Creative Director at a world-class studio (Buck, Instrument, RESN, Apple). Improve the selected text, transforming it into a high-fidelity creative directive. Return only the improved version.</textarea>
+      </div>
+
+      <div class="form-group">
+        <label>User Input / Draft Prompt</label>
+        <textarea id="userPrompt" placeholder="Type prompt to refine or benchmark..." rows="4">write a GTM strategy for launching in Noida</textarea>
+      </div>
+
+      <button id="runBtn" class="btn">
+        <span>🚀 Execute Prompt</span>
+      </button>
+    </div>
+
+    <!-- RIGHT COLUMN: Results & Reasoning -->
+    <div class="card">
+      <h3 style="font-size: 15px; color: #fff;">📊 Output & Reasoning Telemetry</h3>
+
+      <div class="metrics-bar">
+        <div>Latency: <span id="metricLatency" class="metric-value">-</span></div>
+        <div>Model Used: <span id="metricModel" class="metric-value">-</span></div>
+        <div>HTTP: <span id="metricStatus" class="metric-value">-</span></div>
+      </div>
+
+      <div id="reasoningBox" class="reasoning-box">
+        <strong>🧠 DeepSeek Reasoning Trace:</strong>
+        <div id="reasoningContent" style="margin-top: 6px; white-space: pre-wrap;"></div>
+      </div>
+
+      <div class="form-group" style="flex: 1;">
+        <label>Refined Prompt Output</label>
+        <div id="outputBox" class="output-box">Output will appear here...</div>
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <button id="copyBtn" class="btn" style="flex: 1; background: #1f2937;">📋 Copy Output</button>
+        <button id="clearBtn" class="btn" style="background: #1f2937;">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const runBtn = document.getElementById('runBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const outputBox = document.getElementById('outputBox');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const metricLatency = document.getElementById('metricLatency');
+    const metricModel = document.getElementById('metricModel');
+    const metricStatus = document.getElementById('metricStatus');
+    const reasoningBox = document.getElementById('reasoningBox');
+    const reasoningContent = document.getElementById('reasoningContent');
+    const endpointSelect = document.getElementById('endpointSelect');
+    const modelSelect = document.getElementById('modelSelect');
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    const systemPrompt = document.getElementById('systemPrompt');
+    const userPrompt = document.getElementById('userPrompt');
+
+    // Auto load stored key
+    const savedKey = localStorage.getItem('deepseek_harness_key');
+    if (savedKey) apiKeyInput.value = savedKey;
+
+    apiKeyInput.addEventListener('change', () => {
+      localStorage.setItem('deepseek_harness_key', apiKeyInput.value.trim());
+    });
+
+    runBtn.addEventListener('click', async () => {
+      const endpoint = endpointSelect.value;
+      const model = modelSelect.value;
+      const key = apiKeyInput.value.trim();
+      const text = userPrompt.value.trim();
+      const sys = systemPrompt.value.trim();
+
+      if (!text) {
+        alert('Please enter a prompt to test');
+        return;
+      }
+
+      runBtn.disabled = true;
+      statusDot.className = 'status-indicator running';
+      statusText.textContent = 'Generating...';
+      outputBox.textContent = 'Processing request...';
+      reasoningBox.style.display = 'none';
+      metricLatency.textContent = '...';
+
+      const startTime = performance.now();
+
+      try {
+        let apiUrl = 'https://openrouter.ai/api/v1/chat/completions';
+        let headers = {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${key}`
+        };
+
+        if (endpoint === 'deepseek') {
+          apiUrl = 'https://api.deepseek.com/chat/completions';
+        } else if (endpoint === 'gateway') {
+          apiUrl = 'https://refinzi-gateway-papada1472-2736s-projects.vercel.app/api/v1/refine';
+        }
+
+        let bodyPayload = {};
+        if (endpoint === 'gateway') {
+          bodyPayload = {
+            text: text,
+            systemPrompt: sys,
+            model: model,
+            apiKey: key
+          };
+        } else {
+          bodyPayload = {
+            model: model,
+            messages: [
+              ...(sys ? [{ role: 'system', content: sys }] : []),
+              { role: 'user', content: text }
+            ],
+            temperature: 0.7
+          };
+        }
+
+        const res = await fetch(apiUrl, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(bodyPayload)
+        });
+
+        const elapsed = Math.round(performance.now() - startTime);
+        metricLatency.textContent = `${elapsed} ms`;
+        metricStatus.textContent = `${res.status} ${res.statusText}`;
+        metricModel.textContent = model;
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error?.message || errData.error || `HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        let resultText = '';
+        let reasoningText = '';
+
+        if (endpoint === 'gateway') {
+          resultText = data.refinedText || data.text || '';
+        } else {
+          const choice = data.choices?.[0]?.message;
+          resultText = choice?.content || '';
+          reasoningText = choice?.reasoning_content || choice?.reasoning || '';
+        }
+
+        if (reasoningText) {
+          reasoningContent.textContent = reasoningText;
+          reasoningBox.style.display = 'block';
+        }
+
+        outputBox.textContent = resultText || '(Empty response)';
+        statusDot.className = 'status-indicator success';
+        statusText.textContent = 'Complete';
+
+      } catch (err) {
+        const elapsed = Math.round(performance.now() - startTime);
+        metricLatency.textContent = `${elapsed} ms`;
+        metricStatus.textContent = 'Error';
+        outputBox.textContent = `Error: ${err.message}`;
+        statusDot.className = 'status-indicator error';
+        statusText.textContent = 'Failed';
+      } finally {
+        runBtn.disabled = false;
+      }
+    });
+
+    copyBtn.addEventListener('click', () => {
+      const text = outputBox.textContent;
+      if (text && text !== 'Output will appear here...') {
+        navigator.clipboard.writeText(text);
+        copyBtn.textContent = '✅ Copied!';
+        setTimeout(() => copyBtn.textContent = '📋 Copy Output', 1500);
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      outputBox.textContent = 'Output will appear here...';
+      reasoningBox.style.display = 'none';
+      metricLatency.textContent = '-';
+      metricModel.textContent = '-';
+      metricStatus.textContent = '-';
+      statusDot.className = 'status-indicator';
+      statusText.textContent = 'Ready';
+    });
+  </script>
+</body>
+</html>
