@@ -12,32 +12,46 @@ export function DirectFeedbackSection() {
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!message.trim()) return;
     setIsSubmitting(true);
 
+    const payload = {
+      _subject: `[Refinzi 2.0 Feedback] ${feedbackType.toUpperCase()} - ${new Date().toLocaleDateString()}`,
+      category: feedbackType.toUpperCase(),
+      message: message.trim(),
+      email: email.trim() || "Anonymous (No reply email provided)",
+      submittedAt: new Date().toLocaleString(),
+      _template: "table",
+      _captcha: "false"
+    };
+
+    try {
+      await fetch("https://formsubmit.co/ajax/contact@refinzi.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+    } catch (_) {
+      // Fallback gracefully on network drop
+    }
+
     try {
       const existing = JSON.parse(localStorage.getItem("refinzi_user_feedback") || "[]");
-      existing.push({
-        type: feedbackType,
-        message: message.trim(),
-        email: email.trim(),
-        timestamp: new Date().toISOString(),
-      });
+      existing.push(payload);
       localStorage.setItem("refinzi_user_feedback", JSON.stringify(existing));
     } catch (_) {}
 
+    setIsSubmitting(false);
+    setSubmitted(true);
     setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-      setTimeout(() => {
-        setMessage("");
-        setSubmitted(false);
-      }, 3500);
-    }, 400);
+      setMessage("");
+      setSubmitted(false);
+    }, 4000);
   };
 
   const handleOpenCal = () => {
