@@ -2,72 +2,219 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   DESIGN TOKEN SYSTEM — Dark / Light Mode via CSS Custom Props
+   ============================================================ */
+
+:root {
+  /* Backgrounds */
+  --bg-page:        #08090c;
+  --bg-surface:     #111318;
+  --bg-card:        #16181f;
+  --bg-card-hover:  #1d2028;
+  --bg-input:       #111318;
+  --bg-badge:       rgba(59, 130, 246, 0.10);
+
+  /* Text */
+  --text-primary:   #f4f4f5;   /* zinc-100 equivalent */
+  --text-secondary: #a1a1aa;   /* zinc-400 */
+  --text-muted:     #71717a;   /* zinc-500 */
+  --text-heading:   #ffffff;
+
+  /* Borders */
+  --border-subtle:  rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.10);
+  --border-strong:  rgba(255, 255, 255, 0.18);
+
+  /* Brand accents */
+  --accent-blue:    #3b82f6;
+  --accent-blue-bg: rgba(59, 130, 246, 0.12);
+  --accent-blue-border: rgba(59, 130, 246, 0.30);
+  --accent-purple:  #a855f7;
+  --accent-green:   #10b981;
+  --accent-amber:   #f59e0b;
+
+  /* Surface overlays */
+  --overlay-dark:   rgba(14, 16, 22, 0.70);
+  --shadow-card:    0 4px 20px -2px rgba(0,0,0,0.5), inset 0 1px 0 0 rgba(255,255,255,0.05);
+  --shadow-hover:   0 8px 28px -2px rgba(0,0,0,0.65), inset 0 1px 0 0 rgba(255,255,255,0.09);
+
+  /* Scrollbar */
+  --scrollbar-track: #08090c;
+  --scrollbar-thumb: rgba(255,255,255,0.15);
+  --scrollbar-thumb-hover: rgba(255,255,255,0.28);
+
+  /* Background decorations */
+  --bg-gradient: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.15), transparent 70%),
+    radial-gradient(circle at 100% 0%, rgba(147, 51, 234, 0.08), transparent 50%);
+
+  /* dot grid */
+  --dot-color: rgba(255, 255, 255, 0.07);
+}
+
+/* ---- Light theme token overrides ---- */
+html.light {
+  --bg-page:        #f8fafc;
+  --bg-surface:     #ffffff;
+  --bg-card:        #f1f5f9;
+  --bg-card-hover:  #e8edf4;
+  --bg-input:       #ffffff;
+  --bg-badge:       rgba(59, 130, 246, 0.08);
+
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #64748b;
+  --text-heading:   #020617;
+
+  --border-subtle:  rgba(0, 0, 0, 0.07);
+  --border-default: rgba(0, 0, 0, 0.10);
+  --border-strong:  rgba(0, 0, 0, 0.18);
+
+  --accent-blue-bg: rgba(59, 130, 246, 0.09);
+  --accent-blue-border: rgba(59, 130, 246, 0.25);
+
+  --overlay-dark:   rgba(255, 255, 255, 0.85);
+  --shadow-card:    0 4px 20px -2px rgba(0,0,0,0.06), inset 0 1px 0 0 rgba(255,255,255,1);
+  --shadow-hover:   0 8px 24px -2px rgba(0,0,0,0.10);
+
+  --scrollbar-track: #f1f5f9;
+  --scrollbar-thumb: rgba(0,0,0,0.15);
+  --scrollbar-thumb-hover: rgba(0,0,0,0.28);
+
+  --bg-gradient:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.06), transparent 70%),
+    radial-gradient(circle at 100% 0%, rgba(147, 51, 234, 0.03), transparent 50%);
+
+  --dot-color: rgba(0, 0, 0, 0.05);
+}
+
+/* ============================================================
+   BASE LAYER
+   ============================================================ */
+
 @layer base {
   html {
     scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-[#08090c] text-zinc-100 antialiased selection:bg-blue-600/30 selection:text-white;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    background-image: var(--bg-gradient);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     overflow-x: hidden;
-    background-image: 
-      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.15), transparent 70%),
-      radial-gradient(circle at 100% 0%, rgba(147, 51, 234, 0.08), transparent 50%);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   /* Custom subtle scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #08090c;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 9999px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.28);
-  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+  ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
+
+  ::selection { background: rgba(59, 130, 246, 0.30); color: var(--text-heading); }
 }
 
-/* ------------------------- refined luxury card surfaces ------------------------- */
+/* ============================================================
+   THEME BRIDGE — Make Tailwind classes respect the tokens
+   These override the Tailwind dark-hardcoded classes in light mode
+   ============================================================ */
+
+/* Backgrounds */
+html.light .bg-\[\#08090c\],
+html.light .bg-\[\#07080b\],
+html.light .bg-\[\#08090d\] { background-color: var(--bg-page) !important; }
+
+html.light .bg-zinc-950 { background-color: var(--bg-page) !important; }
+html.light .bg-zinc-900 { background-color: var(--bg-surface) !important; }
+html.light .bg-zinc-800 { background-color: var(--bg-card) !important; }
+html.light .bg-zinc-900\/40,
+html.light .bg-zinc-900\/50,
+html.light .bg-zinc-900\/60,
+html.light .bg-zinc-900\/80 { background-color: var(--bg-card) !important; }
+html.light .bg-zinc-950\/70,
+html.light .bg-zinc-950\/80 { background-color: var(--bg-surface) !important; }
+
+/* Text */
+html.light .text-white       { color: var(--text-heading)   !important; }
+html.light .text-zinc-50,
+html.light .text-zinc-100    { color: var(--text-primary)   !important; }
+html.light .text-zinc-200,
+html.light .text-zinc-300    { color: var(--text-secondary) !important; }
+html.light .text-zinc-400,
+html.light .text-zinc-500    { color: var(--text-muted)     !important; }
+
+/* Borders */
+html.light .border-white\/\[0\.04\],
+html.light .border-white\/\[0\.05\],
+html.light .border-white\/\[0\.06\],
+html.light .border-white\/\[0\.07\],
+html.light .border-white\/\[0\.08\] { border-color: var(--border-subtle)  !important; }
+html.light .border-white\/10,
+html.light .border-white\/\[0\.09\] { border-color: var(--border-default) !important; }
+html.light .border-white\/20         { border-color: var(--border-strong)  !important; }
+
+/* Navbar / sticky header */
+html.light header.sticky {
+  background-color: rgba(248, 250, 252, 0.92) !important;
+  border-bottom-color: var(--border-default) !important;
+}
+
+/* Card surfaces */
+html.light .rounded-2xl,
+html.light .rounded-xl {
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Mobile menu dropdown */
+html.light .bg-\[\#08090d\]\/95 {
+  background-color: rgba(248, 250, 252, 0.97) !important;
+}
+
+/* Footer */
+html.light footer {
+  background-color: #f1f5f9 !important;
+  border-top-color: var(--border-default) !important;
+}
+
+/* ============================================================
+   LUXURY SURFACE CLASSES (used throughout App.jsx)
+   ============================================================ */
+
 .luxury-surface {
-  background: rgba(14, 16, 22, 0.7);
+  background: var(--overlay-dark);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: 
-    0 4px 20px -2px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .luxury-surface:hover {
-  border-color: rgba(255, 255, 255, 0.14);
-  box-shadow: 
-    0 8px 28px -2px rgba(0, 0, 0, 0.65),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.09);
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-hover);
 }
 
 .luxury-surface-glow {
-  background: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.12) 0%, rgba(14, 16, 22, 0.8) 65%);
+  background: radial-gradient(circle at 50% 0%, var(--accent-blue-bg) 0%, var(--overlay-dark) 65%);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(59, 130, 246, 0.32);
-  box-shadow: 
-    0 8px 30px rgba(37, 99, 235, 0.12),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--accent-blue-border);
+  box-shadow: 0 8px 30px var(--accent-blue-bg), inset 0 1px 0 0 rgba(255,255,255,0.08);
 }
 
 /* Subtle dot-matrix overlay */
 .bg-dot-grid {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
-/* ------------------------- scroll reveal animation ------------------------- */
+/* ============================================================
+   SCROLL REVEAL ANIMATION
+   ============================================================ */
+
 .reveal {
   opacity: 0;
   transform: translateY(14px);
@@ -90,7 +237,10 @@
   }
 }
 
-/* ------------------------------ orb cursor -------------------------------- */
+/* ============================================================
+   ORB CURSOR
+   ============================================================ */
+
 body.orb-cursor-active,
 body.orb-cursor-active * {
   cursor: none !important;
@@ -131,7 +281,7 @@ body.orb-cursor-active * {
   width: 300%;
   height: 300%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, rgba(255, 170, 0, 0.06) 45%, transparent 70%);
+  background: radial-gradient(circle, rgba(255,215,0,0.2) 0%, rgba(255,170,0,0.06) 45%, transparent 70%);
   pointer-events: none;
   z-index: -1;
   animation: orb-aura 4s ease-in-out infinite;
@@ -146,10 +296,10 @@ body.orb-cursor-active * {
   border-radius: 50%;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.15) 30%,
-    rgba(255, 255, 255, 0.35) 45%,
-    rgba(255, 255, 255, 0) 55%
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.15) 30%,
+    rgba(255,255,255,0.35) 45%,
+    rgba(255,255,255,0) 55%
   );
   pointer-events: none;
   animation: orb-shine-sweep 4.5s ease-in-out infinite;
@@ -176,7 +326,7 @@ body.orb-cursor-active * {
   height: 4px;
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(255, 215, 0, 0.6) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255,215,0,0.6) 0%, transparent 70%);
   transition: opacity 0.3s ease, transform 0.18s ease;
   will-change: transform;
 }
@@ -184,113 +334,30 @@ body.orb-cursor-active * {
 .orb-cursor-trail.is-hover {
   width: 6px;
   height: 6px;
-  background: radial-gradient(circle, rgba(255, 215, 0, 0.85) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255,215,0,0.85) 0%, transparent 70%);
 }
 
 @keyframes orb-breathe {
-  0%,
-  100% {
-    opacity: 0.85;
-  }
-  50% {
-    opacity: 1;
-  }
+  0%, 100% { opacity: 0.85; }
+  50%       { opacity: 1; }
 }
 
 @keyframes orb-aura {
-  0%,
-  100% {
-    opacity: 0.75;
-  }
-  50% {
-    opacity: 0.95;
-  }
+  0%, 100% { opacity: 0.75; }
+  50%       { opacity: 0.95; }
 }
 
 @keyframes orb-shine-sweep {
-  0%,
-  60% {
-    transform: rotate(0deg) translate(0, 0);
-    opacity: 0;
-  }
-  70% {
-    opacity: 1;
-  }
-  100% {
-    transform: rotate(40deg) translate(10px, -10px);
-    opacity: 0;
-  }
+  0%, 60% { transform: rotate(0deg) translate(0, 0); opacity: 0; }
+  70%      { opacity: 1; }
+  100%     { transform: rotate(40deg) translate(10px, -10px); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   body.orb-cursor-active,
-  body.orb-cursor-active * {
-    cursor: auto;
-  }
-
+  body.orb-cursor-active * { cursor: auto; }
   .orb-cursor,
   .orb-cursor::before,
   .orb-cursor-shine,
-  .orb-cursor-trail {
-    display: none;
-  }
+  .orb-cursor-trail { display: none; }
 }
-
-/* ----------------------------- Light Theme Styles ----------------------------- */
-html.light body,
-body.light {
-  background-color: #f8fafc !important;
-  color: #0f172a !important;
-  background-image: 
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.08), transparent 70%),
-    radial-gradient(circle at 100% 0%, rgba(147, 51, 234, 0.04), transparent 50%) !important;
-}
-
-html.light .luxury-surface {
-  background: rgba(255, 255, 255, 0.88) !important;
-  border: 1px solid rgba(0, 0, 0, 0.09) !important;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06), inset 0 1px 0 0 rgba(255, 255, 255, 1) !important;
-}
-
-html.light .luxury-surface:hover {
-  border-color: rgba(59, 130, 246, 0.3) !important;
-  box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.1) !important;
-}
-
-html.light .bg-zinc-950,
-html.light .bg-zinc-900,
-html.light .bg-\[\#08090c\],
-html.light .bg-\[\#07080b\] {
-  background-color: #ffffff !important;
-}
-
-html.light .text-white,
-html.light .text-zinc-50,
-html.light .text-zinc-100 {
-  color: #0f172a !important;
-}
-
-html.light .text-zinc-200,
-html.light .text-zinc-300 {
-  color: #334155 !important;
-}
-
-html.light .text-zinc-400 {
-  color: #475569 !important;
-}
-
-html.light .border-white\/\[0\.06\],
-html.light .border-white\/\[0\.08\],
-html.light .border-white\/10 {
-  border-color: rgba(0, 0, 0, 0.08) !important;
-}
-
-html.light footer {
-  background-color: #f1f5f9 !important;
-  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
-}
-
-html.light footer .text-zinc-400 {
-  color: #475569 !important;
-}
-
