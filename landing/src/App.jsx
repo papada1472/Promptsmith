@@ -46,6 +46,8 @@ import { RequestAiSummary } from "./components/RequestAiSummary.jsx";
 import { PrivacyPage } from "./pages/PrivacyPage.jsx";
 import { TermsPage } from "./pages/TermsPage.jsx";
 import { DocsPage } from "./pages/DocsPage.jsx";
+import { FounderSection } from "./components/FounderSection.jsx";
+import { RefinziComparison } from "./components/RefinziComparison.jsx";
 import { initAnalytics, trackEvent } from "./utils/analytics.js";
 import { initPerformanceMonitoring } from "./utils/performance.js";
 import {
@@ -266,27 +268,32 @@ const FAQS = [
   {
     question: "How does Refinzi work in Windows?",
     answer:
-      "Refinzi runs quietly as a lightweight Windows companion. Highlight text in ANY Windows app (ChatGPT, Discord, VS Code, Browser, Figma, Notion, Terminal) and press Ctrl+Alt+Space to rebuild active text directly in-place without copy-pasting.",
+      "Refinzi runs quietly as a lightweight native Windows companion. Highlight text anywhere (ChatGPT web, Claude, Cursor, VS Code, Discord, Figma, Notion, or browsers) and press Ctrl+Alt+Space. Refinzi captures your raw highlight and rebuilds it directly in-place without copy-pasting.",
   },
   {
     question: "What is the difference between Free BYOK and Lifetime Pro?",
     answer:
-      "Refinzi Free (BYOK) allows you to bring your own API keys (Gemini, OpenRouter, etc.) forever with zero subscription. Refinzi Lifetime Pro gives you instant zero-setup managed high-speed routing via Claude 3.5 Sonnet and GPT-4o, unlimited 5-Block Blueprint synthesis, cloud sync, and all future updates for a single one-time payment.",
+      "Refinzi Free (BYOK) allows you to bring your own API keys (Gemini, OpenRouter, etc.) forever with 0% markup and zero monthly subscriptions. Refinzi Lifetime Pro unlocks instant zero-setup managed high-speed routing via Claude 3.5 Sonnet and GPT-4o, unlimited 5-Block Blueprint synthesis, cloud preset sync, and all future updates for a single one-time payment.",
   },
   {
-    question: "How does Refinzi adapt prompts for Midjourney, Higgsfield, and ChatGPT?",
+    question: "How is Refinzi different from ChatGPT's Custom Instructions or Projects?",
     answer:
-      "Refinzi analyzes the context and intent of your input. For Midjourney, it formats camera optics, lighting vectors, and aspect ratios. For Higgsfield AI, it engineers 3D camera trajectories and physical motion dynamics. For ChatGPT, Gemini, Cursor, and Claude, it structures chain-of-thought reasoning and production component trees.",
+      "ChatGPT Custom Instructions only apply inside ChatGPT. Refinzi works globally across your entire OS — Midjourney Discord, Higgsfield AI, Cursor IDE, Figma, Terminal, and web browsers. Furthermore, Refinzi dynamically formats model-specific camera physics for image models and 5-block UI token blueprints for code editors in real-time.",
   },
   {
-    question: "Is my data private and secure?",
+    question: "Is my data private? What happens to my API keys?",
     answer:
-      "Yes, 100%. Refinzi is local-first. Your selected clipboard text and custom API keys never touch our servers. Inference requests travel directly and securely between your machine and your chosen AI provider.",
+      "100% private and local-first. Refinzi never stores, logs, or trains on your highlighted text. In BYOK mode, your API keys are stored exclusively on your local machine using Windows DPAPI encryption. Requests route directly between your PC and your chosen AI provider.",
   },
   {
-    question: "What are the Windows system requirements?",
+    question: "Does it work with Cursor, VS Code, Discord, and Figma?",
     answer:
-      "Refinzi 2.0 runs natively on Windows 10 and Windows 11 (64-bit). The installer is only 84 MB, consumes less than 40 MB of RAM, and executes with zero perceptible latency.",
+      "Yes. Refinzi hooks into the Windows native input system. Any application that allows text selection and typing supports Refinzi with zero configuration required.",
+  },
+  {
+    question: "What is your refund policy?",
+    answer:
+      "We offer an unconditional 14-day money-back guarantee. If Refinzi doesn't save you hours of prompt trial-and-error every day, email support@refinzi.com for a full, instant refund.",
   },
 ];
 
@@ -873,31 +880,64 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-3.5 w-3.5 text-purple-400 shrink-0" />
-              <span>Windows 10 & 11 Native · 84 MB · Zero perceptible latency</span>
+              <span>Built exclusively for <strong>Windows 10 & 11 (64-bit)</strong> · Sub-200ms synthesis</span>
             </div>
           </div>
 
-          {/* Social Proof Strip */}
-          <div className="mt-5 flex items-center gap-3.5 border-t border-white/[0.06] pt-4">
-            <div className="flex -space-x-2 shrink-0">
-              <img className="inline-block h-7 w-7 rounded-full ring-2 ring-zinc-950 object-cover" width="28" height="28" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&q=75&fm=webp" alt="User 1" loading="lazy" decoding="async" />
-              <img className="inline-block h-7 w-7 rounded-full ring-2 ring-zinc-950 object-cover" width="28" height="28" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&q=75&fm=webp" alt="User 2" loading="lazy" decoding="async" />
-              <img className="inline-block h-7 w-7 rounded-full ring-2 ring-zinc-950 object-cover" width="28" height="28" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=75&fm=webp" alt="User 3" loading="lazy" decoding="async" />
-              <img className="inline-block h-7 w-7 rounded-full ring-2 ring-zinc-950 object-cover" width="28" height="28" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=64&h=64&q=75&fm=webp" alt="User 4" loading="lazy" decoding="async" />
-            </div>
-            <div>
-              <div className="flex items-center text-amber-400 text-xs leading-none">
-                {"★★★★★"}
-                <span className="ml-1.5 font-bold text-white text-[11px]">4.9/5</span>
-              </div>
-              <p className="text-[11px] text-zinc-400 mt-0.5">Loved by <strong className="text-zinc-200">14,800+</strong> prompt creators & devs</p>
-            </div>
+          {/* Authentic Trust & Security Badges */}
+          <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-white/[0.06] pt-4 text-xs">
+            <a
+              href="https://github.com/papada1472/Promptsmith/releases/tag/v2.0.0"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full bg-emerald-950/40 border border-emerald-500/30 px-3 py-1 text-[11px] font-semibold text-emerald-400 hover:bg-emerald-900/40 transition-colors"
+            >
+              <ShieldCheck className="h-3.5 w-3.5" />
+              <span>VirusTotal Verified Clean (0/72 Detections)</span>
+            </a>
+            <a
+              href="https://github.com/papada1472/Promptsmith"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full bg-zinc-900 border border-white/10 px-3 py-1 text-[11px] font-mono text-zinc-300 hover:text-white transition-colors"
+            >
+              <span>GitHub Verified Build v2.0.0</span>
+            </a>
           </div>
         </div>
 
-        {/* Right column */}
+        {/* Right column with Live Video Demo */}
         <div className="relative lg:justify-self-end w-full max-w-lg">
-          <OrbMockup />
+          <div className="rounded-2xl border border-white/[0.1] bg-zinc-950/80 p-2 sm:p-3 shadow-2xl shadow-blue-500/10 backdrop-blur-xl">
+            {/* Video Player Header */}
+            <div className="mb-2 flex items-center justify-between px-2 py-1">
+              <div className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-red-500/80" />
+                <span className="h-2 w-2 rounded-full bg-amber-500/80" />
+                <span className="h-2 w-2 rounded-full bg-emerald-500/80" />
+                <span className="ml-2 text-[10px] font-mono text-zinc-400">Refinzi Live Demo · Windows</span>
+              </div>
+              <span className="text-[10px] text-blue-400 font-semibold bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
+                10s Live Recording
+              </span>
+            </div>
+
+            {/* Video Container */}
+            <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-black border border-white/[0.06]">
+              <video
+                src="/refinzi-demo.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="h-full w-full object-cover"
+                title="Refinzi Live Workflow Demo in Windows"
+              />
+            </div>
+            <p className="mt-2 text-center text-[10px] text-zinc-400">
+              Highlight text ➔ Press <kbd className="font-mono text-blue-300 font-bold">Ctrl+Alt+Space</kbd> ➔ Prompt transformed in-place
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -1503,8 +1543,8 @@ function FinalCTA({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD
             </Button>
           </div>
 
-          <p className="mt-3 text-[11px] text-zinc-500">
-            Windows 10/11 · 84 MB · 100% Virus-Free · Zero Configuration Required
+          <p className="mt-3 text-[11px] text-zinc-400">
+            Windows 10 & 11 (64-bit) · 84 MB · Code-verified & VirusTotal clean (0/72) · Zero configuration
           </p>
         </Reveal>
       </div>
@@ -1852,6 +1892,8 @@ export default function App() {
         <Mechanism />
         <Blueprint onDownload={() => handleTriggerDownload("blueprint")} />
         <UseCases />
+        <RefinziComparison />
+        <FounderSection />
         <Testimonials />
         <Pricing
           currency={currency}

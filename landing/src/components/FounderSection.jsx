@@ -1,0 +1,74 @@
+﻿import React from "react";
+import { ShieldCheck, Heart, Github, Mail, Sparkles, Terminal } from "lucide-react";
+import { Reveal } from "./Reveal.jsx";
+
+export function FounderSection() {
+  return (
+    <section className="py-12 sm:py-16 border-t border-white/[0.06] bg-zinc-950/40" id="founder">
+      <div className="mx-auto max-w-[860px] px-4 sm:px-6">
+        <Reveal>
+          <div className="rounded-3xl border border-blue-500/20 bg-gradient-to-b from-blue-950/20 to-zinc-950 p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+            <div className="pointer-events-none absolute -right-10 -bottom-10 h-40 w-40 rounded-full bg-blue-600/10 blur-3xl" />
+
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 text-center sm:text-left">
+              {/* Founder Avatar with subtle ring */}
+              <div className="relative shrink-0">
+                <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 p-0.5 shadow-lg shadow-blue-500/20">
+                  <div className="h-full w-full rounded-2xl bg-zinc-950 flex flex-col items-center justify-center text-2xl font-bold text-white overflow-hidden">
+                    <span className="text-3xl select-none">👨‍💻</span>
+                  </div>
+                </div>
+                <div className="absolute -bottom-1.5 -right-1.5 rounded-full bg-emerald-500 p-1 ring-2 ring-zinc-950">
+                  <ShieldCheck className="h-3 w-3 text-zinc-950" />
+                </div>
+              </div>
+
+              {/* Story Content */}
+              <div className="flex-1 space-y-3">
+                <div className="flex flex-wrap items-center justify-center sm:justify-between gap-2">
+                  <div>
+                    <h3 className="text-lg font-bold text-white">Rahul Mangla</h3>
+                    <p className="text-xs text-blue-400 font-medium">Creator & Lead Architect of Refinzi</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href="https://github.com/papada1472/Promptsmith"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-[11px] font-mono text-zinc-400 hover:text-white bg-zinc-900 border border-white/10 px-2.5 py-1 rounded-lg transition-colors"
+                    >
+                      <Github className="h-3 w-3" />
+                      <span>GitHub</span>
+                    </a>
+                    <a
+                      href="mailto:support@refinzi.com"
+                      className="flex items-center gap-1 text-[11px] font-mono text-zinc-400 hover:text-white bg-zinc-900 border border-white/10 px-2.5 py-1 rounded-lg transition-colors"
+                    >
+                      <Mail className="h-3 w-3" />
+                      <span>Email</span>
+                    </a>
+                  </div>
+                </div>
+
+                <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                  "I built Refinzi out of pure frustration. Like thousands of developers and creators, I was constantly context-switching to browser tabs and re-prompting ChatGPT, Midjourney, and Cursor 5 to 10 times just to get clean code or accurate images.
+                </p>
+                <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                  Refinzi puts the entire prompt engineering layer directly at your fingertips with <code className="text-blue-300 font-mono text-xs bg-blue-500/10 px-1 py-0.5 rounded">Ctrl+Alt+Space</code> in Windows. It’s local-first, zero-subscription with BYOK, and built to respect your time."
+                </p>
+
+                {/* Guarantee Note */}
+                <div className="pt-2 flex items-center justify-center sm:justify-start gap-2 text-xs text-emerald-400 font-medium">
+                  <ShieldCheck className="h-4 w-4 shrink-0" />
+                  <span>Personal 14-Day Money-Back Guarantee on all Pro orders</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+export default FounderSection;
