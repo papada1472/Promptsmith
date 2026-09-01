@@ -823,10 +823,10 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
           {/* Plain English Subheadline */}
           <div className="mt-4 max-w-xl leading-relaxed">
             <p className="text-sm sm:text-base text-zinc-100 font-normal">
-              Select any text and <strong className="text-white font-semibold">1-Click the ambient Orb</strong> (or press <kbd className="font-mono text-xs font-bold px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 border border-blue-500/30 shadow-sm">Ctrl+Alt+Space</kbd>) to instantly rebuild it into a production-grade prompt directly in-place.
+              Select any text and <strong className="text-white font-semibold">1-Click the floating Orb</strong> to instantly rebuild it into a production-grade prompt directly in-place.
             </p>
             <p className="mt-2 text-xs sm:text-sm text-zinc-300">
-              Hold for 300ms anytime for full 5-Block Blueprint architecture. Works across ChatGPT, Midjourney, Cursor & Discord with zero copy-pasting.
+              Hold the Orb for 300ms anytime for full 5-Block Blueprint architecture. Works across ChatGPT, Midjourney, Cursor & Discord with zero copy-pasting.
             </p>
           </div>
 
