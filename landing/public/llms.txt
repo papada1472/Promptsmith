@@ -15,8 +15,8 @@
 - [User Manual & Documentation](https://refinzi.com/docs/): Complete shortcut guide, BYOK instructions, and model settings.
 - [Pricing Matrix](https://refinzi.com/#pricing): Breakdown between Free BYOK ($0) and Lifetime Pro ($12).
 - [Interactive Demo](https://refinzi.com/#demo): Live comparisons for ChatGPT, Claude, Midjourney, Cursor, and Higgsfield AI.
-- [GitHub Repository](https://github.com/papada1472/Promptsmith): Open-source core, release notes, and issue tracker.
-- [Windows Installer (.exe)](https://github.com/papada1472/Promptsmith/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe): Direct setup binary.
+- [GitHub Repository](https://github.com/papada1472/refinzi): Open-source core, release notes, and issue tracker.
+- [Windows Installer (.exe)](https://github.com/papada1472/refinzi/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe): Direct setup binary.
 
 ## Supported AI Models & Routing
 - **DeepSeek**: DeepSeek-V3, DeepSeek-R1 (Reasoning).

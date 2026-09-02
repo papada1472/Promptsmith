@@ -49,7 +49,7 @@ export function FounderSection() {
                   </div>
                   <div className="flex flex-wrap items-center justify-center gap-2">
                     <a
-                      href="https://github.com/papada1472/Promptsmith"
+                      href="https://github.com/papada1472/refinzi"
                       target="_blank"
                       rel="noopener noreferrer"
                       title="GitHub Repository (opens in a new tab)"

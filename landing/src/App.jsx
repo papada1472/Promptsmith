@@ -889,7 +889,7 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
           {/* Authentic Trust & Security Badges */}
           <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-white/[0.06] pt-4 text-xs">
             <a
-              href="https://github.com/papada1472/Promptsmith/releases/tag/v2.0.0"
+              href="https://github.com/papada1472/refinzi/releases/tag/v2.0.0"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 rounded-full bg-emerald-950/40 border border-emerald-500/30 px-3 py-1 text-[11px] font-semibold text-emerald-400 hover:bg-emerald-900/40 transition-colors"
@@ -898,7 +898,7 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
               <span>VirusTotal Verified Clean (0/72 Detections)</span>
             </a>
             <a
-              href="https://github.com/papada1472/Promptsmith/releases/tag/v2.0.0"
+              href="https://github.com/papada1472/refinzi/releases/tag/v2.0.0"
               target="_blank"
               rel="noopener noreferrer"
               title="GitHub Verified Build v2.0.0 (opens in a new tab)"
@@ -1714,7 +1714,7 @@ function Footer({ onNavigate }) {
               Documentation
             </button>
             <a
-              href="https://github.com/papada1472/Promptsmith"
+              href="https://github.com/papada1472/refinzi"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-zinc-200 transition-colors"
@@ -1879,7 +1879,7 @@ export default function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const DOWNLOAD_URL = "https://github.com/papada1472/Promptsmith/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe";
+  const DOWNLOAD_URL = "https://github.com/papada1472/refinzi/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe";
 
   const handleTriggerDownload = (source = "unknown") => {
     setIsDownloadToastOpen(true);
