@@ -1,0 +1,41 @@
+name: 🐛 Bug Report
+description: Report an issue or unexpected behavior in Refinzi
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for taking the time to report a bug!
+  - type: input
+    id: version
+    attributes:
+      label: Refinzi Version
+      placeholder: "e.g. v2.0.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Windows OS Version
+      options:
+        - Windows 11 (64-bit)
+        - Windows 10 (64-bit)
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the Bug
+      placeholder: Clear and concise description of what happened.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Select text in...
+        2. Press Ctrl+Alt+Space or click Orb
+        3. See error...
+    validations:
+      required: true

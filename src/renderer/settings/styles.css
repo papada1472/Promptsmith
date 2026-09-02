@@ -2222,3 +2222,128 @@ input:checked + .slider:before {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   VIRAL GTM & STAR GROWTH STYLES
+   ============================================================ */
+.btn-star-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  background: rgba(234, 179, 8, 0.1);
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  border-radius: var(--radius-full);
+  color: #FACC15;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 12px rgba(234, 179, 8, 0.15);
+}
+
+.btn-star-header:hover {
+  background: rgba(234, 179, 8, 0.2);
+  border-color: rgba(234, 179, 8, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 0 16px rgba(234, 179, 8, 0.3);
+  color: #FEF08A;
+}
+
+.btn-star-header .star-badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: rgba(234, 179, 8, 0.2);
+  color: #FEF08A;
+  font-weight: 800;
+}
+
+.btn-share-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 160ms var(--ease-smooth);
+}
+
+.btn-share-header:hover {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+  color: #60A5FA;
+  transform: translateY(-1px);
+}
+
+.viral-share-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn-viral-share {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  transition: all 160ms var(--ease-smooth);
+}
+
+.btn-share-twitter {
+  background: rgba(255, 255, 255, 0.05);
+  color: #FFFFFF;
+}
+.btn-share-twitter:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-share-reddit {
+  background: rgba(255, 69, 0, 0.1);
+  border-color: rgba(255, 69, 0, 0.3);
+  color: #FF6433;
+}
+.btn-share-reddit:hover {
+  background: rgba(255, 69, 0, 0.2);
+  border-color: rgba(255, 69, 0, 0.6);
+  transform: translateY(-1px);
+}
+
+.btn-share-linkedin {
+  background: rgba(10, 102, 194, 0.1);
+  border-color: rgba(10, 102, 194, 0.3);
+  color: #38BDF8;
+}
+.btn-share-linkedin:hover {
+  background: rgba(10, 102, 194, 0.2);
+  border-color: rgba(10, 102, 194, 0.6);
+  transform: translateY(-1px);
+}
+
+.btn-share-github {
+  background: rgba(234, 179, 8, 0.1);
+  border-color: rgba(234, 179, 8, 0.3);
+  color: #FACC15;
+}
+.btn-share-github:hover {
+  background: rgba(234, 179, 8, 0.2);
+  border-color: rgba(234, 179, 8, 0.6);
+  transform: translateY(-1px);
+}
+
+.share-url-box {
+  display: flex;
+  gap: 8px;
+}
+

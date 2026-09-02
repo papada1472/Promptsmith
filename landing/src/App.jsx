@@ -563,8 +563,20 @@ function Navbar({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, 
           ))}
         </ul>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-2.5 md:flex">
           <ThemeToggle theme={theme} onToggleTheme={onToggleTheme} />
+          
+          <a
+            href="https://github.com/papada1472/refinzi"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Star Refinzi on GitHub"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 py-1.5 text-xs font-bold text-amber-300 hover:bg-amber-500/20 hover:border-amber-500/50 transition-all shadow-[0_0_12px_rgba(245,158,11,0.15)]"
+          >
+            <span>⭐ Star</span>
+            <span className="rounded bg-amber-400/20 px-1 py-0.2 text-[10px] text-amber-200">GitHub</span>
+          </a>
+
           <Button
             variant="primary"
             size="xs"
@@ -606,6 +618,16 @@ function Navbar({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, 
               </li>
             ))}
             <li className="pt-2 flex flex-col gap-2">
+              <a
+                href="https://github.com/papada1472/refinzi"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setOpen(false)}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 py-2.5 text-xs font-bold text-amber-300 hover:bg-amber-500/20 transition-all shadow-[0_0_12px_rgba(245,158,11,0.15)]"
+              >
+                <span>⭐ Star Refinzi on GitHub</span>
+              </a>
+
               <Button
                 variant="primary"
                 size="sm"

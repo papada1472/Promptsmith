@@ -1,0 +1,31 @@
+[
+  {
+    "channel": "reddit_sideproject",
+    "name": "Reddit — r/SideProject",
+    "url": "https://reddit.com/r/SideProject/submit",
+    "title": "I was tired of re-prompting ChatGPT & Claude 5 times, so I built an ambient Windows Orb that rebuilds prompts in 2 seconds (Open Source / Free BYOK)",
+    "link": "https://refinzi.com?utm_source=reddit&utm_medium=sideproject&utm_campaign=launch_v2",
+    "body": "Hey everyone! 👋\n\nLike many of you, I spend hours inside ChatGPT, Claude, Cursor, and Midjourney. The biggest bottleneck wasn't the AI model—it was constantly rewriting vague prompts into structured specifications.\n\nSo I built **Refinzi 2.0** ⚡ — an ambient Windows desktop execution layer:\n\n### 💡 How It Works:\n1. **Highlight text anywhere in Windows** (browser, Slack, VS Code, Cursor, Discord).\n2. **1-Click the floating ambient Orb** (or press `Ctrl + Alt + Space`).\n3. In **under 2 seconds**, Refinzi reconstructs your rough idea into a structured, high-yield prompt and pastes/copies it in-place.\n4. **Hold the Orb for 300ms** (`Ctrl + Alt + B`) to generate a complete **5-Block Architectural Blueprint** (Hierarchy, Design Tokens, Copy Hooks, Micro-Interactions, and Cursor Rules prompt packs).\n\n### 🛡️ Privacy & BYOK:\n- **100% Client-Side Encryption**: Keys are encrypted locally using Windows DPAPI / AES-256. Zero cloud logging.\n- **Zero Markup BYOK**: Plug in your DeepSeek, Gemini, Anthropic, OpenAI, or OpenRouter keys directly ($0 cost).\n- **Frontier Lineup**: DeepSeek R1/V3, Claude 3.5 Sonnet, Gemini 2.5/3.7 Flash, GPT-4o.\n\n🔗 **Website & Live Demo:** https://refinzi.com?utm_source=reddit&utm_medium=sideproject  \n📦 **GitHub Repository:** https://github.com/papada1472/refinzi  \n📥 **Windows Download (.exe):** https://github.com/papada1472/refinzi/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe\n\nWould love your candid feedback on the UX and model responsiveness!"
+  },
+  {
+    "channel": "hackernews_showhn",
+    "name": "Hacker News — Show HN",
+    "url": "https://news.ycombinator.com/submit",
+    "title": "Show HN: Refinzi – Ambient Windows execution layer for AI prompt engineering (BYOK, local encryption)",
+    "link": "https://refinzi.com?utm_source=hackernews&utm_medium=showhn&utm_campaign=launch_v2",
+    "body": "Hi HN,\n\nI built Refinzi (https://refinzi.com), an ambient Windows companion designed to eliminate prompt iteration latency.\n\nInstead of navigating to a web UI, you highlight any text across Windows and click the floating Orb (or hit Ctrl+Alt+Space). Refinzi analyzes context, applies deterministic prompt engineering principles (or 5-block architectural specs on long-press), and inserts the calibrated prompt in-place.\n\nKey Architectural Decisions:\n- Local-first security: Zero telemetry, API keys encrypted with Windows DPAPI (AES-256).\n- Multi-provider adapter: Direct integration with Google GenAI, DeepSeek, Anthropic, OpenAI, and OpenRouter.\n- Built with Electron (ES modules), React, and native OS automation hooks.\n\nSource: https://github.com/papada1472/refinzi\nDirect Setup: https://github.com/papada1472/refinzi/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe\n\nLooking forward to your questions and feedback!"
+  },
+  {
+    "channel": "twitter_thread",
+    "name": "Twitter / X Launch Thread",
+    "url": "https://twitter.com/intent/tweet",
+    "title": "Refinzi 2.0 Viral Launch Thread",
+    "tweets": [
+      "Stop wasting 10 minutes re-prompting AI models until they get it right.\n\nIntroducing Refinzi 2.0 ⚡ — An ambient Windows desktop layer that transforms vague prompts into production-ready blueprints in 2 seconds.\n\n1-Click Orb. Zero copy-pasting. Free BYOK. 🧵👇\nhttps://refinzi.com",
+      "🛸 How it works:\n1. Highlight any rough text anywhere in Windows\n2. Click the floating Orb (or press Ctrl+Alt+Space)\n3. Your prompt is engineered & inserted in-place in < 2 seconds.\n\nWorks across VS Code, Chrome, Discord, Slack, and Cursor.",
+      "🏗️ Need full architecture?\nHold the Orb for 300ms to generate a complete 5-Block Blueprint:\n- Semantic Hierarchy\n- Design Tokens & HSL Specs\n- Creative Copy Hooks\n- Motion Curves\n- Calibrated Cursor / Claude Prompt Packs",
+      "🧠 Powered by DeepSeek R1, Claude 3.5 Sonnet, Gemini 2.5/3.7 Flash, & GPT-4o.\n🛡️ 100% Client-Side. API keys encrypted locally via Windows DPAPI. Zero server logging.",
+      "🚀 Open source & free with your own API keys:\n🌐 Website: https://refinzi.com\n📦 GitHub: https://github.com/papada1472/refinzi\n\nStar the repo on GitHub ⭐ and let me know your thoughts!"
+    ]
+  }
+]

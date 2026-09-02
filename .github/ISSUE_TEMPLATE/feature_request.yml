@@ -1,0 +1,28 @@
+name: 💡 Feature Request / Model Request
+description: Suggest a new AI model, UI capability, or workflow improvement
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: Have an idea to make Refinzi better? Let us know!
+  - type: input
+    id: title-summary
+    attributes:
+      label: Feature / Model Name
+      placeholder: "e.g. Add support for Claude 3.7 Thinking mode or Ollama custom port"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or Workflow Gap
+      placeholder: What problem does this solve for your daily AI workflow?
+    validations:
+      required: true
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Solution
+      placeholder: Describe the ideal user experience.
+    validations:
+      required: true

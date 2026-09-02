@@ -287,6 +287,18 @@ const elements = {
   feedbackCancelBtn: document.getElementById("feedbackCancelBtn"),
   feedbackForm: document.getElementById("feedbackForm"),
   
+  // Viral Share Modal & Header Controls
+  headerShareBtn: document.getElementById("headerShareBtn"),
+  shareModal: document.getElementById("shareModal"),
+  shareModalCloseBtn: document.getElementById("shareModalCloseBtn"),
+  shareModalDoneBtn: document.getElementById("shareModalDoneBtn"),
+  shareTwitterBtn: document.getElementById("shareTwitterBtn"),
+  shareRedditBtn: document.getElementById("shareRedditBtn"),
+  shareLinkedInBtn: document.getElementById("shareLinkedInBtn"),
+  shareGitHubBtn: document.getElementById("shareGitHubBtn"),
+  copyShareUrlBtn: document.getElementById("copyShareUrlBtn"),
+  shareUrlInput: document.getElementById("shareUrlInput"),
+  
   upgradeCheckoutBtn: document.getElementById("upgradeCheckoutBtn"),
   toastContainer: document.getElementById("toastContainer")
 };
@@ -1065,7 +1077,50 @@ function setupEventListeners() {
     showToast("Feedback sent—thank you for helping us improve Refinzi!", "success");
   });
 
-  // 16. Upgrade Checkout CTA (Directly linked to Landing Page Pricing)
+  // 16. Viral Share Modal Handlers
+  elements.headerShareBtn?.addEventListener("click", () => elements.shareModal?.classList.remove("hidden"));
+  elements.shareModalCloseBtn?.addEventListener("click", () => elements.shareModal?.classList.add("hidden"));
+  elements.shareModalDoneBtn?.addEventListener("click", () => elements.shareModal?.classList.add("hidden"));
+
+  elements.shareTwitterBtn?.addEventListener("click", () => {
+    const tweetText = encodeURIComponent("Just tried Refinzi 2.0 for Windows ⚡ 1-Click ambient prompt engineering & 5-block UI blueprints with local DPAPI encryption. It's awesome:\n\nhttps://refinzi.com ⭐");
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
+    if (window.refinzi?.app?.openUrl) window.refinzi.app.openUrl(twitterUrl);
+    else window.open(twitterUrl, "_blank");
+    showToast("Opening X / Twitter share dialog...", "success");
+  });
+
+  elements.shareRedditBtn?.addEventListener("click", () => {
+    const redditUrl = `https://reddit.com/submit?url=${encodeURIComponent("https://refinzi.com")}&title=${encodeURIComponent("Refinzi 2.0 — Ambient Windows execution layer for AI prompts and blueprints (BYOK & Open Source)")}`;
+    if (window.refinzi?.app?.openUrl) window.refinzi.app.openUrl(redditUrl);
+    else window.open(redditUrl, "_blank");
+    showToast("Opening Reddit post dialog...", "success");
+  });
+
+  elements.shareLinkedInBtn?.addEventListener("click", () => {
+    const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent("https://refinzi.com")}`;
+    if (window.refinzi?.app?.openUrl) window.refinzi.app.openUrl(linkedinUrl);
+    else window.open(linkedinUrl, "_blank");
+    showToast("Opening LinkedIn share dialog...", "success");
+  });
+
+  elements.shareGitHubBtn?.addEventListener("click", () => {
+    const githubUrl = "https://github.com/papada1472/refinzi";
+    if (window.refinzi?.app?.openUrl) window.refinzi.app.openUrl(githubUrl);
+    else window.open(githubUrl, "_blank");
+    showToast("Opening GitHub repository to star ⭐...", "success");
+  });
+
+  elements.copyShareUrlBtn?.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText("https://refinzi.com");
+      showToast("Link copied to clipboard! Share it anywhere 🚀", "success");
+    } catch {
+      showToast("Link: https://refinzi.com", "success");
+    }
+  });
+
+  // 17. Upgrade Checkout CTA (Directly linked to Landing Page Pricing)
   elements.upgradeCheckoutBtn?.addEventListener("click", () => {
     const pricingUrl = "https://refinzi.com/#pricing";
     if (window.refinzi?.app?.openUrl) {
@@ -1081,6 +1136,7 @@ function closeAllModals() {
   elements.editPromptModal?.classList.add("hidden");
   elements.confirmClearModal?.classList.add("hidden");
   elements.feedbackModal?.classList.add("hidden");
+  elements.shareModal?.classList.add("hidden");
 }
 
 function escapeHtml(str) {

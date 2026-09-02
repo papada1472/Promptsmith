@@ -42,6 +42,17 @@
       </div>
 
       <div class="header-right">
+        <a href="https://github.com/papada1472/refinzi" target="_blank" class="btn-star-header" id="headerStarBtn" title="Star Refinzi on GitHub">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span>Star</span>
+          <span class="star-badge">GitHub</span>
+        </a>
+
+        <button type="button" class="btn-share-header" id="headerShareBtn" title="Share Refinzi with fellow builders">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+          <span>Share</span>
+        </button>
+
         <div class="connection-pill" id="globalStatusPill">
           <span class="status-indicator-dot connected" id="globalStatusDot"></span>
           <span class="status-label" id="globalStatusText">Connected</span>
@@ -924,6 +935,54 @@
       <div class="modal-footer">
         <button type="button" class="btn-secondary" id="confirmClearCancelBtn">Cancel</button>
         <button type="button" class="btn-primary btn-danger" id="confirmClearConfirmBtn">Clear All</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Viral Share Modal -->
+  <div id="shareModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
+    <div class="modal-card" style="max-width: 460px;">
+      <div class="modal-header">
+        <div>
+          <span class="modal-eyebrow">🚀 Spread The Word</span>
+          <h3 id="shareModalTitle" class="modal-title">Share Refinzi with fellow builders</h3>
+        </div>
+        <button type="button" class="btn-modal-close" id="shareModalCloseBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 16px;">
+          Enjoying instant in-place prompt engineering & 5-block blueprints? Help us grow the open-source project with 1 click:
+        </p>
+        
+        <div class="viral-share-grid">
+          <button type="button" class="btn-viral-share btn-share-twitter" id="shareTwitterBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <span>Post on X / Twitter</span>
+          </button>
+
+          <button type="button" class="btn-viral-share btn-share-reddit" id="shareRedditBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path d="M17.5 12.5a1.5 1.5 0 0 0-2.4-1.2 5.8 5.8 0 0 0-3.3-1l.7-3.1 2.2.5a1 1 0 1 0 .2-.6l-2.6-.6a.3.3 0 0 0-.4.2l-.8 3.7a5.8 5.8 0 0 0-3.3 1 1.5 1.5 0 1 0-1.8 2.2c0 .4 0 .7.2 1.1 0 2.2 2.5 4 5.6 4s5.6-1.8 5.6-4c.2-.4.2-.7.2-1.1a1.5 1.5 0 0 0-.2-1.1z"/></svg>
+            <span>Post on Reddit</span>
+          </button>
+
+          <button type="button" class="btn-viral-share btn-share-linkedin" id="shareLinkedInBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            <span>Post on LinkedIn</span>
+          </button>
+
+          <button type="button" class="btn-viral-share btn-share-github" id="shareGitHubBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>Star on GitHub</span>
+          </button>
+        </div>
+
+        <div class="share-url-box" style="margin-top: 16px;">
+          <input type="text" id="shareUrlInput" class="form-input" value="https://refinzi.com" readonly>
+          <button type="button" class="btn-primary" id="copyShareUrlBtn" style="padding: 0 16px;">Copy Link</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="shareModalDoneBtn">Close</button>
       </div>
     </div>
   </div>
