@@ -189,8 +189,12 @@ export function PaypalCheckoutModal({ isOpen, onClose, onDownload, currency = SU
                 {/* QR Code Container */}
                 <div className="mx-auto w-48 h-48 bg-white p-2 rounded-xl shadow-lg border border-zinc-200 flex items-center justify-center overflow-hidden">
                   <img
-                    src="/gpay-qr.png"
+                    src="/gpay-qr.webp"
                     alt="Scan GPay QR Code for Refinzi Lifetime Pro"
+                    width="192"
+                    height="192"
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-contain"
                   />
                 </div>
@@ -226,8 +230,14 @@ export function PaypalCheckoutModal({ isOpen, onClose, onDownload, currency = SU
 
                 {/* UTR / Confirmation Form */}
                 <form onSubmit={handleUpiSubmit} className="mt-3 pt-3 border-t border-white/[0.08] space-y-2">
+                  <label htmlFor="upi-utr" className="sr-only">
+                    UPI Reference or Order Number
+                  </label>
                   <input
+                    id="upi-utr"
+                    name="utr"
                     type="text"
+                    aria-label="Enter UPI Reference, UTR, or Order Number"
                     placeholder="Enter UPI Reference / UTR / Order No (Optional)"
                     value={utrNumber}
                     onChange={(e) => setUtrNumber(e.target.value)}

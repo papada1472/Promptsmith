@@ -12,7 +12,8 @@ dist/
 test-data/
 test-*.mjs
 test-*.js
-scripts/
+/scripts/
+!landing/scripts/
 *audit*.md
 *plan*.md
 *SUMMARY*.md

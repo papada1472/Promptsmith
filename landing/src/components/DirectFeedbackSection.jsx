@@ -141,7 +141,13 @@ export function DirectFeedbackSection() {
                 </div>
 
                 <form onSubmit={handleSubmit} className="mt-3 space-y-2.5">
+                  <label htmlFor="feedback-message" className="sr-only">
+                    Feedback Message
+                  </label>
                   <textarea
+                    id="feedback-message"
+                    name="message"
+                    aria-label="Feedback Message"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     rows={2}
@@ -155,7 +161,13 @@ export function DirectFeedbackSection() {
                     className="w-full rounded-xl bg-zinc-950/80 border border-white/[0.08] p-3 text-xs sm:text-sm text-zinc-200 placeholder-zinc-500 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/50 resize-none font-sans"
                     required
                   />
+                  <label htmlFor="feedback-email" className="sr-only">
+                    Your Email (optional)
+                  </label>
                   <input
+                    id="feedback-email"
+                    name="email"
+                    aria-label="Your email (optional)"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}

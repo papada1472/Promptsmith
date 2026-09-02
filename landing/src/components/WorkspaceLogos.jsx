@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 
 /*
  * Minimal, monochrome brand icons for AI tools & workspaces.
@@ -13,7 +13,6 @@ const makeIcon = (path, label, viewBox = "0 0 24 24") => ({ className = "h-6 w-6
     className={className}
     aria-label={title}
   >
-    <title>{title}</title>
     {typeof path === "string" ? <path d={path} /> : path}
   </svg>
 );

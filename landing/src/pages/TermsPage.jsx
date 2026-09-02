@@ -15,7 +15,7 @@ export function TermsPage({ onNavigateHome }) {
             <span>Back to Home</span>
           </button>
           <div className="flex items-center gap-1.5 text-xs font-bold text-white">
-            <img src="/branding/logo-mark.png" alt="Refinzi" className="h-5 w-5 rounded object-contain" />
+            <img src="/branding/logo-mark.webp" alt="Refinzi" width="20" height="20" loading="lazy" decoding="async" className="h-5 w-5 rounded object-contain" />
             <span>Refinzi 2.0</span>
           </div>
         </div>

@@ -9,16 +9,16 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Refinzi 2.0" />
     <meta name="format-detection" content="telephone=no" />
-    <title>Refinzi 2.0 — 1-Click AI Prompt Builder & Engineer for Windows</title>
+    <title>Refinzi 2.0 — 1-Click AI Prompt Builder for Windows</title>
     <meta
       name="description"
-      content="Refinzi is an ambient Windows app that transforms vague prompts into production-grade prompts in 2 seconds. 1-Click on floating Orb or Ctrl+Alt+Space. Built for ChatGPT, Claude, Midjourney & Cursor. Free BYOK."
+      content="Transform messy ideas into production-grade AI prompts in 2 seconds. 1-Click floating Orb for ChatGPT, Claude, Midjourney & Cursor on Windows."
     />
     <meta
       name="keywords"
       content="prompt engineering tool, Windows 11 AI companion, prompt generator, ChatGPT prompt builder, Claude prompt enhancer, Cursor rules builder, Midjourney v6 prompts, 5-block prompt blueprint, BYOK AI desktop, ambient AI Orb, prompt synthesis, DeepSeek R1 prompt tool"
     />
-    <meta name="author" content="Refinzi" />
+    <meta name="author" content="Rahul Mangla" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     
     <!-- Favicon & App Icons -->
@@ -33,7 +33,7 @@
     <meta property="og:site_name" content="Refinzi 2.0" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="Refinzi 2.0 — 1-Click AI Prompt Builder for Windows" />
-    <meta property="og:description" content="An ambient Windows execution layer. 1-Click on the floating Orb (or press Ctrl+Alt+Space) to rebuild prompts in-place for ChatGPT, Gemini, Midjourney, Higgsfield AI, Cursor & Claude. Hold 300ms for 5-Block Blueprint." />
+    <meta property="og:description" content="Transform messy ideas into production-grade AI prompts in 2 seconds. 1-Click floating Orb for ChatGPT, Claude, Midjourney & Cursor on Windows." />
     <meta property="og:image" content="https://refinzi.com/branding/Refinzi-logo.png" />
     <meta property="og:image:alt" content="Refinzi 2.0 Windows Ambient Prompt Engine" />
 
@@ -42,7 +42,7 @@
     <meta name="twitter:site" content="@refinzi" />
     <meta name="twitter:creator" content="@refinzi" />
     <meta name="twitter:title" content="Refinzi 2.0 — 1-Click AI Prompt Builder for Windows" />
-    <meta name="twitter:description" content="Rebuild any prompt in 2 seconds via 1-Click on the Orb (or Ctrl+Alt+Space). Works with ChatGPT, Claude, Midjourney, Cursor & DeepSeek." />
+    <meta name="twitter:description" content="Transform messy ideas into production-grade AI prompts in 2 seconds. 1-Click floating Orb for ChatGPT, Claude, Midjourney & Cursor on Windows." />
     <meta name="twitter:image" content="https://refinzi.com/branding/Refinzi-logo.png" />
 
     <!-- Canonical & Alternates -->
@@ -57,20 +57,19 @@
       content="Refinzi is a native Windows desktop companion that rebuilds vague prompts into 5-block architectural prompts in 2 seconds via 1-Click on the floating Orb or Ctrl+Alt+Space for ChatGPT, Claude, Midjourney, Cursor, and DeepSeek."
     />
     
+    <!-- Critical Asset Preloads -->
+    <link rel="preload" as="image" href="/branding/logo-mark.webp" type="image/webp" fetchpriority="high" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="preload"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       as="style"
-      onload="this.onload=null;this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      />
-    </noscript>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    />
 
     <!-- Schema.org JSON-LD Structured Data for Google Rich Snippets & Knowledge Graph -->
     <script type="application/ld+json">
@@ -83,7 +82,12 @@
             "url": "https://refinzi.com/",
             "name": "Refinzi",
             "description": "1-Click AI Prompt Transformation in Windows",
-            "inLanguage": "en-US"
+            "inLanguage": "en-US",
+            "publisher": {
+              "@type": "Organization",
+              "name": "Refinzi",
+              "url": "https://refinzi.com/"
+            }
           },
           {
             "@type": "Organization",
@@ -91,6 +95,12 @@
             "name": "Refinzi",
             "url": "https://refinzi.com/",
             "logo": "https://refinzi.com/branding/logo-mark.png",
+            "founder": {
+              "@type": "Person",
+              "name": "Rahul Mangla",
+              "jobTitle": "Creator & Full-Stack Developer",
+              "url": "https://github.com/papada1472"
+            },
             "sameAs": [
               "https://github.com/papada1472/refinzi"
             ]
@@ -104,6 +114,10 @@
             "applicationSubCategory": "AI Prompt Engineering",
             "downloadUrl": "https://github.com/papada1472/refinzi/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe",
             "softwareVersion": "2.0.0",
+            "author": {
+              "@type": "Person",
+              "name": "Rahul Mangla"
+            },
             "offers": [
               {
                 "@type": "Offer",
@@ -232,43 +246,26 @@
     </script>
   </head>
   <body>
+    <!-- Skip Navigation Link for Accessibility -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:shadow-xl focus:outline-none"
+    >
+      Skip to main content
+    </a>
+
     <div id="root"></div>
-    <!-- Cal inline & popup embed script -->
+
+    <!-- Deferred Cal inline & popup embed script (Minified) -->
     <script type="text/javascript">
-      (function (C, A, L) {
-        let p = function (a, ar) { a.q.push(ar); };
-        let d = C.document;
-        C.Cal = C.Cal || function () {
-          let cal = C.Cal;
-          let ar = arguments;
-          if (!cal.loaded) {
-            cal.ns = {};
-            cal.q = cal.q || [];
-            d.head.appendChild(d.createElement("script")).src = A;
-            cal.loaded = true;
-          }
-          if (ar[0] === L) {
-            const api = function () { p(api, arguments); };
-            const namespace = ar[1];
-            api.q = api.q || [];
-            if (typeof namespace === "string") {
-              cal.ns[namespace] = cal.ns[namespace] || api;
-              p(cal.ns[namespace], ar);
-              p(cal, ["initNamespace", namespace]);
-            } else p(cal, ar);
-            return;
-          }
-          p(cal, ar);
-        };
-      })(window, "https://app.cal.com/embed/embed.js", "init");
-      Cal("init", "30min", { origin: "https://app.cal.com" });
-      Cal.config = Cal.config || {};
-      Cal.config.forwardQueryParams = true;
-      Cal.ns["30min"]("ui", { "hideEventTypeDetails": false, "layout": "month_view" });
+      (function(C,A,L){let p=function(a,ar){a.q.push(ar);};let d=C.document;C.Cal=C.Cal||function(){let cal=C.Cal;let ar=arguments;if(!cal.loaded){cal.ns={};cal.q=cal.q||[];d.head.appendChild(d.createElement("script")).src=A;cal.loaded=true;}if(ar[0]===L){const api=function(){p(api,arguments);};const namespace=ar[1];api.q=api.q||[];if(typeof namespace==="string"){cal.ns[namespace]=cal.ns[namespace]||api;p(cal.ns[namespace],ar);p(cal,["initNamespace",namespace]);}else p(cal,ar);return;}p(cal,ar);};})(window,"https://app.cal.com/embed/embed.js","init");
+      Cal("init","30min",{origin:"https://app.cal.com"});
+      Cal.config=Cal.config||{};
+      Cal.config.forwardQueryParams=true;
+      Cal.ns["30min"]("ui",{"hideEventTypeDetails":false,"layout":"month_view"});
     </script>
     <script type="module" src="/src/main.jsx"></script>
     <!-- Cloudflare Web Analytics -->
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d434469361874705bd59d8eb1310d192"}'></script>
-    <!-- End Cloudflare Web Analytics -->
   </body>
 </html>

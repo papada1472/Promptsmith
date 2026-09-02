@@ -69,11 +69,11 @@ export function FounderSection() {
                   </div>
                 </div>
 
-                <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                  "I built Refinzi out of pure frustration. Like thousands of developers and creators, I was constantly context-switching to browser tabs and re-prompting ChatGPT, Midjourney, and Cursor 5 to 10 times just to get clean code or accurate images.
+                <p className="text-sm sm:text-base text-zinc-100 font-medium italic leading-relaxed">
+                  "I was re-prompting ChatGPT 10 times for every email. Re-rolling Midjourney 20 times per image. I built Refinzi so I'd never have to context-switch again. One click. Perfect output. Every time."
                 </p>
-                <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                  Refinzi puts the entire prompt engineering layer directly at your fingertips with a single <strong className="text-white">1-Click on the ambient Orb</strong> (or press <code className="text-blue-300 font-mono text-xs bg-blue-500/10 px-1 py-0.5 rounded">Ctrl+Alt+Space</code>) in Windows, or Hold 300ms for deep 5-block architecture. It’s local-first, zero-subscription with BYOK, and built to respect your time."
+                <p className="text-xs text-blue-300 font-semibold">
+                  — Rahul Mangla, Founder
                 </p>
 
                 {/* Direct Action Hub for Founder */}

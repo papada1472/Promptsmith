@@ -39,7 +39,7 @@ export function DocsPage({ onNavigateHome, onDownload }) {
             <span>Back to Home</span>
           </button>
           <div className="flex items-center gap-2">
-            <img src="/branding/logo-mark.png" alt="Refinzi" className="h-5 w-5 rounded object-contain hidden sm:inline" />
+            <img src="/branding/logo-mark.webp" alt="Refinzi" width="20" height="20" loading="lazy" decoding="async" className="h-5 w-5 rounded object-contain hidden sm:inline" />
             <span className="text-xs font-bold text-white hidden sm:inline">Refinzi 2.0 Docs</span>
             <button
               onClick={onDownload}

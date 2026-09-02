@@ -75,9 +75,15 @@ export function NonWindowsModal({ isOpen, onClose, osType = "mac", onDownloadWin
 
             <form onSubmit={handleSubmit} className="mt-4 space-y-2.5">
               <div className="relative">
+                <label htmlFor="waitlist-email" className="sr-only">
+                  Email address
+                </label>
                 <input
+                  id="waitlist-email"
+                  name="email"
                   type="email"
                   required
+                  aria-label="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email address"

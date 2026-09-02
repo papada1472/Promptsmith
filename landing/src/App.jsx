@@ -132,26 +132,25 @@ const DEMO_PRESETS = [
     icon: ChatGptLogo,
     badge: "Reasoning & Copy",
     raw: "Write a high-converting email sequence for my SaaS product launch",
-    rebuilt: `Role & Objective: Act as an elite Direct-Response SaaS Copywriter and Growth Architect.
-
-Deliverable: Design an 8-part launch sequence engineered across 3 psychological buyer phases:
-
-Phase 1: The Open Loop & Problem Agitation (Emails 1-3)
-- Agitate the core workflow bottleneck; reveal the engineering breakthrough behind the solution.
-- Micro-case studies: Customer quote snippet + quantified time saved.
-
-Phase 2: Product Breakdown & Social Proof (Emails 4-5)
-- Feature matrix mapped 1:1 to measurable business ROI.
-- Interactive video unboxing breakdown + verified testimonials.
-
-Phase 3: Expiring Launch Incentive & Close (Emails 6-8)
-- Expiring founder tier pricing with real-time countdown urgency.
-- Overcoming top 3 objections with direct technical guarantees.
-
-Constraints & Tone:
-- Subject Lines: 3 variants per email (Curiosity, Pain, Social Proof) under 42 characters.
-- Body: 140-180 words, punchy single-thought paragraphs, 1 distinct CTA with dynamic UTM tracking.`,
-    stats: "Complete 8-Part Sequence",
+    rebuilt: `Role: Elite Direct-Response SaaS Copywriter
+Framework: 3-Phase Open Loop & Urgency Sequence
+• Phase 1: Agitate user workflow bottleneck + quantify hours saved
+• Phase 2: Feature matrix mapped 1:1 to measurable business ROI
+• Phase 3: Expiring founder deal + overcoming top 3 technical objections
+Constraints: 3 subject variants/email (<42 chars), punchy 150w body, single distinct CTA with UTMs.`,
+    stats: "3-Phase SaaS Copy Spec",
+  },
+  {
+    id: "cursor",
+    label: "Cursor",
+    icon: CursorLogo,
+    badge: "Production Code",
+    raw: "Make a responsive pricing table with toggle and tooltip",
+    rebuilt: `Task: Build production-grade Pricing Matrix in React + Tailwind CSS
+Architecture: Compound pattern (<Pricing.Root>, <Pricing.Toggle>, <Pricing.Card>)
+State: Monthly/Annual billing toggle with animated 20% discount badge
+Rules: Kinetic hover elevation cubic-bezier(0.25, 1, 0.5, 1), full ARIA keyboard navigation, zero layout shift.`,
+    stats: "React & Tailwind UI Spec",
   },
   {
     id: "midjourney",
@@ -159,84 +158,58 @@ Constraints & Tone:
     icon: MidjourneyLogo,
     badge: "Photoreal Optics",
     raw: "A futuristic sports car driving in neon rainy city",
-    rebuilt: `/imagine prompt: cinematic 35mm anamorphic wide tracking shot of an ultra-aerodynamic concept hypercar gliding through a rain-slicked Neo-Tokyo avenue at night, raytraced reflections shimmering in asphalt puddles, cyan and magenta neon ambiance, Cooke Anamorphic /i 35mm lens, f/1.4, subtle shutter motion blur, volumetric atmospheric mist and tire spray, photorealistic Octane render, hyper-detailed carbon fiber chassis, 8k resolution --ar 16:9 --style raw --v 6.0 --q 2 --s 750`,
+    rebuilt: `/imagine prompt: cinematic 35mm anamorphic wide tracking shot of concept hypercar, rain-slicked Neo-Tokyo asphalt, raytraced reflections, cyan and magenta neon ambiance, Cooke Anamorphic /i 35mm f/1.4 lens, volumetric tire spray, photorealistic Octane 8k render --ar 16:9 --style raw --v 6.0 --q 2`,
     stats: "Midjourney v6.0 Camera Spec",
   },
   {
     id: "higgsfield",
     label: "Higgsfield AI",
     icon: HiggsfieldLogo,
-    badge: "Video Trajectories",
+    badge: "Video Motion",
     raw: "An astronaut exploring a crystal cave on another planet",
-    rebuilt: `[Camera Vector: Smooth 360-degree orbital crane shot descending from subterranean crystal ceiling to human eye-level].
-
-Scene & Physics Specifications:
-- Subject: Lone explorer in matte-white titanium spacesuit with dynamic visor reflection.
-- Environment: Massive bioluminescent amethyst cavern pulsating with gentle violet and teal luminescence.
-- Particle Dynamics: Sub-zero micro-gravity crystal dust drifting through volumetric sun rays; realistic planetary gravitational drag on footsteps.
-- Lighting & Optics: Internal helmet rim light + external subterranean glow, 4K 60fps temporal velocity coherence, liquid fluid dynamics.`,
+    rebuilt: `[Camera: 360° orbital crane shot descending from subterranean crystal ceiling to human eye-level]
+Subject: Titanium spacesuit with dynamic visor reflection
+Atmosphere: Bioluminescent amethyst cavern, floating micro-crystal dust, volumetric teal glow, 4K 60fps velocity physics.`,
     stats: "3D Camera Vector Spec",
   },
   {
     id: "gemini",
-    label: "Gemini",
+    label: "Gemini / Claude",
     icon: GeminiLogo,
     badge: "Systems Architecture",
     raw: "Build a real-time analytics dashboard with WebSockets",
-    rebuilt: `Architecture Specification: High-Throughput Real-Time Telemetry & Analytics Dashboard.
-
-Technical Requirements:
-1. Streaming Ingestion Pipeline: Bi-directional WebSocket stream with exponential backoff heartbeat, binary frame compression, and automatic reconnect fallback.
-2. High-Performance State: Normalized circular ring buffer retaining 10,000 active datapoints with Web Worker computation offloading to guarantee zero UI thread blocking.
-3. GPU Charting Engine: Canvas/WebGL GPU-accelerated rendering locked at 60fps with dynamic downsampling and threshold alerts.
-4. Interface & Accessibility: Dark-mode glassmorphism, 12-column responsive layout tokens, and ARIA-live regions for screen reader compliance.`,
+    rebuilt: `Spec: High-Throughput Real-Time Telemetry Dashboard
+1. Pipeline: Bi-directional WebSocket stream, heartbeat fallback, binary frame compression
+2. State: Normalized 10,000 ring buffer with Web Worker offloading (zero UI thread lag)
+3. GPU Charting: Canvas WebGL 60fps rendering with dynamic downsampling and threshold alerts.`,
     stats: "WebSocket Architecture Spec",
-  },
-  {
-    id: "cursor",
-    label: "Cursor Rules",
-    icon: CursorLogo,
-    badge: "Production Code",
-    raw: "Make a responsive pricing table with toggle and tooltip",
-    rebuilt: `Task: Build a production-grade, accessible Pricing Matrix in React & Tailwind CSS.
-
-Architecture & State:
-- Compound Component Pattern: <Pricing.Root>, <Pricing.Toggle>, and <Pricing.Card>.
-- State: Monthly / Annual toggle with an animated 20% discount badge.
-- Tiers: 3-tier layout (Starter, Pro [Elevated with subtle ambient glow], Enterprise).
-- Interactive Microcopy: Tooltips detailing custom SLAs and data guarantees.
-
-Motion & Accessibility:
-- Kinetic hover elevation with cubic-bezier(0.25, 1, 0.5, 1) and active click spring feedback.
-- Full keyboard navigation (Arrow keys, Space/Enter toggle) and aria-expanded indicators.`,
-    stats: "React & Tailwind UI Spec",
   },
 ];
 
 const USE_CASES = [
   {
     icon: Bot,
-    title: "ChatGPT & Gemini Reasoning",
-    body: "Transform vague 1-line thoughts into structured, multi-step chain-of-thought directives. Get authoritative, deep outputs immediately.",
+    title: "ChatGPT & Claude",
+    body: "Turn 1-line thoughts into structured, multi-step directives on the first try.",
     tag: "Reasoning & Copy",
   },
   {
     icon: Camera,
     title: "Midjourney & Generative Art",
-    body: "Inject optical focal lengths, anamorphic lenses, lighting vectors, and rendering parameters (--ar 16:9 --style raw) in a single keystroke.",
+    body: "Inject optical focal lengths, lighting vectors, and --v 6.0 parameters in one click.",
     tag: "AI Art & Design",
+  },
+  {
+    icon: TerminalSquare,
+    title: "Cursor & Coding Agents",
+    body: "Synthesize full section trees, state props, and clean code specs in 2 seconds.",
+    tag: "Frontend & Code",
   },
   {
     icon: Video,
     title: "Higgsfield & Video Motion",
-    body: "Generate cinematic 3D camera trajectories, orbital crane shots, particle dynamics, and temporal velocity prompts tuned for AI video.",
+    body: "Generate cinematic 3D orbital camera vectors and temporal velocity physics.",
     tag: "Video Generation",
-  },
-  {
-    icon: TerminalSquare,
-    title: "Cursor, v0 & Claude Blueprints",
-    body: "Hold 300ms to synthesize 5-block architectural specs: semantic section trees, state props, motion tokens, and model-tuned rules.",
-    tag: "Frontend & Code",
   },
 ];
 
@@ -541,10 +514,15 @@ function Navbar({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/[0.06] bg-[#08090c]/85 backdrop-blur-xl">
       <nav className="mx-auto flex h-14 max-w-[1140px] items-center justify-between px-4 sm:px-6">
-        <a href="#" className="flex items-center gap-2.5 text-base font-bold text-zinc-50 transition-colors hover:text-white">
+        <a href="/" aria-label="Refinzi 2.0 Homepage" className="flex items-center gap-2.5 text-base font-bold text-zinc-50 transition-colors hover:text-white">
           <img
-            src="/branding/logo-mark.png"
+            src="/branding/logo-mark.webp"
             alt="Refinzi 2.0"
+            width="28"
+            height="28"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
             className="h-7 w-7 rounded-lg object-contain shadow-sm shadow-blue-500/30"
           />
           <span className="tracking-tight font-bold">Refinzi <span className="text-[10px] font-semibold text-blue-400 bg-blue-500/10 px-1.5 py-0.2 rounded border border-blue-500/20">2.0</span></span>
@@ -824,88 +802,71 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
       <div className="relative mx-auto grid w-full max-w-[1140px] grid-cols-1 items-center gap-10 px-4 sm:px-6 lg:grid-cols-2">
         {/* Left column */}
         <div>
-          {/* Top Badges */}
+          {/* Top Badges / Pre-headline */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/25">
-              <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
-              1-Click Prompt Engineering for Windows ⚡
-            </span>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/25">
-              <ShieldCheck className="h-3 w-3 text-emerald-400" />
-              One-Time License · Zero Subscriptions
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/10 text-blue-300 border border-blue-500/25">
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-ping" />
+              The Missing Prompt Layer for ChatGPT, Cursor & Midjourney
             </span>
           </div>
 
-          {/* H1 Headline — Harry Dry Style */}
+          {/* H1 Headline — Outcome-driven */}
           <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.12] tracking-tight text-white">
-            Turn messy ideas into perfect prompts.{" "}
+            Get Perfect AI Output{" "}
             <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent block sm:inline">
-              In 1-click.
+              on the First Try.
             </span>
           </h1>
 
-          {/* Punchy, High-Contrast Subheadline */}
-          <p className="mt-4 max-w-lg text-base sm:text-lg font-medium text-zinc-100 leading-relaxed">
-            Highlight text anywhere in Windows. <strong className="text-white font-bold">1-Click the floating Orb</strong> to replace rough 1-liners with production-ready prompts in 2 seconds.
+          {/* Punchy Subheadline */}
+          <p className="mt-4 max-w-lg text-base sm:text-lg font-medium text-zinc-200 leading-relaxed">
+            <strong className="text-white font-bold">1-Click the Refinzi Orb</strong> anywhere in Windows to transform rough ideas into production-grade prompts — without switching tabs.
           </p>
 
-          <p className="mt-2 text-xs sm:text-sm text-purple-300 font-medium flex items-center gap-1.5">
-            <span>🧠 Hold 300ms anytime for complete 5-Block Blueprint architecture.</span>
-          </p>
-
-          {/* Primary CTA + Secondary Link */}
-          <div className="mt-6 flex flex-wrap items-center gap-4">
-            <Button
-              size="lg"
-              variant="primary"
-              onClick={onDownload}
-              className="font-bold text-sm sm:text-base shadow-xl shadow-blue-500/20"
-            >
-              <Download className="h-4 w-4 mr-1.5" />
-              Download Free for Windows (.exe)
-            </Button>
-
-            <a
-              href="#pricing"
-              onClick={(e) => {
-                e.preventDefault();
-                onOpenOffer();
-              }}
-              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-zinc-300 hover:text-white px-3 py-2 rounded-xl transition-colors group"
-            >
-              <span>See Lifetime Deal ({currency.formattedPrice})</span>
-              <ArrowRight className="h-3.5 w-3.5 text-amber-400 group-hover:translate-x-0.5 transition-transform" />
-            </a>
-
-            {osType !== "windows" && (
-              <button
-                type="button"
-                onClick={onOpenNonWindows}
-                className="text-[11px] text-zinc-400 hover:text-blue-300 underline font-medium cursor-pointer"
+          {/* Primary CTA + Secondary Line */}
+          <div className="mt-6 flex flex-col items-start gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <Button
+                size="lg"
+                variant="primary"
+                onClick={onDownload}
+                className="font-bold text-sm sm:text-base shadow-xl shadow-blue-500/25 px-6 py-3"
               >
-                On Mac/Linux/Mobile? Join Preview List
-              </button>
-            )}
-          </div>
+                <Download className="h-4 w-4 mr-2" />
+                Download Free for Windows
+              </Button>
 
-          {/* Clear Primary vs Secondary Interaction & Free vs Paid Value Gap */}
-          <div className="mt-4 space-y-1.5 text-xs text-zinc-300 font-medium">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-blue-500/30 text-blue-200 text-[10px] font-bold">1</span>
-              <span><strong className="text-white">Primary (1-Click on Orb)</strong> — Instant in-place prompt transformation (or press <code className="text-blue-300 font-mono text-[11px]">Ctrl+Alt+Space</code>)</span>
+              <a
+                href="#pricing"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onOpenOffer();
+                }}
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-zinc-300 hover:text-white px-3 py-2 rounded-xl transition-colors group"
+              >
+                <span>☕ Supporter Pro ({currency.formattedPrice})</span>
+                <ArrowRight className="h-3.5 w-3.5 text-amber-400 group-hover:translate-x-0.5 transition-transform" />
+              </a>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-purple-500/30 text-purple-200 text-[10px] font-bold">2</span>
-              <span><strong className="text-white">Secondary (Hold 300ms)</strong> — Opens 5-Block Blueprint Scaffolding & Context Architect</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-              <span><strong className="text-white">Free BYOK Mode</strong> — use your own API keys, 0% markup forever</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="h-3.5 w-3.5 text-purple-400 shrink-0" />
-              <span>Built exclusively for <strong>Windows 10 & 11 (64-bit)</strong> · Sub-200ms synthesis</span>
-            </div>
+
+            {/* Secondary Value / Guarantee Line */}
+            <p className="text-xs text-emerald-300 font-medium flex items-center gap-1.5">
+              <span>✅ No signup • BYOK forever • 14-day Pro guarantee</span>
+            </p>
+
+            {/* Mobile / Non-Windows Adaptive Notice */}
+            {osType !== "windows" && (
+              <div className="mt-1 rounded-xl bg-blue-950/40 border border-blue-500/30 p-2.5 text-xs text-blue-200 flex items-center justify-between gap-2 max-w-lg">
+                <span>💻 Refinzi is a Windows desktop app. Send the installer link to your PC:</span>
+                <button
+                  type="button"
+                  onClick={onOpenNonWindows}
+                  className="shrink-0 bg-blue-600 hover:bg-blue-500 text-white font-bold px-2.5 py-1 rounded-lg text-[11px] transition-colors"
+                >
+                  Email Link
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Authentic Trust & Security Badges */}
@@ -917,17 +878,17 @@ function Hero({ onOpenOffer, onDownload, currency = SUPPORTED_CURRENCIES.USD, os
               className="inline-flex items-center gap-1.5 rounded-full bg-emerald-950/40 border border-emerald-500/30 px-3 py-1 text-[11px] font-semibold text-emerald-400 hover:bg-emerald-900/40 transition-colors"
             >
               <ShieldCheck className="h-3.5 w-3.5" />
-              <span>VirusTotal Verified Clean (0/72 Detections)</span>
+              <span>VirusTotal Verified Clean (0/72)</span>
             </a>
             <a
-              href="https://github.com/papada1472/refinzi/releases/tag/v2.0.0"
+              href="https://github.com/papada1472/refinzi"
               target="_blank"
               rel="noopener noreferrer"
-              title="GitHub Verified Build v2.0.0 (opens in a new tab)"
-              aria-label="GitHub Verified Build v2.0.0 (opens in a new tab)"
+              title="GitHub Open Source (opens in a new tab)"
+              aria-label="GitHub Open Source (opens in a new tab)"
               className="inline-flex items-center gap-1.5 rounded-full bg-zinc-900 border border-white/10 px-3 py-1 text-[11px] font-mono text-zinc-300 hover:text-white transition-colors"
             >
-              <span>GitHub Verified Build v2.0.0</span>
+              <span>⭐ Built in Public on GitHub</span>
             </a>
           </div>
         </div>
@@ -985,9 +946,13 @@ function HeroVideoPlayer() {
             muted
             playsInline
             controls
+            preload="metadata"
             className="h-full w-full object-cover"
             title="Refinzi Live Workflow Demo in Windows"
-          />
+            aria-label="Refinzi Live Workflow Demo in Windows"
+          >
+            <track kind="captions" srcLang="en" label="English captions" default />
+          </video>
         </div>
         <p className="mt-2 text-center text-[10px] text-zinc-300">
           <strong className="text-blue-300">1-Click the Orb</strong> for instant in-place rebuild · <span className="text-zinc-300">(Or press Ctrl+Alt+Space · Hold 300ms for Blueprint)</span>
@@ -1048,24 +1013,24 @@ function LiveDemoSection({ onDownload }) {
   };
 
   return (
-    <section className="py-12 sm:py-16 relative overflow-hidden" id="demo">
+    <section className="py-12 sm:py-16 relative overflow-hidden bg-gradient-to-b from-transparent via-blue-950/10 to-transparent" id="demo">
       <div className="mx-auto max-w-[1140px] px-4 sm:px-6">
         <Reveal>
           <div className="text-center max-w-xl mx-auto">
-            <Badge variant="outline" className="text-purple-400 border-purple-500/30 bg-purple-950/20">
-              ⚡ Interactive Demo
+            <Badge variant="outline" className="text-blue-400 border-blue-500/30 bg-blue-950/30 text-xs">
+              ⚡ Proof · Live Transformation Engine
             </Badge>
-            <h2 className="mt-2.5 text-2xl sm:text-3xl font-bold tracking-tight text-white">
+            <h2 className="mt-2.5 text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
               See How Refinzi Transforms Any Prompt
             </h2>
-            <p className="mt-1.5 text-zinc-400 text-xs sm:text-sm">
-              Select an AI model and see raw thoughts turn into master execution blueprints in milliseconds.
+            <p className="mt-1.5 text-zinc-300 text-xs sm:text-sm">
+              Click any model tab or the glowing Orb to see vague 1-liners transform into precision production prompts in real time.
             </p>
           </div>
         </Reveal>
 
-        {/* Model Tabs */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-1.5">
+        {/* Model Selector Tabs */}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
           {DEMO_PRESETS.map((preset) => {
             const Icon = preset.icon;
             const isSelected = selectedPreset.id === preset.id;
@@ -1076,10 +1041,10 @@ function LiveDemoSection({ onDownload }) {
                   setSelectedPreset(preset);
                   handleRebuild();
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   isSelected
-                    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-sm shadow-blue-500/25 border border-white/20"
-                    : "bg-zinc-900/70 text-zinc-400 border border-white/[0.06] hover:text-zinc-200 hover:border-zinc-700"
+                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/25 border border-white/20 scale-105"
+                    : "bg-zinc-900/80 text-zinc-400 border border-white/[0.08] hover:text-white hover:border-zinc-700"
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -1091,26 +1056,27 @@ function LiveDemoSection({ onDownload }) {
 
         {/* Interactive Comparison Box */}
         <Reveal delay={80}>
-          <div className="mt-5 grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
+          <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch relative">
             {/* Raw Input Box */}
-            <Card className="luxury-surface flex flex-col justify-between p-4 sm:p-5">
+            <Card className="luxury-surface flex flex-col justify-between p-4 sm:p-5 border-white/[0.08]">
               <div>
                 <div className="flex items-center justify-between pb-2.5 border-b border-white/[0.06]">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                  <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-red-400" />
                     Before: Rough Thought
                   </span>
                   <Badge variant="muted" className="text-[10px]">Vague Prompt</Badge>
                 </div>
-                <div className="mt-3 rounded-xl bg-zinc-950/70 p-3 border border-white/[0.05] font-mono text-xs text-zinc-300 break-words">
+                <div className="mt-3 rounded-xl bg-zinc-950/80 p-3 border border-red-500/20 font-mono text-xs text-zinc-300 break-words">
                   "{selectedPreset.raw}"
                 </div>
                 <p className="mt-2.5 text-xs text-zinc-400 leading-relaxed">
-                  ⚠️ <strong>The bottleneck:</strong> Standard AI models generate generic, shallow responses from raw prompts, causing endless re-prompting.
+                  ⚠️ <strong>Result without Refinzi:</strong> Standard AI models generate shallow, generic fluff, requiring 5–10 frustrating re-prompts.
                 </p>
               </div>
 
               <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between">
-                <span className="text-[11px] text-zinc-400">Global Shortcut:</span>
+                <span className="text-[11px] text-zinc-400">Windows Shortcut:</span>
                 <kbd className="bg-zinc-900 text-blue-400 font-mono text-xs px-2 py-0.5 rounded border border-zinc-700">
                   Ctrl + Alt + Space
                 </kbd>
@@ -1118,8 +1084,8 @@ function LiveDemoSection({ onDownload }) {
             </Card>
 
             {/* Rebuilt Output Box */}
-            <Card className="luxury-surface-glow relative flex flex-col justify-between p-4 sm:p-5">
-              <Badge className="absolute -top-2.5 right-5 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold text-[10px]">
+            <Card className="luxury-surface-glow relative flex flex-col justify-between p-4 sm:p-5 border-blue-500/30">
+              <Badge className="absolute -top-2.5 right-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-[10px]">
                 {selectedPreset.stats}
               </Badge>
 
@@ -1133,27 +1099,47 @@ function LiveDemoSection({ onDownload }) {
                   </div>
                   <button
                     onClick={handleCopy}
-                    className="flex items-center gap-1 text-[11px] text-zinc-300 hover:text-white bg-zinc-900/90 hover:bg-zinc-800 px-2.5 py-1 rounded-lg border border-white/[0.08] transition-all"
+                    className="flex items-center gap-1 text-[11px] text-zinc-200 hover:text-white bg-zinc-900 hover:bg-zinc-800 px-2.5 py-1 rounded-lg border border-white/[0.1] transition-all cursor-pointer"
                   >
                     {copied ? <CheckCheck className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3" />}
                     <span>{copied ? "Copied!" : "Copy Prompt"}</span>
                   </button>
                 </div>
 
-                <div className={`mt-3 rounded-xl bg-zinc-950/90 p-3 border border-blue-500/25 font-mono text-xs text-zinc-200 whitespace-pre-wrap leading-relaxed max-h-56 overflow-y-auto break-words ${isRebuilding ? "opacity-50 animate-pulse" : ""}`}>
+                <div className={`mt-3 rounded-xl bg-zinc-950/90 p-3.5 border border-blue-500/30 font-mono text-xs text-zinc-100 whitespace-pre-wrap leading-relaxed max-h-52 overflow-y-auto break-words ${isRebuilding ? "opacity-50 animate-pulse" : ""}`}>
                   {selectedPreset.rebuilt}
                 </div>
               </div>
 
               <div className="mt-4 pt-3 border-t border-blue-500/20 flex flex-wrap items-center justify-between gap-2">
-                <span className="text-[11px] text-emerald-400 font-medium flex items-center gap-1">
-                  <Check className="h-3 w-3" /> Ready for {selectedPreset.label}
+                <span className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+                  <Check className="h-3.5 w-3.5" /> 1st-Try Output Guarantee
                 </span>
-                <Button size="xs" variant="primary" onClick={onDownload}>
-                   <Download className="h-3 w-3" /> Download Free
-                 </Button>
+                <span className="text-[10px] text-zinc-400">Generated in 1-click (&lt;2s)</span>
               </div>
             </Card>
+          </div>
+
+          {/* Direct In-Demo Conversion CTA */}
+          <div className="mt-6 rounded-2xl border border-blue-500/30 bg-gradient-to-r from-blue-950/50 via-zinc-900/90 to-blue-950/50 p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+            <div className="flex items-center gap-3 text-center sm:text-left">
+              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30">
+                <span className="text-lg">⚡</span>
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-white">Want this 1-click transformation anywhere in Windows?</h4>
+                <p className="text-xs text-zinc-300">Highlight rough text in Discord, Cursor, ChatGPT, or Slack and click the floating Orb.</p>
+              </div>
+            </div>
+            <Button
+              variant="primary"
+              size="default"
+              onClick={onDownload}
+              className="font-bold text-xs sm:text-sm shrink-0 shadow-lg shadow-blue-500/20 px-5 py-2.5"
+            >
+              <Download className="h-4 w-4 mr-1.5" />
+              Download Free (.exe)
+            </Button>
           </div>
         </Reveal>
       </div>
@@ -1633,8 +1619,12 @@ function StickyConversionBar({ show, onOpenOffer, onDownload, currency = SUPPORT
       <div className="mx-auto flex max-w-[1140px] items-center justify-between gap-4">
         <div className="hidden sm:flex items-center gap-2">
           <img
-            src="/branding/logo-mark.png"
+            src="/branding/logo-mark.webp"
             alt="Refinzi"
+            width="24"
+            height="24"
+            loading="lazy"
+            decoding="async"
             className="h-6 w-6 rounded-md object-contain shadow-sm"
           />
           <div>
@@ -1701,13 +1691,17 @@ function ScrollToTopButton() {
 
 function Footer({ onNavigate }) {
   return (
-    <footer className="border-t border-white/[0.06] pt-8 pb-28 sm:pb-24 bg-[#08090c] text-zinc-400 text-[11px]">
+    <footer className="border-t border-white/[0.06] pt-8 pb-28 sm:pb-24 bg-[#08090c] text-zinc-400 text-[11px]" id="contact">
       <div className="mx-auto flex max-w-[1140px] flex-col justify-between gap-6 px-4 sm:px-6 md:flex-row md:items-end">
         <div className="flex flex-col items-start gap-3">
           <div className="flex items-center gap-2">
             <img
-              src="/branding/logo-mark.png"
+              src="/branding/logo-mark.webp"
               alt="Refinzi"
+              width="24"
+              height="24"
+              loading="lazy"
+              decoding="async"
               className="h-6 w-6 rounded-md object-contain shadow-sm"
             />
             <span className="font-bold text-zinc-200 text-sm">Refinzi <span className="text-[10px] text-blue-400 font-semibold bg-blue-500/10 px-1 rounded">2.0</span></span>
@@ -1717,24 +1711,42 @@ function Footer({ onNavigate }) {
         </div>
         <div className="flex flex-col items-start md:items-end gap-2">
           <nav aria-label="Footer Navigation" className="flex flex-wrap items-center gap-4 text-zinc-400">
-            <button
-              onClick={() => onNavigate("privacy", "/privacy")}
+            <a
+              href="/privacy/"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate("privacy", "/privacy");
+              }}
               className="hover:text-zinc-200 transition-colors cursor-pointer"
             >
               Privacy Policy
-            </button>
-            <button
-              onClick={() => onNavigate("terms", "/terms")}
+            </a>
+            <a
+              href="/terms/"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate("terms", "/terms");
+              }}
               className="hover:text-zinc-200 transition-colors cursor-pointer"
             >
               Terms & Refund
-            </button>
-            <button
-              onClick={() => onNavigate("docs", "/docs")}
+            </a>
+            <a
+              href="/docs/"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate("docs", "/docs");
+              }}
               className="hover:text-zinc-200 transition-colors cursor-pointer"
             >
               Documentation
-            </button>
+            </a>
+            <a
+              href="#founder"
+              className="hover:text-zinc-200 transition-colors cursor-pointer"
+            >
+              About Creator
+            </a>
             <a
               href="https://github.com/papada1472/refinzi"
               target="_blank"
@@ -1752,7 +1764,7 @@ function Footer({ onNavigate }) {
             </a>
           </nav>
           <p className="text-[10px] text-zinc-400">
-            © 2026 Refinzi. All rights reserved.
+            © 2026 Refinzi. Built by Rahul Mangla. All rights reserved.
           </p>
         </div>
       </div>
@@ -1958,7 +1970,7 @@ export default function App() {
         onOpenOffer={() => handleOpenCheckout("navbar")}
         onDownload={() => handleTriggerDownload("navbar")}
       />
-      <main>
+      <main id="main-content">
         <Hero
           currency={currency}
           osType={osType}

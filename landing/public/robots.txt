@@ -3,23 +3,57 @@
 User-agent: *
 Allow: /
 
-# Explicitly permit AI Search and Knowledge Crawlers
-User-agent: GPTBot
+# Search Engine Crawlers
+User-agent: Googlebot
 Allow: /
 
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: PerplexityBot
+User-agent: Bingbot
 Allow: /
 
 User-agent: Applebot
 Allow: /
 
-User-agent: Googlebot
+User-agent: DuckDuckBot
 Allow: /
 
-User-agent: Bingbot
+User-agent: Baiduspider
+Allow: /
+
+User-agent: Yandex
+Allow: /
+
+# Explicitly permit AI Search and Knowledge Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Cohere-ai
+Allow: /
+
+User-agent: Omgilibot
+Allow: /
+
+User-agent: Diffbot
 Allow: /
 
 Sitemap: https://refinzi.com/sitemap.xml
