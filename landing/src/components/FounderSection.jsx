@@ -69,10 +69,10 @@ export function FounderSection() {
                   </div>
                 </div>
 
-                <p className="text-sm sm:text-base text-zinc-100 font-medium italic leading-relaxed">
+                <p className="text-sm sm:text-base text-white font-semibold italic leading-relaxed">
                   "I was re-prompting ChatGPT 10 times for every email. Re-rolling Midjourney 20 times per image. I built Refinzi so I'd never have to context-switch again. One click. Perfect output. Every time."
                 </p>
-                <p className="text-xs text-blue-300 font-semibold">
+                <p className="text-xs sm:text-sm text-white font-bold">
                   — Rahul Mangla, Founder
                 </p>
 
