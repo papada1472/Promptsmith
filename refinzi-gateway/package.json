@@ -1,7 +1,13 @@
 {
   "name": "refinzi-gateway",
+  "description": "Refinzi 2.0 — Serverless Edge Failover API Gateway",
   "version": "1.0.0",
   "type": "module",
+  "homepage": "https://refinzi.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/papada1472/refinzi.git"
+  },
   "dependencies": {
     "@ai-sdk/openai": "^1.1.15",
     "@vercel/analytics": "^2.0.1",

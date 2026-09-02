@@ -180,7 +180,7 @@ export default async function handler(req, res) {
       baseURL: 'https://openrouter.ai/api/v1',
       apiKey: openRouterKey,
       headers: {
-        'HTTP-Referer': 'https://refinzi.app',
+        'HTTP-Referer': 'https://refinzi.com',
         'X-Title': 'Refinzi Gateway'
       }
     });

@@ -108,7 +108,7 @@ const PROVIDER_PORTALS = {
   ollama: { name: "Ollama (Localhost 11434)", url: "https://ollama.com", placeholder: "http://localhost:11434/v1/chat/completions (No key needed)" },
   lmstudio: { name: "LM Studio (Localhost 1234)", url: "https://lmstudio.ai", placeholder: "http://localhost:1234/v1/chat/completions (No key needed)" },
   custom: { name: "Custom Endpoint", url: "https://platform.openai.com/docs/api-reference", placeholder: "Paste custom API key (or leave empty if local)" },
-  gateway: { name: "Refinzi Gateway", url: "https://refinzi.app", placeholder: "No API key required (Free Gateway active)" }
+  gateway: { name: "Refinzi Gateway", url: "https://refinzi.com", placeholder: "No API key required (Free Gateway active)" }
 };
 
 // ── Realistic Initial History Mock Data ──
@@ -1067,7 +1067,7 @@ function setupEventListeners() {
 
   // 16. Upgrade Checkout CTA (Directly linked to Landing Page Pricing)
   elements.upgradeCheckoutBtn?.addEventListener("click", () => {
-    const pricingUrl = "https://refinzi.app/#pricing";
+    const pricingUrl = "https://refinzi.com/#pricing";
     if (window.refinzi?.app?.openUrl) {
       window.refinzi.app.openUrl(pricingUrl);
     } else {

@@ -82,7 +82,7 @@ export class OpenRouterProvider extends AIProvider {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${this.apiKey}`,
-          "HTTP-Referer": "https://refinzi.app", // Required for OpenRouter ranking
+          "HTTP-Referer": "https://refinzi.com", // Required for OpenRouter ranking
           "X-Title": "Refinzi Desktop",          // Required for OpenRouter ranking
           "Content-Type": "application/json"
         },

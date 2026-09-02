@@ -1,8 +1,14 @@
 {
   "name": "refinzi-landing",
-  "private": true,
+  "description": "Refinzi 2.0 — Ambient Windows AI Prompt Builder Landing & Docs",
   "version": "2.0.0",
   "type": "module",
+  "homepage": "https://refinzi.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/papada1472/refinzi.git"
+  },
+  "private": true,
   "scripts": {
     "dev": "vite",
     "build": "vite build && node ./scripts/generate-routes.js",

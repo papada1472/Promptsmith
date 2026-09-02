@@ -7,6 +7,14 @@
   "type": "module",
   "author": "",
   "license": "MIT",
+  "homepage": "https://refinzi.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/papada1472/refinzi.git"
+  },
+  "bugs": {
+    "url": "https://github.com/papada1472/refinzi/issues"
+  },
   "private": true,
   "scripts": {
     "start": "electron .",
