@@ -7,35 +7,65 @@ import { settingsService } from "./services/settingsService.js";
 import { hotkeyService } from "./services/hotkeyService.js";
 import { startupService } from "./services/startupService.js";
 import { metricsService } from "./services/metricsService.js";
-import { createLogger } from "./logger.js";
+import { createLogger, redactSecrets } from "./logger.js";
 
 const log = createLogger("IPC");
 
+const ALLOWED_SETTINGS_KEYS = new Set([
+  "theme",
+  "activeProvider",
+  "activeModel",
+  "hotkey",
+  "launchOnStartup",
+  "saveHistoryLocally",
+  "customApiBaseUrl",
+  "ollamaBaseUrl",
+  "lmStudioBaseUrl",
+  "userName",
+  "onboardingSeen",
+  "premiumWelcomePending",
+  "shareCardDismissed"
+]);
+
+const ALLOWED_MODES = new Set(["sparkle", "preserve", "click", "expert", "hold", "drop"]);
+
 export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSettings }) {
-  ipcMain.handle("prompt:rebuildDirect", async (_e, { text, mode = "sparkle" }) => {
+  ipcMain.handle("prompt:rebuildDirect", async (_e, payload = {}) => {
     try {
-      if (!text || !text.trim()) {
+      const text = typeof payload.text === "string" ? payload.text.trim() : "";
+      const rawMode = typeof payload.mode === "string" ? payload.mode.toLowerCase() : "sparkle";
+      const mode = ALLOWED_MODES.has(rawMode) ? rawMode : "sparkle";
+
+      if (!text) {
         return { ok: false, error: "Please enter a prompt to rebuild." };
       }
-      const { buildEnvelope, optimizeEnvelope } = await import("./promptCompiler.js");
-      const { buildExecutionPlan } = await import("./executionPlanner.js");
+      if (text.length > 50000) {
+        return { ok: false, error: "Prompt is too long. Please limit text to 50,000 characters." };
+      }
+
+      const { buildEnvelope } = await import("./output/compiler.js");
+      const { optimizeEnvelope } = await import("./output/optimizer.js");
+      const { buildExecutionPlan } = await import("./output/promptEngineer.js");
       const { ProviderManager } = await import("./ai/ProviderManager.js");
       const { validateOutput } = await import("./outputValidator.js");
 
-      const envelope = buildEnvelope({ input: text.trim(), mode });
+      const envelope = buildEnvelope({ input: text, mode });
       const optimized = optimizeEnvelope(envelope);
       const plan = buildExecutionPlan(optimized);
       const start = Date.now();
+
       const rawResult = await ProviderManager.refineWithFailover(plan.systemPrompt, plan.userPrompt, {
         mode,
-        timeoutMs: mode === "expert" ? 25000 : 15000
+        timeoutMs: mode === "expert" || mode === "hold" ? 25000 : 15000
       });
-      const validated = validateOutput(rawResult, mode);
-      const finalOutput = validated.output || rawResult;
+
+      const validatedText = typeof rawResult === "object" && rawResult?.output ? rawResult.output : rawResult;
+      const validated = validateOutput(validatedText, mode);
+      const finalOutput = validated.output || validatedText;
 
       try {
         metricsService.recordSuccess?.({
-          input: text.trim(),
+          input: text,
           output: finalOutput,
           mode,
           durationMs: Date.now() - start
@@ -50,18 +80,29 @@ export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSet
       };
     } catch (err) {
       log.error("prompt:rebuildDirect failed:", err);
-      return { ok: false, error: err?.message || "Failed to rebuild prompt." };
+      const userMessage = err?.code === "MISSING_API_KEY" 
+        ? "AI provider API key required. Please open Settings to add your key."
+        : (err?.code === "RATE_LIMIT" ? "Provider rate limit reached. Please wait a moment." : (err?.message || "Failed to rebuild prompt."));
+      return { ok: false, error: userMessage };
     }
   });
 
   ipcMain.handle("settings:verifyApiKey", async (_e, key, provider) => {
-    return providerService.verifyApiKey(key, provider);
+    try {
+      const sanitizedKey = typeof key === "string" ? key.trim() : "";
+      const sanitizedProvider = typeof provider === "string" ? provider.trim().toLowerCase() : undefined;
+      return await providerService.verifyApiKey(sanitizedKey, sanitizedProvider);
+    } catch (err) {
+      log.error("settings:verifyApiKey error:", err);
+      return { ok: false, error: err?.message || "Verification failed." };
+    }
   });
 
-  ipcMain.handle("app:showToast", async (_e, opts) => {
-    if (opts.type === "success") notifySuccess(opts.message);
-    else if (opts.type === "error") notifyError(opts.message);
-    else if (opts.type === "warning") notifyWarning(opts.message);
+  ipcMain.handle("app:showToast", async (_e, opts = {}) => {
+    const msg = typeof opts.message === "string" ? opts.message.slice(0, 500) : "";
+    if (opts.type === "success") notifySuccess(msg);
+    else if (opts.type === "error") notifyError(msg);
+    else if (opts.type === "warning") notifyWarning(msg);
     return { ok: true };
   });
 
@@ -71,18 +112,21 @@ export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSet
   });
 
   ipcMain.handle("settings:setApiKey", async (_e, apiKey, provider) => {
-    log.debug("settings:setApiKey", provider);
-    return settingsService.setApiKey(apiKey, provider);
+    const cleanKey = typeof apiKey === "string" ? apiKey.trim() : "";
+    const cleanProvider = typeof provider === "string" ? provider.trim().toLowerCase() : "deepseek";
+    log.debug("settings:setApiKey", cleanProvider);
+    return settingsService.setApiKey(cleanKey, cleanProvider);
   });
 
   ipcMain.handle("settings:setLaunchOnStartup", async (_e, enabled) => {
     log.debug("settings:setLaunchOnStartup", Boolean(enabled));
-    return startupService.setLaunchOnStartup(enabled, applyLaunchOnStartup);
+    return startupService.setLaunchOnStartup(Boolean(enabled), applyLaunchOnStartup);
   });
 
   ipcMain.handle("settings:setHotkey", async (_e, hotkey) => {
-    log.debug("settings:setHotkey", hotkey);
-    return hotkeyService.setHotkey(hotkey, registerShortcut, refreshTrayMenu);
+    const cleanHotkey = typeof hotkey === "string" ? hotkey.trim() : "";
+    log.debug("settings:setHotkey", cleanHotkey);
+    return hotkeyService.setHotkey(cleanHotkey, registerShortcut, refreshTrayMenu);
   });
 
   ipcMain.handle("reward:get", async () => {
@@ -93,21 +137,28 @@ export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSet
     };
   });
 
-  ipcMain.handle("app:openSettings", async (_e, opts) => {
+  ipcMain.handle("app:openSettings", async (_e, opts = {}) => {
     log.debug("app:openSettings", opts);
-    openSettings({ focusApiKey: opts?.focusApiKey });
+    openSettings({ focusApiKey: Boolean(opts?.focusApiKey) });
     return { ok: true };
   });
 
   ipcMain.handle("settings:set", async (_e, settingsObj) => {
+    if (!settingsObj || typeof settingsObj !== "object") {
+      return { ok: false, error: "Invalid settings payload" };
+    }
+    
     log.debug("settings:set", Object.keys(settingsObj).join(", "));
     for (const [key, val] of Object.entries(settingsObj)) {
-      store.set(key, val);
+      if (ALLOWED_SETTINGS_KEYS.has(key)) {
+        store.set(key, val);
+      }
     }
+
     try {
       const { ProviderManager } = await import("./ai/ProviderManager.js");
       if (settingsObj.activeProvider) {
-        ProviderManager.resetCircuitBreaker(settingsObj.activeProvider);
+        ProviderManager.resetCircuitBreaker(String(settingsObj.activeProvider).toLowerCase());
       } else {
         ProviderManager.resetCircuitBreaker();
       }
@@ -120,7 +171,8 @@ export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSet
   });
 
   ipcMain.handle("settings:setTheme", async (_e, theme) => {
-    store.set("theme", theme);
+    const safeTheme = typeof theme === "string" && ["dark", "light", "system"].includes(theme) ? theme : "system";
+    store.set("theme", safeTheme);
     return { ok: true };
   });
 
@@ -138,7 +190,9 @@ export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSet
   });
 
   ipcMain.handle("logs:delete", async (_e, index) => {
-    metricsService.deleteLog(index);
+    if (typeof index === "number" && index >= 0) {
+      metricsService.deleteLog(index);
+    }
     return { ok: true };
   });
 
@@ -147,10 +201,11 @@ export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSet
     return { ok: true };
   });
 
-  ipcMain.handle("toast:show", async (_e, opts) => {
-    if (opts.type === "success") notifySuccess(opts.message);
-    else if (opts.type === "error") notifyError(opts.message);
-    else if (opts.type === "warning") notifyWarning(opts.message);
+  ipcMain.handle("toast:show", async (_e, opts = {}) => {
+    const msg = typeof opts.message === "string" ? opts.message.slice(0, 500) : "";
+    if (opts.type === "success") notifySuccess(msg);
+    else if (opts.type === "error") notifyError(msg);
+    else if (opts.type === "warning") notifyWarning(msg);
     return { ok: true };
   });
 
@@ -176,11 +231,17 @@ export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSet
 - **Model Used**: ${lastCall.model}
 - **Generation Time**: ${lastCall.generationTimeMs} ms
 - **Provider Latency (Avg)**:
-  - Gemini: ${circuits.gemini.averageLatency ? Math.round(circuits.gemini.averageLatency) + " ms" : "N/A"}
-  - OpenRouter: ${circuits.openrouter.averageLatency ? Math.round(circuits.openrouter.averageLatency) + " ms" : "N/A"}
+  - DeepSeek: ${circuits.deepseek?.averageLatency ? Math.round(circuits.deepseek.averageLatency) + " ms" : "N/A"}
+  - Gemini: ${circuits.gemini?.averageLatency ? Math.round(circuits.gemini.averageLatency) + " ms" : "N/A"}
+  - Claude: ${circuits.anthropic?.averageLatency ? Math.round(circuits.anthropic.averageLatency) + " ms" : "N/A"}
+  - OpenAI: ${circuits.openai?.averageLatency ? Math.round(circuits.openai.averageLatency) + " ms" : "N/A"}
+  - OpenRouter: ${circuits.openrouter?.averageLatency ? Math.round(circuits.openrouter.averageLatency) + " ms" : "N/A"}
 - **Circuit Breaker Status**:
-  - Gemini: ${circuits.gemini.state} (Failures: ${circuits.gemini.failures}/3)
-  - OpenRouter: ${circuits.openrouter.state} (Failures: ${circuits.openrouter.failures}/3)
+  - DeepSeek: ${circuits.deepseek?.state || "CLOSED"}
+  - Gemini: ${circuits.gemini?.state || "CLOSED"}
+  - Claude: ${circuits.anthropic?.state || "CLOSED"}
+  - OpenAI: ${circuits.openai?.state || "CLOSED"}
+  - OpenRouter: ${circuits.openrouter?.state || "CLOSED"}
 - **GPU Enabled**: ${gpuCompositing === "enabled" ? "Yes" : "No"} (${gpuCompositing})
 - **Memory Usage**: ${(process.memoryUsage().heapUsed / (1024 * 1024)).toFixed(2)} MB heap used
 - **Theme**: ${store.get("theme") || "dark"}
@@ -200,11 +261,11 @@ export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSet
 - **Retry Count**: ${lastCall.retryCount}
 `;
 
-      clipboard.writeText(payload);
+      clipboard.writeText(redactSecrets(payload));
       return { ok: true };
     } catch (err) {
       log.error("Failed to copy diagnostics:", err);
-      return { ok: false, error: err.message };
+      return { ok: false, error: "Failed to generate diagnostics." };
     }
   });
 
@@ -214,7 +275,7 @@ export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSet
       clipboard.writeText(String(text || ""));
       return { ok: true };
     } catch (err) {
-      return { ok: false, error: err.message };
+      return { ok: false, error: "Failed to copy text." };
     }
   });
 
@@ -232,7 +293,7 @@ export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSet
       const lastRequest = ProviderManager.getLastCallDiagnostic();
       const payload = {
         category: String(report.category || "general").slice(0, 80),
-        description,
+        description: redactSecrets(description),
         contact: String(report.contact || "").trim().slice(0, 320),
         createdAt: new Date().toISOString(),
         diagnostics: { appVersion: app.getVersion(), platform: os.platform(), osRelease: os.release(), provider: lastRequest.provider, model: lastRequest.model, lastRequest }
@@ -257,16 +318,28 @@ export function registerIpcHandlers({ refreshTrayMenu, registerShortcut, openSet
   ipcMain.handle("app:openUrl", async (_e, url) => {
     try {
       const targetUrl = String(url || "").trim();
-      if (!/^https?:\/\//i.test(targetUrl)) {
-        log.warn("[IPC] Rejected non-HTTP(S) shell openExternal request:", targetUrl);
-        return { ok: false, error: "Invalid URL scheme. Only HTTP and HTTPS URLs are allowed." };
+      if (!targetUrl) {
+        return { ok: false, error: "URL cannot be empty." };
       }
+
+      let parsed;
+      try {
+        parsed = new URL(targetUrl);
+      } catch {
+        return { ok: false, error: "Malformed URL." };
+      }
+
+      if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+        log.warn("[IPC] Blocked untrusted URL protocol in shell.openExternal:", targetUrl);
+        return { ok: false, error: "Invalid URL scheme. Only HTTP and HTTPS URLs are permitted." };
+      }
+
       const { shell } = await import("electron");
       await shell.openExternal(targetUrl);
       return { ok: true };
     } catch (err) {
       log.error("Failed to open URL:", err);
-      return { ok: false, error: err.message };
+      return { ok: false, error: "Failed to open link." };
     }
   });
 }

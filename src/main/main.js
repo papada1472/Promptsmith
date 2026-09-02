@@ -18,6 +18,7 @@ import fs from "fs";
 import { createTray } from "./tray.js";
 import { ensureAppUserModelId, notifyError, notifySuccess, notifyWarning } from "./notifications.js";
 import { store } from "./store.js";
+import { redactSecrets } from "./logger.js";
 import { applyLaunchOnStartup } from "./startup.js";
 import { createSettingsWindow } from "./windows.js";
 import { registerIpcHandlers } from "./ipc.js";
@@ -282,11 +283,13 @@ function logCrash(err, type) {
       logPath = path.join(os.tmpdir(), "refinzi_crash_reports.log");
     }
     const timestamp = new Date().toISOString();
+    const rawMessage = err?.message || String(err);
+    const rawStack = err?.stack ? err.stack.split("\n").map(l => l.trim()).filter(l => !l.includes("node_modules")) : [];
     const errorDetails = {
       timestamp,
       type,
-      message: err?.message || String(err),
-      stack: err?.stack ? err.stack.split("\n").map(l => l.trim()).filter(l => !l.includes("node_modules")) : []
+      message: redactSecrets(rawMessage),
+      stack: rawStack.map(line => redactSecrets(line))
     };
     fs.appendFileSync(logPath, JSON.stringify(errorDetails) + "\n", "utf8");
     console.error(`[Refinzi][Crash] Saved ${type} to ${logPath}`);

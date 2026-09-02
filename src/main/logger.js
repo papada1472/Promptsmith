@@ -1,25 +1,92 @@
 /**
- * Refinzi Centralized Logger
+ * Refinzi Centralized Logger & Privacy-Hardened Diagnostic Stream
  *
- * Thin wrapper over console that:
- * - Prefixes every message with a namespaced tag
- * - Supports log levels: debug, info, warn, error
- * - Respects a NODE_ENV / REFINZI_LOG_LEVEL environment variable
- *   so verbose debug lines can be silenced in production builds
- *
- * Usage:
- *   import { createLogger } from "./logger.js";
- *   const log = createLogger("RefineController");
- *   log.info("Refinement started");
- *   log.error("Something broke", err);
- *
- * Log levels (lowest → highest priority):
- *   debug < info < warn < error
- *
- * Set REFINZI_LOG_LEVEL=warn to suppress debug/info in production.
+ * Provides:
+ * - Namespaced logging tag [Refinzi][ModuleName]
+ * - Granular log levels: debug < info < warn < error
+ * - Automated regex-based credential & secret redaction
+ * - Environment level filtering (REFINZI_LOG_LEVEL)
  */
 
 const LEVELS = { debug: 0, info: 1, warn: 2, error: 3 };
+
+const SECRET_PATTERNS = [
+  // OpenAI & general keys
+  /\bsk-[a-zA-Z0-9_-]{12,}\b/g,
+  // Anthropic keys
+  /\bsk-ant-[a-zA-Z0-9_-]{12,}\b/g,
+  // Google Gemini API keys
+  /\bAIza[0-9A-Za-z-_]{32,}\b/g,
+  // Groq API keys
+  /\bgsk_[a-zA-Z0-9_-]{12,}\b/g,
+  // xAI API keys
+  /\bxai-[a-zA-Z0-9_-]{12,}\b/g,
+  // GitHub PATs
+  /\bghp_[a-zA-Z0-9]{20,}\b/g,
+  // Bearer tokens
+  /\bBearer\s+[a-zA-Z0-9_\-.]{8,}\b/gi,
+  // Key-value headers or query params
+  /(["']?(?:x-api-key|api-key|apiKey)["']?\s*[:=]\s*["']?)([^"',\s]{6,})(["']?)/gi
+];
+
+/**
+ * Recursively cleanses strings, objects, and errors of API keys or sensitive authorization tokens.
+ * @param {any} item
+ * @param {WeakSet<object>} [seen]
+ * @returns {any}
+ */
+export function redactSecrets(item, seen = new WeakSet()) {
+  if (item === null || item === undefined) return item;
+
+  if (typeof item === "string") {
+    let sanitized = item;
+    for (const pattern of SECRET_PATTERNS) {
+      if (pattern.source.includes("x-api-key|api-key|apiKey")) {
+        sanitized = sanitized.replace(pattern, "$1••••••••••••[REDACTED]$3");
+      } else if (pattern.source.includes("Bearer")) {
+        sanitized = sanitized.replace(pattern, "Bearer ••••••••[REDACTED]");
+      } else {
+        sanitized = sanitized.replace(pattern, "[REDACTED_SECRET]");
+      }
+    }
+    return sanitized;
+  }
+
+  if (typeof item === "number" || typeof item === "boolean" || typeof item === "symbol") {
+    return item;
+  }
+
+  if (item instanceof Error) {
+    const cleanErr = new Error(redactSecrets(item.message, seen));
+    cleanErr.name = item.name;
+    if (item.code) cleanErr.code = item.code;
+    if (item.status) cleanErr.status = item.status;
+    if (item.statusCode) cleanErr.statusCode = item.statusCode;
+    if (item.stack) cleanErr.stack = redactSecrets(item.stack, seen);
+    return cleanErr;
+  }
+
+  if (typeof item === "object") {
+    if (seen.has(item)) return "[Circular]";
+    seen.add(item);
+
+    if (Array.isArray(item)) {
+      return item.map(sub => redactSecrets(sub, seen));
+    }
+
+    const cleanObj = {};
+    for (const [key, val] of Object.entries(item)) {
+      if (/^(apiKey|key|password|secret|authorization|token|auth)$/i.test(key) && typeof val === "string") {
+        cleanObj[key] = val ? "••••••••••••[REDACTED]" : "";
+      } else {
+        cleanObj[key] = redactSecrets(val, seen);
+      }
+    }
+    return cleanObj;
+  }
+
+  return item;
+}
 
 function getMinLevel() {
   const isProd = (typeof process !== "undefined") && (
@@ -36,7 +103,7 @@ function getMinLevel() {
 }
 
 /**
- * Creates a namespaced logger instance.
+ * Creates a namespaced logger instance with automatic secret redaction.
  *
  * @param {string} namespace - Short label for the module, e.g. "RefineController"
  * @returns {{ debug: Function, info: Function, warn: Function, error: Function, tag: string }}
@@ -54,7 +121,8 @@ export function createLogger(namespace) {
      */
     debug(...args) {
       if (LEVELS.debug >= minLevel) {
-        console.log(tag, ...args);
+        const cleaned = args.map(a => redactSecrets(a));
+        console.log(tag, ...cleaned);
       }
     },
 
@@ -64,7 +132,8 @@ export function createLogger(namespace) {
      */
     info(...args) {
       if (LEVELS.info >= minLevel) {
-        console.log(tag, ...args);
+        const cleaned = args.map(a => redactSecrets(a));
+        console.log(tag, ...cleaned);
       }
     },
 
@@ -74,7 +143,8 @@ export function createLogger(namespace) {
      */
     warn(...args) {
       if (LEVELS.warn >= minLevel) {
-        console.warn(tag, ...args);
+        const cleaned = args.map(a => redactSecrets(a));
+        console.warn(tag, ...cleaned);
       }
     },
 
@@ -84,7 +154,8 @@ export function createLogger(namespace) {
      */
     error(...args) {
       if (LEVELS.error >= minLevel) {
-        console.error(tag, ...args);
+        const cleaned = args.map(a => redactSecrets(a));
+        console.error(tag, ...cleaned);
       }
     }
   };

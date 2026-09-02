@@ -7,6 +7,7 @@ import { store } from "./store.js";
 import { captureIntent } from "./output/intentCapture.js";
 import { classifyClipboardContent } from "./artifactDetector.js";
 import { ProviderManager } from "./ai/ProviderManager.js";
+import { ByokVault } from "./ai/ByokVault.js";
 import { REFINE_TIMEOUT_MS } from "./constants.js";
 import { notifySuccess, notifyError } from "./notifications.js";
 import { checkActiveElementIsEditable, captureActivePrompt, captureActiveSelection, replaceActivePrompt, restoreClipboard, getActiveProcessId, isValidAIResponse } from "./clipboardFlow.js";
@@ -73,13 +74,28 @@ function sleep(ms) {
 }
 
 function checkDailyQuota() {
-  const activeProvider = store.get("activeProvider") || "gemini";
-  const geminiApiKey = store.get("geminiApiKey") || process.env.GEMINI_API_KEY;
-  const openRouterApiKey = store.get("openRouterApiKey") || process.env.OPENROUTER_API_KEY;
-  const hasByok = (activeProvider === "gemini" && geminiApiKey) || 
-                  (activeProvider === "openrouter" && openRouterApiKey);
+  const activeProvider = (store.get("activeProvider") || "deepseek").toLowerCase();
+  if (["ollama", "lmstudio"].includes(activeProvider)) {
+    return false; // Local models have unlimited quota
+  }
 
-  if (hasByok) {
+  const keyMap = {
+    deepseek: "deepSeekApiKey",
+    gemini: "geminiApiKey",
+    openrouter: "openRouterApiKey",
+    openai: "openAiApiKey",
+    anthropic: "anthropicApiKey",
+    groq: "groqApiKey",
+    mistral: "mistralApiKey",
+    xai: "xaiApiKey",
+    custom: "customApiKey"
+  };
+  const storeKey = keyMap[activeProvider] || "deepSeekApiKey";
+  const storedEnc = store.get(storeKey) || "";
+  const key = ByokVault.decrypt(storedEnc) || "";
+  const envKey = process.env.DEEPSEEK_API_KEY || process.env.GEMINI_API_KEY || process.env.GEMINI_KEY || process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY || "";
+
+  if ((key && key.length >= 8) || (envKey && envKey.length >= 8)) {
     return false; // BYOK users have infinite quota
   }
   return metricsService.getStats().quotaExceeded;

@@ -97,17 +97,20 @@ export class GeminiProvider extends AIProvider {
         }
       }, timeoutMs);
 
+      const onAbort = () => {
+        if (!isSettled) {
+          isSettled = true;
+          clearTimeout(timer);
+          req.destroy();
+          const err = new Error("Gemini request aborted");
+          err.code = "timeout";
+          reject(err);
+        }
+      };
+
       if (opts.signal) {
-        opts.signal.addEventListener("abort", () => {
-          if (!isSettled) {
-            isSettled = true;
-            clearTimeout(timer);
-            req.destroy();
-            const err = new Error("Gemini request aborted");
-            err.code = "timeout";
-            reject(err);
-          }
-        });
+        if (opts.signal.aborted) onAbort();
+        else opts.signal.addEventListener("abort", onAbort, { once: true });
       }
 
       log.debug("Calling Google Gemini API, model:", this.model);

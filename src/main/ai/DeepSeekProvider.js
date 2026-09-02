@@ -80,9 +80,10 @@ export class DeepSeekProvider extends AIProvider {
       }, this.timeoutMs);
     }
 
+    const onAbort = () => controller.abort();
     if (opts.signal) {
       if (opts.signal.aborted) controller.abort();
-      opts.signal.addEventListener("abort", () => controller.abort());
+      else opts.signal.addEventListener("abort", onAbort, { once: true });
     }
 
     try {

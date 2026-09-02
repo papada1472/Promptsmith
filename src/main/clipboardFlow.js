@@ -244,7 +244,7 @@ export function checkActiveElementIsEditable() {
       }
     "`;
 
-    exec(psCommand, (error, stdout) => {
+    exec(psCommand, { timeout: 1500 }, (error, stdout) => {
       if (error) {
         log.error("Focused element check error:", error);
         resolve({ isEditable: false, processId: 0, className: "" });
@@ -292,7 +292,7 @@ export function getActiveProcessId() {
       [Win32]::GetWindowThreadProcessId($hwnd, [ref]$pid);
       $pid;
     "`;
-    exec(psCommand, (error, stdout) => {
+    exec(psCommand, { timeout: 1500 }, (error, stdout) => {
       if (error) {
         resolve(0);
         return;
