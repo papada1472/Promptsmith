@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Refinzi 2.0 — Click & Hold (300ms) Working Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #08090c;
+      --bg-surface: #111318;
+      --bg-card: #16181f;
+      --bg-card-hover: #1d2028;
+      --accent-blue: #3b82f6;
+      --accent-purple: #a855f7;
+      --accent-gold: #ffd700;
+      --accent-gold-glow: rgba(255, 215, 0, 0.4);
+      --accent-green: #10b981;
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(255, 215, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #06070a;
+      background-image: 
+        radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.12), transparent 40%),
+        radial-gradient(circle at 15% 85%, rgba(168, 85, 247, 0.10), transparent 45%),
+        radial-gradient(ellipse 60% 40% at 75% 75%, rgba(255, 215, 0, 0.05), transparent 60%);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* ── Top Bar ── */
+    .top-bar {
+      height: 52px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(17, 19, 24, 0.7);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 10;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-logo .orb-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #3a3a48 0%, #15151e 70%, #08080c 100%);
+      border: 1.5px solid var(--accent-gold);
+      box-shadow: 0 0 10px var(--accent-gold-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+
+    .status-pill .indicator-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+    }
+
+    .control-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      border-color: rgba(59, 130, 246, 0.5);
+      box-shadow: 0 0 14px rgba(59, 130, 246, 0.3);
+    }
+
+    /* ── Desktop Canvas ── */
+    .desktop-canvas {
+      flex: 1;
+      display: flex;
+      position: relative;
+      padding: 24px;
+      gap: 24px;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* ── Left: Windows 11 App / VS Code Mockup ── */
+    .editor-window {
+      flex: 1.1;
+      background: rgba(14, 16, 22, 0.85);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .window-header {
+      height: 38px;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      justify-content: space-between;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .win-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .win-dot.red { background: #ff5f56; }
+    .win-dot.yellow { background: #ffbd2e; }
+    .win-dot.green { background: #27c93f; }
+
+    .window-title {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .editor-body {
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #94a3b8;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .editor-body .line { display: flex; gap: 16px; }
+    .editor-body .line-no { color: #475569; user-select: none; width: 24px; text-align: right; }
+    .code-comment { color: #64748b; }
+    .code-keyword { color: #c084fc; }
+    .code-string { color: #38bdf8; }
+
+    .selection-highlight {
+      background: rgba(59, 130, 246, 0.35);
+      border-radius: 3px;
+      color: #ffffff;
+      padding: 2px 4px;
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+      border: 1px dashed rgba(59, 130, 246, 0.6);
+      position: relative;
+    }
+
+    .selection-badge {
+      position: absolute;
+      top: -24px;
+      right: 0;
+      background: #3b82f6;
+      color: #fff;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    /* ── Right Stage: Ambient Floating Orb & Output Blueprint ── */
+    .ambient-stage {
+      flex: 1.4;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ── Orb Floating Dock Area ── */
+    .orb-dock {
+      position: absolute;
+      top: 20px;
+      right: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 50;
+    }
+
+    .orb-wrapper {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* 28px Orb element matching Refinzi */
+    .orb-element {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #2a2a35 0%, #15151e 60%, #08080c 100%);
+      border: 1.5px solid rgba(255, 215, 0, 0.45);
+      box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.8), 
+        0 0 18px rgba(255, 215, 0, 0.3), 
+        inset 0 1.5px 2px rgba(255, 255, 255, 0.4),
+        inset 0 -2px 5px rgba(255, 215, 0, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 5;
+    }
+
+    .orb-element::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.28) 0%, rgba(255, 170, 0, 0.1) 40%, transparent 70%);
+      pointer-events: none;
+      animation: ambient-breathe 3s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes ambient-breathe {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.15); opacity: 1; }
+    }
+
+    .orb-element.hovered {
+      transform: scale(1.15);
+      border-color: rgba(255, 235, 100, 0.9);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8), 0 0 26px rgba(255, 215, 0, 0.6);
+    }
+
+    .orb-element.down {
+      transform: scale(0.92);
+      border-color: #ffd700;
+    }
+
+    .orb-element.expert-active {
+      transform: scale(1.22);
+      border-color: #ff9100;
+      box-shadow: 0 0 30px rgba(255, 145, 0, 0.8), inset 0 0 10px rgba(255, 215, 0, 0.8);
+      animation: expert-pulse 1.2s infinite alternate;
+    }
+
+    @keyframes expert-pulse {
+      from { box-shadow: 0 0 25px rgba(255, 145, 0, 0.7); }
+      to { box-shadow: 0 0 40px rgba(255, 215, 0, 0.95); }
+    }
+
+    /* Hold Progress Ring */
+    .hold-ring {
+      position: absolute;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0.85);
+      transition: opacity 0.12s ease, transform 0.12s ease;
+      z-index: 6;
+    }
+
+    .hold-ring.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .hold-ring::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      padding: 3px;
+      background: conic-gradient(from 0deg, #fff275 0%, #ffd700 45%, #ff9100 85%, transparent 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: hold-spin 0.3s linear infinite;
+      filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.9));
+    }
+
+    @keyframes hold-spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Icon SVGs inside Orb */
+    .icon-lightning, .icon-brain {
+      transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .icon-lightning { opacity: 1; transform: scale(1); }
+    .icon-brain { opacity: 0; transform: scale(0.5); position: absolute; }
+
+    .orb-element.show-brain .icon-lightning {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+    .orb-element.show-brain .icon-brain {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Orb Status Bubble */
+    .orb-status-bubble {
+      margin-top: 10px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(17, 19, 24, 0.9);
+      border: 1px solid var(--border-subtle);
+      font-size: 11px;
+      color: var(--text-secondary);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
+      white-space: nowrap;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .orb-status-bubble.highlight {
+      border-color: rgba(255, 215, 0, 0.4);
+      color: #ffd700;
+      background: rgba(26, 22, 14, 0.95);
+      box-shadow: 0 0 16px rgba(255, 215, 0, 0.2);
+    }
+
+    /* ── Live Telemetry HUD ── */
+    .telemetry-hud {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(14, 16, 22, 0.85);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      z-index: 20;
+    }
+
+    .hud-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .hud-label { color: var(--text-muted); }
+    .hud-value { color: #38bdf8; font-weight: 600; }
+    .hud-value.gold { color: #ffd700; }
+    .hud-value.green { color: #10b981; }
+
+    /* ── 5-Block Architectural Blueprint Window ── */
+    .blueprint-window {
+      background: rgba(17, 19, 24, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(59, 130, 246, 0.15);
+      backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      opacity: 0;
+      transform: translateY(20px) scale(0.97);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    .blueprint-window.revealed {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .blueprint-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .blueprint-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-5block {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 145, 0, 0.2));
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      color: #ffd700;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-provider {
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .badge-latency {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    /* Tabs */
+    .blueprint-tabs {
+      display: flex;
+      background: rgba(0, 0, 0, 0.25);
+      border-bottom: 1px solid var(--border-subtle);
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .tab-btn.active {
+      color: #fff;
+      border-bottom-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.08);
+      font-weight: 600;
+    }
+
+    .blueprint-content {
+      padding: 18px;
+      flex: 1;
+      overflow-y: auto;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .spec-block {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .spec-block-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #94a3b8;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .token-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .token-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-subtle);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+    }
+
+    .token-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    .prompt-box {
+      background: #030712;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #38bdf8;
+      line-height: 1.6;
+      position: relative;
+    }
+
+    .copy-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-button:hover { background: rgba(255, 255, 255, 0.2); }
+
+    /* Animated Virtual Cursor */
+    .virtual-cursor {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
+      z-index: 1000;
+      transition: left 0.8s cubic-bezier(0.25, 1, 0.5, 1), top 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.15s ease;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8));
+    }
+
+    .virtual-cursor svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .cursor-ripple {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #ffd700;
+      pointer-events: none;
+      top: -10px;
+      left: -10px;
+      opacity: 0;
+      transform: scale(0.3);
+      transition: all 0.4s ease-out;
+    }
+
+    .cursor-ripple.expand {
+      opacity: 1;
+      transform: scale(1.6);
+      opacity: 0;
+    }
+
+    /* Toast Notification */
+    .action-toast {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(16, 185, 129, 0.95);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 200;
+    }
+
+    .action-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="brand-logo">
+      <div class="orb-icon">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="#ffd700">
+          <path d="M13 2L3.5 13.5H11.5L10.5 22L20.5 10.5H12.5L13 2Z"/>
+        </svg>
+      </div>
+      <span>Refinzi 2.0</span>
+      <span style="color: var(--text-muted); font-weight: 400; margin-left: 4px;">— Ambient Windows Prompt Architecture</span>
+    </div>
+
+    <div class="status-pill">
+      <div class="indicator-dot"></div>
+      <span id="engineStatusText">ENGINE READY: BYOK (DEEPSEEK / CLAUDE 3.7)</span>
+    </div>
+
+    <div class="control-buttons">
+      <button class="action-btn" id="replayDemoBtn" onclick="runAutomatedDemo()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+        Play Demo
+      </button>
+      <button class="action-btn primary" id="triggerHoldBtn" onclick="simulateClickAndHold()">
+        <span>⚡ Trigger Hold (300ms)</span>
+      </button>
+      <button class="action-btn" id="recordVideoBtn" onclick="recordAndExportVideo()" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #f87171;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
+        <span>Record & Save Video</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Desktop Canvas -->
+  <div class="desktop-canvas" id="canvas">
+
+    <!-- Left: Windows App / IDE Mockup -->
+    <div class="editor-window">
+      <div class="window-header">
+        <div class="window-controls">
+          <div class="win-dot red"></div>
+          <div class="win-dot yellow"></div>
+          <div class="win-dot green"></div>
+        </div>
+        <div class="window-title">VS Code — landing-page-prompt.txt</div>
+        <div style="width: 40px;"></div>
+      </div>
+      <div class="editor-body">
+        <div class="line"><span class="line-no">1</span><span class="code-comment">// Highlighted developer request to be refined</span></div>
+        <div class="line"><span class="line-no">2</span><span></span></div>
+        <div class="line"><span class="line-no">3</span><span class="selection-highlight" id="selectionText">
+          make a high-converting dark saas landing page for ai prompt tool with floating orb and 5-block blueprint breakdown
+          <div class="selection-badge">Selected for Refinzi</div>
+        </span></div>
+        <div class="line"><span class="line-no">4</span><span></span></div>
+        <div class="line"><span class="line-no">5</span><span class="code-comment">// Short-cut: Click Orb for 1-Click Fast Refine</span></div>
+        <div class="line"><span class="line-no">6</span><span class="code-comment">// Hold Orb for 300ms for 5-Block Architectural Blueprint ✨</span></div>
+      </div>
+    </div>
+
+    <!-- Right: Ambient Floating Orb Dock & Blueprint Window -->
+    <div class="ambient-stage">
+
+      <!-- Orb Dock -->
+      <div class="orb-dock" id="orbDock">
+        <div class="orb-wrapper" id="orbWrapper">
+          <!-- Hold Progress Ring -->
+          <div class="hold-ring" id="holdRing"></div>
+
+          <!-- 28px Visual Orb -->
+          <div class="orb-element" id="orbBtn">
+            <!-- Lightning SVG -->
+            <svg class="icon-lightning" id="lightningIcon" viewBox="0 0 24 24" width="16" height="16" fill="none">
+              <path d="M13 2L3.5 13.5H11.5L10.5 22L20.5 10.5H12.5L13 2Z" fill="url(#orb-lightning-grad)" stroke="rgba(255, 255, 255, 0.5)" stroke-width="0.8" />
+              <defs>
+                <linearGradient id="orb-lightning-grad" x1="3.5" y1="2" x2="20.5" y2="22" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#FFFDF0" />
+                  <stop offset="0.3" stop-color="#FFE066" />
+                  <stop offset="0.7" stop-color="#FFD700" />
+                  <stop offset="1" stop-color="#FF9500" />
+                </linearGradient>
+              </defs>
+            </svg>
+
+            <!-- Brain SVG (morphs in upon 300ms hold) -->
+            <svg class="icon-brain" id="brainIcon" viewBox="0 0 24 24" width="18" height="18" fill="none">
+              <path d="M9.5 4C8.12 4 7 5.12 7 6.5C7 6.78 7.05 7.05 7.14 7.3C6.46 7.64 6 8.35 6 9.17C6 9.77 6.25 10.31 6.66 10.7C6.26 11.19 6 11.82 6 12.5C6 13.62 6.74 14.57 7.76 14.88C7.6 15.34 7.5 15.84 7.5 16.36C7.5 17.82 8.68 19 10.14 19C10.74 19 11.29 18.8 11.75 18.45C11.83 18.4 11.91 18.35 12 18.3C12.09 18.35 12.17 18.4 12.25 18.45C12.71 18.8 13.26 19 13.86 19C15.32 19 16.5 17.82 16.5 16.36C16.5 15.84 16.4 15.34 16.24 14.88C17.26 14.57 18 13.62 18 12.5C18 11.82 17.74 11.19 17.34 10.7C17.75 10.31 18 9.77 18 9.17C18 8.35 17.54 7.64 16.86 7.3C16.95 7.05 17 6.78 17 6.5C17 5.12 15.88 4 14.5 4C13.66 4 12.92 4.42 12.47 5.06C12.32 5.02 12.16 5 12 5C11.84 5 11.68 5.02 11.53 5.06C11.08 4.42 10.34 4 9.5 4Z" stroke="#ffd700" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="rgba(255, 215, 0, 0.3)" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="orb-status-bubble" id="orbStatusBubble">
+          <span id="bubbleText">Hold 300ms for Blueprint</span>
+        </div>
+      </div>
+
+      <!-- 5-Block Architectural Blueprint Window -->
+      <div class="blueprint-window" id="blueprintWindow">
+        <div class="blueprint-header">
+          <div class="blueprint-badge-row">
+            <span class="badge-5block">🧠 5-BLOCK ARCHITECTURAL BLUEPRINT</span>
+            <span class="badge-provider">DeepSeek-V3</span>
+            <span class="badge-latency">⚡ 1.84s Synthesis</span>
+          </div>
+          <button class="action-btn" onclick="copyBlueprintPrompt()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            Copy Prompt Pack
+          </button>
+        </div>
+
+        <div class="blueprint-tabs">
+          <button class="tab-btn active" onclick="selectTab(0)">🏛️ 1. Architecture & Hierarchy</button>
+          <button class="tab-btn" onclick="selectTab(1)">🎨 2. Tokens & HSL</button>
+          <button class="tab-btn" onclick="selectTab(2)">🎯 3. Copy Hooks</button>
+          <button class="tab-btn" onclick="selectTab(3)">🌊 4. Motion Curves</button>
+          <button class="tab-btn" onclick="selectTab(4)">⚡ 5. Implementation Pack</button>
+        </div>
+
+        <div class="blueprint-content" id="tabContent">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Live Telemetry HUD -->
+    <div class="telemetry-hud">
+      <div class="hud-row">
+        <span class="hud-label">INTERACTION MODE:</span>
+        <span class="hud-value gold" id="hudMode">IDLE</span>
+      </div>
+      <div class="hud-row">
+        <span class="hud-label">HOLD DURATION:</span>
+        <span class="hud-value" id="hudDuration">0 ms</span>
+      </div>
+      <div class="hud-row">
+        <span class="hud-label">THRESHOLD:</span>
+        <span class="hud-value">300 ms (Hold ➔ Blueprint)</span>
+      </div>
+      <div class="hud-row">
+        <span class="hud-label">OUTPUT STATUS:</span>
+        <span class="hud-value green" id="hudStatus">STANDBY</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Animated Virtual Cursor for Demonstration -->
+  <div class="virtual-cursor" id="cursor">
+    <div class="cursor-ripple" id="cursorRipple"></div>
+    <svg viewBox="0 0 24 24" fill="#ffffff" stroke="#000000" stroke-width="1.5">
+      <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/>
+    </svg>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="action-toast" id="toast">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    <span id="toastMsg">5-Block Blueprint Copied to Clipboard!</span>
+  </div>
+
+  <script>
+    const orbWrapper = document.getElementById('orbWrapper');
+    const orbBtn = document.getElementById('orbBtn');
+    const holdRing = document.getElementById('holdRing');
+    const orbStatusBubble = document.getElementById('orbStatusBubble');
+    const bubbleText = document.getElementById('bubbleText');
+    const blueprintWindow = document.getElementById('blueprintWindow');
+    const tabContent = document.getElementById('tabContent');
+    const hudMode = document.getElementById('hudMode');
+    const hudDuration = document.getElementById('hudDuration');
+    const hudStatus = document.getElementById('hudStatus');
+    const virtualCursor = document.getElementById('cursor');
+    const cursorRipple = document.getElementById('cursorRipple');
+    const toast = document.getElementById('toast');
+
+    let isHolding = false;
+    let holdStartTime = 0;
+    let holdInterval = null;
+    let holdTimer = null;
+    const HOLD_THRESHOLD = 300;
+
+    const tabsData = [
+      {
+        title: "Block 1: Structure & Semantic Layout",
+        html: `
+          <div class="spec-block">
+            <div class="spec-block-title">🏛️ COMPONENT TREE & HIERARCHY</div>
+            <div style="color: #cbd5e1; font-size: 12px; line-height: 1.8;">
+              • <strong>Header / Navigation:</strong> Fixed 56px obsidian blur with live latency ticker & GitHub badge.<br>
+              • <strong>Hero Section:</strong> Asymmetric split with 3D Ambient Orb interactive widget preview.<br>
+              • <strong>Interactive 5-Block Playground:</strong> Live tabs with real-time prompt transformation.<br>
+              • <strong>Comparison Matrix:</strong> Traditional manual typing vs. 1-click Refinzi (Sub-2s).<br>
+              • <strong>BYOK Security Section:</strong> Local DPAPI AES-256 zero-log architecture diagram.
+            </div>
+          </div>
+        `
+      },
+      {
+        title: "Block 2: Design Tokens & HSL Palette",
+        html: `
+          <div class="spec-block">
+            <div class="spec-block-title">🎨 CURATED DESIGN TOKENS</div>
+            <div class="token-pills">
+              <div class="token-pill"><div class="token-color" style="background: #08090c;"></div>--bg-obsidian: #08090c</div>
+              <div class="token-pill"><div class="token-color" style="background: #111318;"></div>--bg-surface: #111318</div>
+              <div class="token-pill"><div class="token-color" style="background: #3b82f6;"></div>--accent-electric: #3b82f6</div>
+              <div class="token-pill"><div class="token-color" style="background: #a855f7;"></div>--accent-neon-purple: #a855f7</div>
+              <div class="token-pill"><div class="token-color" style="background: #ffd700;"></div>--accent-gold-orb: #ffd700</div>
+              <div class="token-pill"><div class="token-color" style="background: #10b981;"></div>--accent-emerald: #10b981</div>
+            </div>
+            <div style="margin-top: 12px; font-size: 12px; color: #94a3b8;">
+              Typography: <code>Inter Display (Headings)</code> & <code>JetBrains Mono (Code/Telemetry)</code>
+            </div>
+          </div>
+        `
+      },
+      {
+        title: "Block 3: High-Converting Copy Hooks",
+        html: `
+          <div class="spec-block">
+            <div class="spec-block-title">🎯 COPY HOOKS & HEADLINES</div>
+            <div style="color: #cbd5e1; font-size: 12px; line-height: 1.8;">
+              • <strong>Hero Headline:</strong> "Turn rough thoughts into production blueprints in 2 seconds."<br>
+              • <strong>Sub-Hook:</strong> "Ambient Windows desktop layer. 1-Click to refine. Hold 300ms for complete architectural specs."<br>
+              • <strong>Call to Action:</strong> "Download Refinzi 2.0 (Windows Standalone) — Free Forever with BYOK"
+            </div>
+          </div>
+        `
+      },
+      {
+        title: "Block 4: Motion & Bézier Curves",
+        html: `
+          <div class="spec-block">
+            <div class="spec-block-title">🌊 MOTION CHOREOGRAPHY</div>
+            <div style="color: #cbd5e1; font-size: 12px; line-height: 1.8;">
+              • <strong>Orb Hold Ring Spin:</strong> <code>animation: hold-spin 0.3s linear infinite</code><br>
+              • <strong>Brain Morph Transition:</strong> <code>cubic-bezier(0.34, 1.56, 0.64, 1)</code> at 300ms<br>
+              • <strong>Blueprint Card Entry:</strong> <code>translateY(0) scale(1) with cubic-bezier(0.16, 1, 0.3, 1)</code>
+            </div>
+          </div>
+        `
+      },
+      {
+        title: "Block 5: Implementation Prompt Pack",
+        html: `
+          <div class="prompt-box">
+            <button class="copy-button" onclick="copyBlueprintPrompt()">Copy</button>
+            /* REFINZI 2.0 SPECIFICATION PACK FOR CURSOR / CLAUDE CODE */<br><br>
+            Create an ambient desktop landing page using Tailwind CSS and React 18. Incorporate an interactive glowing Orb with a 300ms hold gesture. Style with obsidian dark background (#08090c), electric blue accents (#3b82f6), and gold rim illumination (#ffd700). Include live telemetry HUD and 5-block specification drawer.
+          </div>
+        `
+      }
+    ];
+
+    function selectTab(index) {
+      document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', i === index);
+      });
+      tabContent.innerHTML = tabsData[index].html;
+    }
+    selectTab(0);
+
+    // Interactive pointer handling on the Orb element
+    orbWrapper.addEventListener('pointerdown', (e) => {
+      startHold();
+    });
+
+    window.addEventListener('pointerup', () => {
+      if (isHolding) endHold();
+    });
+
+    function startHold() {
+      isHolding = true;
+      holdStartTime = Date.now();
+      orbBtn.classList.add('down');
+      holdRing.classList.add('active');
+      hudMode.textContent = "POINTER_DOWN (HOLDING...)";
+      hudMode.className = "hud-value gold";
+      hudStatus.textContent = "CHARGING HOLD TIMER...";
+
+      bubbleText.textContent = "Holding for Blueprint...";
+      orbStatusBubble.classList.add('highlight');
+
+      holdInterval = setInterval(() => {
+        const elapsed = Date.now() - holdStartTime;
+        hudDuration.textContent = `${elapsed} ms`;
+
+        if (elapsed >= HOLD_THRESHOLD && !orbBtn.classList.contains('show-brain')) {
+          // 300ms passed! Trigger expert brain morph!
+          triggerBrainMorph();
+        }
+      }, 16);
+    }
+
+    function triggerBrainMorph() {
+      orbBtn.classList.remove('down');
+      orbBtn.classList.add('expert-active', 'show-brain');
+      hudMode.textContent = "EXPERT_HOLD_SUCCESS (>300ms)";
+      hudMode.className = "hud-value green";
+      bubbleText.textContent = "🧠 Blueprint Engine Activated!";
+    }
+
+    function endHold() {
+      const elapsed = Date.now() - holdStartTime;
+      clearInterval(holdInterval);
+      isHolding = false;
+      holdRing.classList.remove('active');
+      orbBtn.classList.remove('down');
+
+      if (elapsed >= HOLD_THRESHOLD) {
+        // Hold succeeded: reveal blueprint
+        hudStatus.textContent = "BLUEPRINT GENERATED";
+        bubbleText.textContent = "✨ 5-Block Blueprint Ready";
+        blueprintWindow.classList.add('revealed');
+        showToast("🧠 5-Block Architectural Blueprint synthesized in 1.84s!");
+      } else {
+        // Fast click/tap
+        orbBtn.classList.remove('expert-active', 'show-brain');
+        hudMode.textContent = "QUICK_TAP (<300ms)";
+        hudMode.className = "hud-value";
+        hudStatus.textContent = "1-CLICK REFINED";
+        bubbleText.textContent = "⚡ Fast Refined in-place";
+        showToast("⚡ Quick 1-Click in-place prompt refinement applied!");
+      }
+    }
+
+    function simulateClickAndHold() {
+      startHold();
+      setTimeout(() => {
+        endHold();
+      }, 420);
+    }
+
+    function showToast(msg) {
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    function copyBlueprintPrompt() {
+      showToast("📋 Copied 5-Block Implementation Pack to Clipboard!");
+    }
+
+    // ── Automated Demo Sequence for Recording ──
+    async function runAutomatedDemo() {
+      blueprintWindow.classList.remove('revealed');
+      orbBtn.classList.remove('expert-active', 'show-brain');
+      hudMode.textContent = "DEMO RUNNING";
+      hudDuration.textContent = "0 ms";
+      hudStatus.textContent = "INITIALIZING";
+
+      // 1. Move cursor to selection text
+      await moveCursor(280, 200, 1000);
+      await sleep(600);
+
+      // 2. Move cursor to Orb
+      const orbRect = orbBtn.getBoundingClientRect();
+      const targetX = orbRect.left + orbRect.width / 2;
+      const targetY = orbRect.top + orbRect.height / 2;
+
+      await moveCursor(targetX, targetY, 1200);
+      orbBtn.classList.add('hovered');
+      bubbleText.textContent = "Hold 300ms for Blueprint";
+      await sleep(500);
+
+      // 3. Pointer Down & Hold
+      pulseRipple(targetX, targetY);
+      startHold();
+
+      // Hold for 380ms
+      await sleep(380);
+
+      // 4. Release Hold
+      endHold();
+      orbBtn.classList.remove('hovered');
+      await sleep(800);
+
+      // 5. Cursor navigates tabs in Blueprint Window
+      const tabs = document.querySelectorAll('.tab-btn');
+      if (tabs.length >= 3) {
+        const tab1Rect = tabs[1].getBoundingClientRect();
+        await moveCursor(tab1Rect.left + 40, tab1Rect.top + 15, 800);
+        pulseRipple(tab1Rect.left + 40, tab1Rect.top + 15);
+        selectTab(1);
+        await sleep(900);
+
+        const tab2Rect = tabs[2].getBoundingClientRect();
+        await moveCursor(tab2Rect.left + 40, tab2Rect.top + 15, 800);
+        pulseRipple(tab2Rect.left + 40, tab2Rect.top + 15);
+        selectTab(2);
+        await sleep(900);
+
+        const tab4Rect = tabs[4].getBoundingClientRect();
+        await moveCursor(tab4Rect.left + 50, tab4Rect.top + 15, 800);
+        pulseRipple(tab4Rect.left + 50, tab4Rect.top + 15);
+        selectTab(4);
+        await sleep(1000);
+      }
+
+      // 6. Click Copy Prompt Pack
+      const copyBtn = document.querySelector('.copy-button');
+      if (copyBtn) {
+        const btnRect = copyBtn.getBoundingClientRect();
+        await moveCursor(btnRect.left + 20, btnRect.top + 12, 700);
+        pulseRipple(btnRect.left + 20, btnRect.top + 12);
+        copyBlueprintPrompt();
+      }
+
+      await sleep(1500);
+    }
+
+    function moveCursor(x, y, duration = 800) {
+      return new Promise(resolve => {
+        virtualCursor.style.transition = `left ${duration}ms cubic-bezier(0.25, 1, 0.5, 1), top ${duration}ms cubic-bezier(0.25, 1, 0.5, 1)`;
+        virtualCursor.style.left = `${x}px`;
+        virtualCursor.style.top = `${y}px`;
+        setTimeout(resolve, duration);
+      });
+    }
+
+    function pulseRipple(x, y) {
+      cursorRipple.classList.remove('expand');
+      void cursorRipple.offsetWidth;
+      cursorRipple.classList.add('expand');
+    }
+
+    function sleep(ms) {
+      return new Promise(r => setTimeout(r, ms));
+    }
+
+    // Record & Export Video using browser MediaRecorder
+    async function recordAndExportVideo() {
+      try {
+        showToast("🎥 Select this tab to begin recording...");
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: { frameRate: 60, displaySurface: "browser" },
+          audio: false
+        });
+        const supportedType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+          ? 'video/webm;codecs=vp9'
+          : 'video/webm';
+        const mediaRecorder = new MediaRecorder(stream, { mimeType: supportedType });
+        const chunks = [];
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) chunks.push(e.data);
+        };
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(chunks, { type: 'video/webm' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'refinzi-click-and-hold-demo.webm';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast("🎉 Video saved: refinzi-click-and-hold-demo.webm!");
+        };
+
+        mediaRecorder.start();
+        showToast("🔴 Recording in progress... Running Refinzi Click & Hold demo!");
+        await sleep(500);
+        await runAutomatedDemo();
+        await sleep(1200);
+        mediaRecorder.stop();
+        stream.getTracks().forEach(track => track.stop());
+      } catch (err) {
+        console.warn('Screen recording cancelled or error:', err);
+        showToast("Recording cancelled or permission not granted.");
+      }
+    }
+
+    // Auto-position cursor at start
+    window.addEventListener('load', () => {
+      virtualCursor.style.left = '100px';
+      virtualCursor.style.top = '100px';
+    });
+  </script>
+</body>
+</html>

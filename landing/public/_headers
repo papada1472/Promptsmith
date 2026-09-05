@@ -7,23 +7,131 @@
   Content-Security-Policy: default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data: blob:; media-src 'self' https: data: blob:; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https: wss:;
   X-XSS-Protection: 1; mode=block
 
+# HTML Documents (Always revalidate entry point to receive updates)
+/
+  Cache-Control: public, max-age=0, must-revalidate
+  Expires: 0
+
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+  Expires: 0
+
+/docs
+  Cache-Control: public, max-age=0, must-revalidate
+  Expires: 0
+
+/docs/*
+  Cache-Control: public, max-age=0, must-revalidate
+  Expires: 0
+
+/privacy
+  Cache-Control: public, max-age=0, must-revalidate
+  Expires: 0
+
+/privacy/*
+  Cache-Control: public, max-age=0, must-revalidate
+  Expires: 0
+
+/terms
+  Cache-Control: public, max-age=0, must-revalidate
+  Expires: 0
+
+/terms/*
+  Cache-Control: public, max-age=0, must-revalidate
+  Expires: 0
+
+# Bundled JS & CSS with hashes (1 year far-future expiration)
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
 
+# Static Images & Branding Assets
 /branding/*
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
 
+# Static App Icons
 /icons/*
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
 
+# Scripts & Styles by extension
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
+
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
+
+# Image Assets by extension
 /*.png
-  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
 
 /*.webp
-  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
+
+/*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
+
+/*.jpeg
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
+
+/*.svg
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
+
+/*.gif
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
 
 /*.ico
-  Cache-Control: public, max-age=604800
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
 
+# Video & Media
 /*.mp4
-  Cache-Control: public, max-age=604800
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
+
+/*.webm
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
+
+# Fonts
+/*.woff
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
+
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
+
+/*.ttf
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
+
+/*.eot
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2037 23:59:59 GMT
+
+# SEO & LLM Discovery text files
+/robots.txt
+  Cache-Control: public, max-age=86400
+  Expires: 86400
+
+/sitemap.xml
+  Cache-Control: public, max-age=86400
+  Expires: 86400
+
+/llms.txt
+  Cache-Control: public, max-age=86400
+  Expires: 86400
+
+/llms-full.txt
+  Cache-Control: public, max-age=86400
+  Expires: 86400

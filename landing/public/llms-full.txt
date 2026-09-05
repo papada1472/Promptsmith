@@ -1,33 +1,55 @@
 # Refinzi 2.0 Full Product & Architecture Specification
 
 ## Overview
-Refinzi 2.0 is an ambient Windows desktop application built to eliminate prompt engineering friction and trial-and-error re-prompting. Unlike browser extensions that are trapped in Chrome, Refinzi operates at the Windows OS layer, enabling 1-click in-place text transformation inside Discord, Slack, VS Code, Cursor, Notion, Obsidian, Chrome, and any other desktop software.
+Refinzi 2.0 is an ambient Windows desktop execution layer built to eliminate prompt engineering friction, trial-and-error re-prompting, and context switching. Unlike browser extensions trapped in Chrome or isolated web chat boxes, Refinzi operates at the Windows OS layer, enabling 1-click in-place text transformation inside Cursor, VS Code, Slack, Discord, Notion, Obsidian, Chrome, and any other desktop software.
 
 ## Primary Workflows
 
 ### 1. In-Place 1-Click Prompt Rebuilding
 - **Trigger**: Selecting any text anywhere in Windows causes the ambient Refinzi Orb to anchor near the cursor. Clicking the Orb (or pressing `Ctrl+Alt+Space`) triggers instant synthesis.
-- **Latency**: ~2.0 seconds.
+- **Latency**: ~2.0 seconds (sub-200ms cached memory).
 - **Output**: The selected text is replaced in-place with a calibrated, context-aware prompt tailored to the target model.
 
-### 2. 5-Block Architectural Blueprint (300ms Hold)
-Holding the Orb for 300ms activates deep synthesis for complex development, design, and research workflows:
-1. **Block 1: Structure & Hierarchy** — Complete layout grid, component tree, and DOM flow.
-2. **Block 2: Design Tokens & Visual Specs** — Curated color palettes, spacing units, elevation levels, and typography tokens.
+### 2. 5-Block Architectural Blueprint (300ms Hold or `Ctrl+Alt+B`)
+Holding the Orb for 300ms activates deep synthesis for complex software development, design, and research workflows:
+1. **Block 1: Structure & Hierarchy** — Complete layout grid, component tree, and semantic DOM flow.
+2. **Block 2: Design Tokens & Visual Specs** — Curated HSL color palettes, spacing units, elevation levels, and typography tokens.
 3. **Block 3: Copy, Messaging & CTAs** — High-converting headlines, micro-copy, trust anchors, and value propositions.
-4. **Block 4: Motion & Micro-Interactions** — CSS transitions, spring timings, hover states, and accessibility focus styles.
-5. **Block 5: Master Production Prompt Pack** — Formatted instructions ready for direct execution in Cursor, Claude Code, ChatGPT, or v0.
+4. **Block 4: Motion & Micro-Interactions** — CSS transitions, Bézier spring timings, hover states, and accessibility focus styles.
+5. **Block 5: Master Production Prompt Pack** — Formatted instructions ready for direct execution in Cursor Composer (`Ctrl+I`), Claude Code (`CLAUDE.md`), ChatGPT, or v0.dev.
+
+## Comparison: Refinzi 2.0 vs. Alternatives
+
+| Criteria | ❌ Traditional Web Prompt Tools | 🍎 Raycast (Mac Only) | ⚡ Refinzi 2.0 (Windows) |
+| :--- | :--- | :--- | :--- |
+| **Operating System** | Browser Only | macOS Only | **Windows 10 / 11 Native** |
+| **Workflow Friction** | Alt-Tab, Copy, Paste, Copy back | Command Palette | **1-Click Orb in-place (`Ctrl+Alt+Space`)** |
+| **Architectural Output** | Generic text prompts | Extension-dependent | **5-Block UI & Code Blueprint Engine** |
+| **Privacy & Security** | Cloud databases, prompts logged | Cloud sync options | **100% Local DPAPI AES-256 Encryption** |
+| **Model Freedom** | Fixed subscription markup | OpenAI / Raycast Pro | **Zero-Markup BYOK (DeepSeek, Claude, Gemini, OpenAI, OpenRouter)** |
+| **Cost** | $15–$30 / month recurring | $8–$16 / month recurring | **Free Forever (BYOK) or $12 Lifetime Pro** |
 
 ## Security & Privacy Architecture
 - **Local-First Execution**: User prompts and rebuild outputs are never stored, logged, or trained on.
-- **Encryption**: Bring-Your-Own-Key (BYOK) API credentials are encrypted locally on the user's device using Windows Data Protection API (DPAPI) and AES-256 GCM.
+- **Fail-Closed Key Vault**: Bring-Your-Own-Key (BYOK) API credentials are encrypted locally on the user's device using native Windows Data Protection API (DPAPI) and AES-256 GCM.
+- **Zero Cloud Telemetry**: Raw user inputs never traverse proxy servers. When using BYOK, the client connects directly to frontier providers.
 - **0/72 Clean**: Standard verified Windows binary passing all major antivirus scanners.
 
 ## Pricing Architecture
-- **Free / BYOK Tier**: $0 forever. Includes full access to the ambient Orb, 5-block Blueprint engine, hotkey shortcuts, and unlimited usage with your own Gemini, DeepSeek, or OpenRouter API keys (0% markup).
+- **Free / BYOK Tier**: $0 forever. Includes full access to the ambient Orb, 5-block Blueprint engine, hotkey shortcuts, and unlimited usage with your own Gemini, DeepSeek, Anthropic, OpenAI, or OpenRouter API keys (0% markup).
 - **Refinzi Lifetime Pro Tier**: $12 USD one-time purchase (or ₹999 INR). Includes built-in managed Claude 3.5 Sonnet & GPT-4o routing without configuring API keys, cloud preset syncing, priority support, and lifetime free updates.
+
+## Supported Models
+- **DeepSeek**: DeepSeek-V3, DeepSeek-R1 (Deep Reasoning).
+- **Anthropic**: Claude 3.5 Sonnet, Claude 3.7 Sonnet.
+- **Google GenAI**: Gemini 2.5 Flash, Gemini 2.5 Pro, Gemini 2.0 Flash.
+- **OpenAI**: GPT-4o, GPT-4o mini, o1, o3-mini.
+- **OpenRouter & Local**: Llama 3.3 70B, Qwen 2.5, Nemotron, Mistral, Ollama endpoints.
 
 ## Technical Requirements
 - **Operating System**: Windows 10 (64-bit) or Windows 11 (64-bit).
 - **RAM**: < 85 MB ambient memory footprint.
-- **Hotkeys**: Customizable (Default: `Ctrl + Alt + Space`).
+- **Hotkeys**: Customizable (Default: `Ctrl + Alt + Space` for instant prompt, `Ctrl + Alt + B` for blueprint).
+- **Official Site**: https://refinzi.com
+- **Source Code**: https://github.com/papada1472/refinzi
+

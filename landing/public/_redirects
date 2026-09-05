@@ -1,1 +1,6 @@
+# Direct edge redirect rules for Windows installer
+/download/windows  https://github.com/papada1472/refinzi/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe 302!
+/download/exe      https://github.com/papada1472/refinzi/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe 302!
+
+# SPA Fallback
 /* /index.html 200

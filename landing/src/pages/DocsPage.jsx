@@ -107,7 +107,7 @@ export function DocsPage({ onNavigateHome, onDownload }) {
                 Refinzi is a native 64-bit Windows utility compatible with <strong>Windows 10 & Windows 11</strong>.
               </p>
               <ol className="list-decimal pl-5 space-y-2 text-xs sm:text-sm text-zinc-300">
-                <li>Download the installer: <a href="https://github.com/papada1472/refinzi/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe" className="text-blue-400 underline font-mono">Refinzi-Setup-v2.0.0.exe</a> (111.8 MB).</li>
+                <li>Download the installer: <a href="/download/windows/?source=docs_quickstart" onClick={(e) => { if (onDownload) { e.preventDefault(); onDownload(); } }} className="text-blue-400 underline font-mono">Refinzi-Setup-v2.0.0.exe</a> (111.8 MB).</li>
                 <li>Double click to install. Refinzi will launch automatically and appear in your Windows System Tray (near the clock).</li>
                 <li>The ambient Orb overlay is now active and ready.</li>
               </ol>

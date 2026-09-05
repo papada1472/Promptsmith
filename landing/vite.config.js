@@ -18,5 +18,21 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    headers: {
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+    },
+  },
+  preview: {
+    headers: {
+      "Cache-Control": "public, max-age=31536000, immutable",
+      "Expires": "Thu, 31 Dec 2037 23:59:59 GMT",
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+    },
+  },
 });
 

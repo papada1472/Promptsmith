@@ -8,12 +8,45 @@
     "body": "Hey everyone! 👋\n\nLike many of you, I spend hours inside ChatGPT, Claude, Cursor, and Midjourney. The biggest bottleneck wasn't the AI model—it was constantly rewriting vague prompts into structured specifications.\n\nSo I built **Refinzi 2.0** ⚡ — an ambient Windows desktop execution layer:\n\n### 💡 How It Works:\n1. **Highlight text anywhere in Windows** (browser, Slack, VS Code, Cursor, Discord).\n2. **1-Click the floating ambient Orb** (or press `Ctrl + Alt + Space`).\n3. In **under 2 seconds**, Refinzi reconstructs your rough idea into a structured, high-yield prompt and pastes/copies it in-place.\n4. **Hold the Orb for 300ms** (`Ctrl + Alt + B`) to generate a complete **5-Block Architectural Blueprint** (Hierarchy, Design Tokens, Copy Hooks, Micro-Interactions, and Cursor Rules prompt packs).\n\n### 🛡️ Privacy & BYOK:\n- **100% Client-Side Encryption**: Keys are encrypted locally using Windows DPAPI / AES-256. Zero cloud logging.\n- **Zero Markup BYOK**: Plug in your DeepSeek, Gemini, Anthropic, OpenAI, or OpenRouter keys directly ($0 cost).\n- **Frontier Lineup**: DeepSeek R1/V3, Claude 3.5 Sonnet, Gemini 2.5/3.7 Flash, GPT-4o.\n\n🔗 **Website & Live Demo:** https://refinzi.com?utm_source=reddit&utm_medium=sideproject  \n📦 **GitHub Repository:** https://github.com/papada1472/refinzi  \n📥 **Windows Download (.exe):** https://github.com/papada1472/refinzi/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe\n\nWould love your candid feedback on the UX and model responsiveness!"
   },
   {
+    "channel": "reddit_cursor",
+    "name": "Reddit — r/cursor",
+    "url": "https://reddit.com/r/cursor/submit",
+    "title": "Built an ambient Windows tool for Cursor: highlight rough code thoughts and turn them into 5-block specs & .cursorrules in 2s (Free BYOK)",
+    "link": "https://refinzi.com?utm_source=reddit&utm_medium=cursor&utm_campaign=launch_v2",
+    "body": "Hey fellow Cursor builders! ⚡\n\nWhenever I write complex UI features in Cursor Composer (Ctrl+I), giving vague 1-line instructions like \"make a modern dashboard\" creates sloppy spaghetti code and wasted iterations.\n\nTo fix this, I created **Refinzi 2.0** — an ambient Windows desktop companion that generates structured specifications before hitting the model:\n\n### 🛠️ The Cursor Workflow:\n1. Type your rough idea anywhere (in your editor, notes, or PR issue).\n2. Highlight it and press `Ctrl + Alt + B` (or hold the floating desktop Orb for 300ms).\n3. In **under 2 seconds**, it automatically injects a **5-Block Architectural Blueprint**:\n   - Section Hierarchy & Semantic DOM\n   - Component Tokens & CSS HSL scales\n   - Edge Cases & UX States (Hover/Loading/Error)\n   - Motion dynamics (Bézier curves)\n   - Tailored Cursor Composer instruction pack\n4. Hit Enter in Cursor — your first generation is 10x cleaner.\n\n### 🛡️ Why it's dev-friendly:\n- **Zero cloud telemetry & local DPAPI AES-256 encryption**: Your code thoughts and API keys never touch our servers.\n- **BYOK with zero markup**: DeepSeek R1/V3, Claude 3.5 Sonnet, Gemini 2.5/3.7, GPT-4o.\n- **100% Free & Open Source**: https://github.com/papada1472/refinzi\n\nCheck out the live interactive playground: https://refinzi.com?utm_source=reddit&utm_medium=cursor\nDirect setup: https://github.com/papada1472/refinzi/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe\n\nWhat prompt patterns or frameworks would you like added to the blueprint generator?"
+  },
+  {
+    "channel": "reddit_higgsfield",
+    "name": "Reddit — r/higgsfield (and r/HiggsfieldAI / r/aivideo)",
+    "url": "https://reddit.com/r/higgsfield/submit",
+    "title": "I built an ambient Windows Orb that turns 1-line ideas into cinematic camera physics & motion prompts in 2s (Free BYOK)",
+    "link": "https://refinzi.com?utm_source=reddit&utm_medium=higgsfield&utm_campaign=launch_v2",
+    "body": "Hey AI video & Higgsfield creators! 🎬\n\nGetting high-fidelity video generation out of Higgsfield, Runway, or Midjourney usually means typing 5 lines of technical camera jargon (lens mm, volumetric lighting, 3D orbit vectors, depth of field, motion velocity) every single time.\n\nI built **Refinzi 2.0** — an ambient Windows desktop companion that generates calibrated motion physics & camera prompts in 2 seconds:\n\n### 🎥 How It Works for Video AI:\n1. Type a 1-line thought anywhere on your screen (e.g. *\"neon noir alleyway with drifting cybercar\"*).\n2. Highlight it and click the floating desktop Orb (or press `Ctrl + Alt + Space`).\n3. In **under 2 seconds**, Refinzi injects full cinematic specifications:\n   - **Camera Choreography**: 3D orbital crane moves, dynamic dolly-in, anamorphic focal lengths.\n   - **Volumetric Lighting & Atmosphere**: Rim lighting, ray-traced reflections, particle mist.\n   - **Motion Dynamics & Physics**: Speed ramping, physics simulation, cinematic pacing.\n4. Paste directly into Higgsfield or Midjourney without context switching.\n\n### 🛡️ 100% Client-Side & Free:\n- **Zero cloud prompt logging**: Runs on Windows with DPAPI AES-256 local key encryption.\n- **Free BYOK**: Plug in your DeepSeek, Gemini, Claude, or OpenAI keys with 0% markup.\n- **Open Source**: https://github.com/papada1472/refinzi\n\nLive interactive demo: https://refinzi.com?utm_source=reddit&utm_medium=higgsfield  \nWindows Installer (.exe): https://github.com/papada1472/refinzi/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe\n\nWould love your feedback on our motion dynamics prompt engine!"
+  },
+  {
+    "channel": "reddit_localllama",
+    "name": "Reddit — r/LocalLLaMA",
+    "url": "https://reddit.com/r/LocalLLaMA/submit",
+    "title": "Refinzi: Local-first ambient Windows execution layer with Windows DPAPI encryption & BYOK multi-model routing",
+    "link": "https://refinzi.com?utm_source=reddit&utm_medium=localllama&utm_campaign=launch_v2",
+    "body": "Hi r/LocalLLaMA! 🦙\n\nFor folks on Windows looking for a native, privacy-first desktop utility (like Raycast for AI prompts) without telemetry or cloud middlemen:\n\nI open-sourced **Refinzi 2.0** — a lightweight ambient execution layer.\n\n### 🔒 Privacy & Architecture Highlights:\n- **Zero Server Middlemen**: Requests go directly from your local machine to the model provider APIs. No proxy servers intercepting prompts.\n- **Windows DPAPI (AES-256) Key Vault**: API keys are encrypted at the OS level using native Windows DPAPI.\n- **Sub-200ms Memory Cache**: Instant recall of recent transformations.\n- **BYOK Multi-Provider Engine**: Supports DeepSeek V3/R1, Anthropic Claude, OpenAI, Google Gemini, and OpenRouter (allowing connection to Llama 3.3, Qwen 2.5, Nemotron, or custom local endpoints).\n\n### ⚡ Ambient OS Integration:\n- In-place selection capture via native Windows hooks.\n- 1-click Orb or `Ctrl+Alt+Space` for immediate prompt re-engineering.\n- 300ms hold (`Ctrl+Alt+B`) for full 5-block architectural specs.\n\nSource code: https://github.com/papada1472/refinzi\nDocumentation & Web Demo: https://refinzi.com?utm_source=reddit&utm_medium=localllama\n\nLooking forward to hearing thoughts on our architecture and native hook implementation!"
+  },
+  {
     "channel": "hackernews_showhn",
     "name": "Hacker News — Show HN",
     "url": "https://news.ycombinator.com/submit",
     "title": "Show HN: Refinzi – Ambient Windows execution layer for AI prompt engineering (BYOK, local encryption)",
     "link": "https://refinzi.com?utm_source=hackernews&utm_medium=showhn&utm_campaign=launch_v2",
     "body": "Hi HN,\n\nI built Refinzi (https://refinzi.com), an ambient Windows companion designed to eliminate prompt iteration latency.\n\nInstead of navigating to a web UI, you highlight any text across Windows and click the floating Orb (or hit Ctrl+Alt+Space). Refinzi analyzes context, applies deterministic prompt engineering principles (or 5-block architectural specs on long-press), and inserts the calibrated prompt in-place.\n\nKey Architectural Decisions:\n- Local-first security: Zero telemetry, API keys encrypted with Windows DPAPI (AES-256).\n- Multi-provider adapter: Direct integration with Google GenAI, DeepSeek, Anthropic, OpenAI, and OpenRouter.\n- Built with Electron (ES modules), React, and native OS automation hooks.\n\nSource: https://github.com/papada1472/refinzi\nDirect Setup: https://github.com/papada1472/refinzi/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe\n\nLooking forward to your questions and feedback!"
+  },
+  {
+    "channel": "product_hunt",
+    "name": "Product Hunt Launch Kit",
+    "url": "https://www.producthunt.com/posts/new",
+    "title": "Refinzi 2.0 — Ambient AI prompt & architectural blueprint engine for Windows",
+    "tagline": "Rebuild rough prompts into production specs in 2 seconds. Free BYOK.",
+    "maker_comment": "Hey Product Hunt community! 🚀\n\nI'm Rahul, creator of Refinzi.\n\nWe all know the pain: You have a vague idea for a feature or UI. You type 1 line into Claude or ChatGPT. The output is mediocre. You spend the next 5 minutes typing constraints, design tokens, and edge cases.\n\nI built **Refinzi 2.0** to eliminate that friction completely.\n\nRefinzi is an ambient Windows companion (sitting in your system tray or as an ultra-minimal floating Orb):\n✨ Highlight any text anywhere in Windows\n✨ 1-Click the Orb (or press Ctrl+Alt+Space)\n✨ In under 2 seconds, your prompt is rebuilt into a production-grade prompt or 5-block architectural blueprint.\n✨ 100% private: All API keys encrypted locally via Windows DPAPI (AES-256). Zero cloud prompt logs. Free BYOK forever.\n\nWould love to hear what you think! Try it out and let me know your favorite models!",
+    "link": "https://refinzi.com?utm_source=producthunt&utm_campaign=launch_v2"
   },
   {
     "channel": "twitter_thread",
@@ -27,5 +60,17 @@
       "🧠 Powered by DeepSeek R1, Claude 3.5 Sonnet, Gemini 2.5/3.7 Flash, & GPT-4o.\n🛡️ 100% Client-Side. API keys encrypted locally via Windows DPAPI. Zero server logging.",
       "🚀 Open source & free with your own API keys:\n🌐 Website: https://refinzi.com\n📦 GitHub: https://github.com/papada1472/refinzi\n\nStar the repo on GitHub ⭐ and let me know your thoughts!"
     ]
+  },
+  {
+    "channel": "creator_dm",
+    "name": "AI Influencer / Dev Creator Direct Outreach (X / LinkedIn / Email)",
+    "title": "Direct Message to AI & Dev Creators (Personalized Hook)",
+    "body": "Hey [Name]! Loved your recent breakdown on [Topic/Cursor/Claude].\n\nQuick question: Have you noticed how much time developers lose Alt-Tabbing and rewriting 1-line prompts into structured specs?\n\nI built an ambient Windows desktop companion called Refinzi (refinzi.com) that solves this. You highlight any text in Cursor or VS Code, click a floating ambient Orb (or hit Ctrl+Alt+Space), and it injects a 5-block architectural spec in under 2 seconds.\n\nIt's completely free & open source with BYOK (DeepSeek R1, Claude 3.5, Gemini 2.5) and local DPAPI encryption.\n\nHere's a 20-second demo: https://refinzi.com/refinzi-demo.mp4\n\nI'd love to give you a complimentary lifetime license / sponsor your next build if you'd find it genuinely useful for your daily workflow!"
+  },
+  {
+    "channel": "awesome_lists_pr",
+    "name": "Curated GitHub Awesome-Lists PR Submissions",
+    "title": "PR Entries for Awesome Lists",
+    "body": "### Add to: github.com/f/awesome-chatgpt-prompts or github.com/steven2358/awesome-generative-ai\n- [Refinzi](https://refinzi.com) - Ambient Windows desktop execution layer that transforms rough prompts into 5-block architectural blueprints and structured prompts in 2 seconds in-place (Free BYOK, Windows DPAPI encryption). [GitHub](https://github.com/papada1472/refinzi)"
   }
 ]

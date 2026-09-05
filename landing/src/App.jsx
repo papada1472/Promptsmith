@@ -52,7 +52,7 @@ import { FloatingContactWidget } from "./components/FloatingContactWidget.jsx";
 import { RefinziComparison } from "./components/RefinziComparison.jsx";
 import { ThemeToggle } from "./components/ThemeToggle.jsx";
 import { CookieBanner } from "./components/CookieBanner.jsx";
-import { initAnalytics, trackEvent } from "./utils/analytics.js";
+import { initAnalytics, trackEvent, trackFileDownload } from "./utils/analytics.js";
 import { initPerformanceMonitoring } from "./utils/performance.js";
 import {
   SUPPORTED_CURRENCIES,
@@ -1913,14 +1913,30 @@ export default function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const DOWNLOAD_URL = "https://github.com/papada1472/refinzi/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe";
+  const GITHUB_DOWNLOAD_URL = "https://github.com/papada1472/refinzi/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe";
+  const EDGE_DOWNLOAD_ROUTE = "/download/windows/";
+  const SETUP_FILE_NAME = "Refinzi-Setup-v2.0.0.exe";
 
   const handleTriggerDownload = (source = "unknown") => {
     setIsDownloadToastOpen(true);
+
+    // Track standard GA4 file_download event client-side
+    trackFileDownload({
+      fileName: SETUP_FILE_NAME,
+      fileExtension: "exe",
+      linkUrl: GITHUB_DOWNLOAD_URL,
+      source,
+      linkText: "Download Free (.exe)",
+    });
+
+    // Retain existing event for continuity
     trackEvent("download_initiated", { platform: "windows", source, os: osType });
+
+    // Download via Edge Redirector route (allows Cloudflare Edge Worker to log server-side telemetry & 302 redirect)
+    const downloadEndpoint = `${EDGE_DOWNLOAD_ROUTE}?source=${encodeURIComponent(source)}`;
     const link = document.createElement("a");
-    link.href = DOWNLOAD_URL;
-    link.setAttribute("download", "Refinzi-Setup-v2.0.0.exe");
+    link.href = downloadEndpoint;
+    link.setAttribute("download", SETUP_FILE_NAME);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

@@ -1,0 +1,21 @@
+name = "refinzi-download-redirector"
+main = "worker.js"
+compatibility_date = "2024-09-01"
+
+# Route binding for your custom domain refinzi.com
+# Attach this route in Cloudflare Dashboard: refinzi.com/download/*
+# routes = [
+#   { pattern = "refinzi.com/download/windows*", zone_name = "refinzi.com" },
+#   { pattern = "refinzi.com/download/exe*", zone_name = "refinzi.com" }
+# ]
+
+[vars]
+# Google Analytics 4 Measurement ID (e.g. G-XXXXXXXXXX)
+GA_MEASUREMENT_ID = ""
+
+# Google Analytics 4 Measurement Protocol API Secret
+# Generated at: GA4 Admin > Data Streams > Web > Measurement Protocol API secrets
+GA_API_SECRET = ""
+
+# Target setup executable URL (Defaults to official GitHub release)
+OVERRIDE_EXE_URL = "https://github.com/papada1472/refinzi/releases/download/v2.0.0/Refinzi-Setup-v2.0.0.exe"

@@ -990,6 +990,14 @@ export function createOrbWindow() {
   const indexPath = path.join(app.getAppPath(), "src", "renderer", "orb", "index.html");
   orbWindow.loadFile(indexPath);
 
+  orbWindow.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
+  orbWindow.webContents.on("will-navigate", (e, url) => {
+    if (url !== orbWindow.webContents.getURL()) {
+      e.preventDefault();
+      log.warn("[Refinzi][Orb] Blocked window navigation to external URL:", url);
+    }
+  });
+
   orbWindow.webContents.on("console-message", (_event, level, message) => {
     log.debug(`[Refinzi][Orb][console][${level}] ${message}`);
   });

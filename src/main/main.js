@@ -246,6 +246,7 @@ if (!gotTheLock) {
   app.on("second-instance", () => {
     console.log("[Refinzi][Main] Second instance detected, focusing existing window.");
     if (settingsWindow) {
+      if (!settingsWindow.isVisible()) settingsWindow.show();
       if (settingsWindow.isMinimized()) settingsWindow.restore();
       settingsWindow.focus();
     }
